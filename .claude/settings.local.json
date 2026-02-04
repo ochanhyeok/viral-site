@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(pkill:*)",
+      "Bash(git status:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: 스트레스 지수 테스트 기능 추가\n\n- 10문항 스트레스 측정 테스트 구현\n- 5점 척도 응답 방식\n- recharts를 활용한 결과 시각화 \\(게이지 차트, 바 차트\\)\n- 4단계 스트레스 레벨 분류 및 관리 팁 제공\n- SNS 공유 기능 \\(카카오톡, X, 링크 복사\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}
