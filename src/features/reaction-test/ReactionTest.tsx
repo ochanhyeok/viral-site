@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { SEO, ShareButtons, Recommendations, FAQ, BadgeNotification } from '../../components';
 import {
@@ -307,6 +308,14 @@ export function ReactionTest() {
             >
               테스트 시작하기
             </button>
+
+            {/* 같이하기 버튼 */}
+            <Link
+              to="/play/reaction"
+              className="w-full py-4 px-6 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <span>👥</span> 친구와 같이하기
+            </Link>
           </div>
         )}
 

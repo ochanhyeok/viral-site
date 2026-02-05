@@ -13,6 +13,7 @@ import { ReactionTest } from './features/reaction-test/ReactionTest';
 import { EmojiQuiz } from './features/emoji-quiz/EmojiQuiz';
 import { MyPage } from './pages/MyPage';
 import { RankingPage } from './pages/RankingPage';
+import { MultiplayerReaction } from './pages/MultiplayerReaction';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/emoji-quiz" element={<EmojiQuiz />} />
             <Route path="/my" element={<MyPage />} />
             <Route path="/ranking" element={<RankingPage />} />
+            <Route path="/play/reaction" element={<MultiplayerReaction />} />
           </Routes>
         </Layout>
       </BrowserRouter>
