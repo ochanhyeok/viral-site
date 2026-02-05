@@ -17,7 +17,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'artist',
     name: '예술가의 눈',
-    emoji: '💎',
+    emoji: '🎨',
     minPercent: 95,
     maxPercent: 100,
     title: '예술가의 눈',
@@ -29,7 +29,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'golden',
     name: '황금눈',
-    emoji: '✦',
+    emoji: '👁️',
     minPercent: 80,
     maxPercent: 94,
     title: '황금눈',
@@ -41,7 +41,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'good',
     name: '좋은 눈',
-    emoji: '◆',
+    emoji: '✨',
     minPercent: 65,
     maxPercent: 79,
     title: '좋은 눈',
@@ -53,7 +53,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'normal',
     name: '보통 눈',
-    emoji: '●',
+    emoji: '👀',
     minPercent: 50,
     maxPercent: 64,
     title: '보통 눈',
@@ -65,7 +65,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'sleepy',
     name: '졸린 눈',
-    emoji: '○',
+    emoji: '😴',
     minPercent: 35,
     maxPercent: 49,
     title: '졸린 눈',
@@ -77,7 +77,7 @@ export const grades: ColorTestGrade[] = [
   {
     id: 'colorblind',
     name: '색맹 의심',
-    emoji: '△',
+    emoji: '🔍',
     minPercent: 0,
     maxPercent: 34,
     title: '색맹 의심',

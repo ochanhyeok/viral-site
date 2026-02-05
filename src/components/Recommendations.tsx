@@ -14,7 +14,7 @@ interface Tool {
 const allTools: Tool[] = [
   {
     path: '/salary',
-    emoji: '₩',
+    emoji: '💰',
     title: '연봉 실수령액 계산기',
     shortTitle: '연봉계산기',
     description: '2025년 최신 세율로 실수령액 계산',
@@ -24,7 +24,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/retirement',
-    emoji: '◎',
+    emoji: '🏦',
     title: '퇴직금 계산기',
     shortTitle: '퇴직금계산기',
     description: '예상 퇴직금 미리 계산해보기',
@@ -34,7 +34,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/spending-quiz',
-    emoji: '◈',
+    emoji: '💳',
     title: '소비성향 테스트',
     shortTitle: '소비성향',
     description: '나의 소비 스타일 알아보기',
@@ -44,7 +44,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/work-mbti',
-    emoji: '■',
+    emoji: '👔',
     title: '직장인 MBTI',
     shortTitle: '직장인MBTI',
     description: '회사에서 나의 성격 유형은?',
@@ -54,7 +54,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/stress-test',
-    emoji: '○',
+    emoji: '🧠',
     title: '스트레스 테스트',
     shortTitle: '스트레스',
     description: '현재 나의 스트레스 수준 체크',
@@ -64,7 +64,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/kkondae-test',
-    emoji: '△',
+    emoji: '👴',
     title: '꼰대력 테스트',
     shortTitle: '꼰대력',
     description: '나는 MZ? 아니면 꼰대?',
@@ -74,7 +74,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/color-test',
-    emoji: '●',
+    emoji: '🎨',
     title: '색감 테스트',
     shortTitle: '색감테스트',
     description: '당신의 색 구분 능력은?',
@@ -84,7 +84,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/reaction-test',
-    emoji: '◇',
+    emoji: '⚡',
     title: '반응속도 테스트',
     shortTitle: '반응속도',
     description: '프로게이머급 반사신경?',
@@ -94,7 +94,7 @@ const allTools: Tool[] = [
   },
   {
     path: '/emoji-quiz',
-    emoji: '▣',
+    emoji: '🧩',
     title: '이모지 퀴즈',
     shortTitle: '이모지퀴즈',
     description: '힌트 보고 정답 맞추기',
