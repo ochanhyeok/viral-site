@@ -254,7 +254,8 @@ export default function DividendCalculator() {
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
   const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'tech' | 'covered'>('korea');
-  const [mainTab, setMainTab] = useState<'calculator' | 'guide'>('calculator');
+  const [mainTab, setMainTab] = useState<'calculator' | 'guide' | 'compare' | 'simulate'>('calculator');
+  const [compareList, setCompareList] = useState<typeof KOREA_PRESETS>([]);
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
@@ -272,6 +273,69 @@ export default function DividendCalculator() {
     setDividendFrequency(preset.frequency);
     setSelectedPreset(preset.name);
     setShowResult(false);
+  };
+
+  // 비교 목록에 추가/제거
+  const toggleCompare = (preset: PresetType) => {
+    const exists = compareList.find(p => p.name === preset.name);
+    if (exists) {
+      setCompareList(compareList.filter(p => p.name !== preset.name));
+    } else if (compareList.length < 3) {
+      setCompareList([...compareList, preset]);
+    }
+  };
+
+  // 비교 결과 계산
+  const getCompareResult = (preset: PresetType, investment: number) => {
+    const shares = Math.floor(investment / preset.price);
+    const annualDividend = preset.frequency === 'quarterly'
+      ? shares * preset.dividend * 4
+      : shares * preset.dividend;
+    const tax = Math.round(annualDividend * TAX_RATE);
+    const afterTax = annualDividend - tax;
+    const dividendYield = preset.frequency === 'quarterly'
+      ? (preset.dividend * 4 / preset.price) * 100
+      : (preset.dividend / preset.price) * 100;
+    return { shares, annualDividend, afterTax, dividendYield };
+  };
+
+  // 모든 프리셋 합치기
+  const allPresets = [...KOREA_PRESETS, ...OVERSEAS_PRESETS, ...TECH_PRESETS, ...COVERED_CALL_PRESETS];
+
+  // 시뮬레이션: 배당금 재투자 시 복리 효과 계산
+  const simulateDividendGrowth = (
+    initialInvestment: number,
+    annualDividendYield: number,
+    years: number,
+    reinvest: boolean,
+    annualDividendGrowth: number = 0
+  ) => {
+    const results = [];
+    let totalInvested = initialInvestment;
+    let currentDividendYield = annualDividendYield;
+    let totalDividendReceived = 0;
+
+    for (let year = 1; year <= years; year++) {
+      const dividend = Math.round(totalInvested * currentDividendYield);
+      const afterTaxDividend = Math.round(dividend * (1 - TAX_RATE));
+      totalDividendReceived += afterTaxDividend;
+
+      if (reinvest) {
+        totalInvested += afterTaxDividend;
+      }
+
+      currentDividendYield *= (1 + annualDividendGrowth);
+
+      results.push({
+        year,
+        totalInvested: Math.round(totalInvested),
+        annualDividend: afterTaxDividend,
+        totalDividend: totalDividendReceived,
+        yieldOnCost: ((totalInvested * currentDividendYield * (1 - TAX_RATE)) / initialInvestment * 100),
+      });
+    }
+
+    return results;
   };
 
   const result = useMemo<Result | null>(() => {
@@ -368,29 +432,384 @@ export default function DividendCalculator() {
           </p>
         </div>
 
-        {/* 메인 탭: 계산기 / 투자 가이드 */}
-        <div className="flex bg-gray-100 rounded-xl p-1">
+        {/* 메인 탭 */}
+        <div className="grid grid-cols-4 bg-gray-100 rounded-xl p-1 gap-1">
           <button
             onClick={() => setMainTab('calculator')}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all ${
+            className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
               mainTab === 'calculator'
                 ? 'bg-white text-amber-600 shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            🧮 계산기
+            🧮 계산
+          </button>
+          <button
+            onClick={() => setMainTab('compare')}
+            className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
+              mainTab === 'compare'
+                ? 'bg-white text-amber-600 shadow-md'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            ⚖️ 비교
+          </button>
+          <button
+            onClick={() => setMainTab('simulate')}
+            className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
+              mainTab === 'simulate'
+                ? 'bg-white text-amber-600 shadow-md'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            📈 시뮬
           </button>
           <button
             onClick={() => setMainTab('guide')}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all ${
+            className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
               mainTab === 'guide'
                 ? 'bg-white text-amber-600 shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            📚 투자 가이드
+            📚 가이드
           </button>
         </div>
+
+        {/* 시뮬레이션 탭 */}
+        {mainTab === 'simulate' && (
+          <div className="space-y-4 animate-fadeIn">
+            {/* 시뮬레이션 설정 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-lg">📈</span>
+                배당금 성장 시뮬레이션
+              </h3>
+
+              <div className="space-y-4">
+                {/* 투자금액 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    초기 투자금액
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={investAmount}
+                      onChange={(e) => setInvestAmount(e.target.value)}
+                      className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-amber-500"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg text-sm">
+                      만원
+                    </span>
+                  </div>
+                </div>
+
+                {/* 배당수익률 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    예상 배당수익률 (연)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[3, 5, 7, 10].map((rate) => (
+                      <button
+                        key={rate}
+                        onClick={() => setDividendPerShare(rate.toString())}
+                        className={`py-2 rounded-lg font-medium text-sm transition-all ${
+                          dividendPerShare === rate.toString()
+                            ? 'bg-amber-500 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {rate}%
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 시뮬레이션 결과 */}
+            {parseFloat(investAmount) > 0 && parseFloat(dividendPerShare) > 0 && (
+              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-lg">🎯</span>
+                  10년 시뮬레이션 결과
+                </h3>
+
+                {/* 재투자 vs 현금수령 비교 */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  {/* 재투자 */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                    <div className="text-sm font-semibold text-green-700 mb-2">✅ 배당 재투자</div>
+                    {(() => {
+                      const results = simulateDividendGrowth(
+                        parseFloat(investAmount) * 10000,
+                        parseFloat(dividendPerShare) / 100,
+                        10,
+                        true,
+                        0.03
+                      );
+                      const final = results[results.length - 1];
+                      return (
+                        <>
+                          <div className="text-2xl font-bold text-green-600">
+                            {(final.totalInvested / 10000).toLocaleString()}만원
+                          </div>
+                          <div className="text-xs text-green-600 mt-1">
+                            투자원금: {investAmount}만원 → {((final.totalInvested / (parseFloat(investAmount) * 10000) - 1) * 100).toFixed(0)}% 성장
+                          </div>
+                          <div className="text-xs text-green-500 mt-2">
+                            10년 누적 배당: {(final.totalDividend / 10000).toLocaleString()}만원
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+
+                  {/* 현금수령 */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+                    <div className="text-sm font-semibold text-blue-700 mb-2">💵 현금 수령</div>
+                    {(() => {
+                      const results = simulateDividendGrowth(
+                        parseFloat(investAmount) * 10000,
+                        parseFloat(dividendPerShare) / 100,
+                        10,
+                        false,
+                        0.03
+                      );
+                      const final = results[results.length - 1];
+                      return (
+                        <>
+                          <div className="text-2xl font-bold text-blue-600">
+                            {(final.totalDividend / 10000).toLocaleString()}만원
+                          </div>
+                          <div className="text-xs text-blue-600 mt-1">
+                            10년간 받은 현금 배당금 총액
+                          </div>
+                          <div className="text-xs text-blue-500 mt-2">
+                            원금 {investAmount}만원은 그대로 유지
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                {/* 연도별 표 */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="py-2 px-2 text-left font-semibold text-gray-700">연차</th>
+                        <th className="py-2 px-2 text-right font-semibold text-gray-700">투자금</th>
+                        <th className="py-2 px-2 text-right font-semibold text-gray-700">연 배당</th>
+                        <th className="py-2 px-2 text-right font-semibold text-gray-700">누적 배당</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {simulateDividendGrowth(
+                        parseFloat(investAmount) * 10000,
+                        parseFloat(dividendPerShare) / 100,
+                        10,
+                        true,
+                        0.03
+                      ).map((row) => (
+                        <tr key={row.year} className="border-b border-gray-100">
+                          <td className="py-2 px-2 text-gray-800">{row.year}년차</td>
+                          <td className="py-2 px-2 text-right text-gray-600">
+                            {(row.totalInvested / 10000).toLocaleString()}만원
+                          </td>
+                          <td className="py-2 px-2 text-right text-green-600 font-medium">
+                            +{(row.annualDividend / 10000).toFixed(1)}만원
+                          </td>
+                          <td className="py-2 px-2 text-right text-amber-600 font-medium">
+                            {(row.totalDividend / 10000).toLocaleString()}만원
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 안내 */}
+                <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+                  <p className="text-xs text-amber-700">
+                    <strong>💡 시뮬레이션 가정:</strong>
+                    배당수익률 {dividendPerShare}%, 연간 배당 성장률 3%, 세금 15.4% 적용.
+                    실제 결과는 주가 변동, 배당 정책 변경 등에 따라 다를 수 있습니다.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 비교 탭 */}
+        {mainTab === 'compare' && (
+          <div className="space-y-4 animate-fadeIn">
+            {/* 종목 선택 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-3 flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <span className="text-lg">📊</span>
+                  비교할 종목 선택 (최대 3개)
+                </span>
+                {compareList.length > 0 && (
+                  <button
+                    onClick={() => setCompareList([])}
+                    className="text-xs text-gray-400 hover:text-gray-600"
+                  >
+                    전체 해제
+                  </button>
+                )}
+              </h3>
+
+              {/* 종목 그리드 */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+                {allPresets.map((preset) => {
+                  const isSelected = compareList.find(p => p.name === preset.name);
+                  return (
+                    <button
+                      key={preset.name}
+                      onClick={() => toggleCompare(preset)}
+                      disabled={!isSelected && compareList.length >= 3}
+                      className={`p-2 rounded-lg text-left text-xs transition-all ${
+                        isSelected
+                          ? 'bg-amber-100 border-2 border-amber-400'
+                          : compareList.length >= 3
+                          ? 'bg-gray-100 border-2 border-transparent opacity-50 cursor-not-allowed'
+                          : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-800 truncate">{preset.name}</div>
+                      <div className="text-gray-500">{preset.yield}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 투자금액 입력 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                비교 기준 투자금액
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={investAmount}
+                  onChange={(e) => setInvestAmount(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-amber-500"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg text-sm">
+                  만원
+                </span>
+              </div>
+            </div>
+
+            {/* 비교 결과 */}
+            {compareList.length >= 2 && (
+              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-lg">⚖️</span>
+                  비교 결과
+                </h3>
+
+                {/* 비교 카드 */}
+                <div className="grid gap-3">
+                  {compareList.map((preset, index) => {
+                    const result = getCompareResult(preset, parseFloat(investAmount) * 10000 || 0);
+                    const maxYield = Math.max(...compareList.map(p => {
+                      const r = getCompareResult(p, parseFloat(investAmount) * 10000 || 0);
+                      return r.dividendYield;
+                    }));
+                    const isHighest = result.dividendYield === maxYield;
+
+                    return (
+                      <div
+                        key={preset.name}
+                        className={`p-4 rounded-xl border-2 ${
+                          isHighest
+                            ? 'bg-amber-50 border-amber-300'
+                            : 'bg-gray-50 border-gray-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-gray-400">#{index + 1}</span>
+                            <span className="font-bold text-gray-800">{preset.name}</span>
+                            {isHighest && (
+                              <span className="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                최고 수익률
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => toggleCompare(preset)}
+                            className="text-gray-400 hover:text-red-500 text-sm"
+                          >
+                            ✕
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2 text-center">
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-[10px] text-gray-500">보유 주수</div>
+                            <div className="font-bold text-gray-800">{result.shares.toLocaleString()}주</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-[10px] text-gray-500">배당수익률</div>
+                            <div className={`font-bold ${isHighest ? 'text-amber-600' : 'text-gray-800'}`}>
+                              {result.dividendYield.toFixed(2)}%
+                            </div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-[10px] text-gray-500">연간 배당(세전)</div>
+                            <div className="font-bold text-gray-800">{result.annualDividend.toLocaleString()}원</div>
+                          </div>
+                          <div className="bg-white rounded-lg p-2">
+                            <div className="text-[10px] text-gray-500">세후 수령</div>
+                            <div className="font-bold text-green-600">{result.afterTax.toLocaleString()}원</div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* 비교 요약 */}
+                <div className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+                  <div className="text-sm text-amber-800">
+                    <strong>💡 분석:</strong>{' '}
+                    {(() => {
+                      const sorted = [...compareList].sort((a, b) => {
+                        const ra = getCompareResult(a, parseFloat(investAmount) * 10000 || 0);
+                        const rb = getCompareResult(b, parseFloat(investAmount) * 10000 || 0);
+                        return rb.dividendYield - ra.dividendYield;
+                      });
+                      const best = sorted[0];
+                      const bestResult = getCompareResult(best, parseFloat(investAmount) * 10000 || 0);
+                      return `${investAmount}만원 투자 시 "${best.name}"이(가) 연 ${bestResult.afterTax.toLocaleString()}원(세후)으로 가장 높은 배당 수익을 제공합니다.`;
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {compareList.length < 2 && (
+              <div className="bg-gray-50 rounded-2xl p-8 text-center border-2 border-dashed border-gray-300">
+                <div className="text-4xl mb-3">📊</div>
+                <p className="text-gray-500 font-medium">
+                  비교할 종목을 2개 이상 선택하세요
+                </p>
+                <p className="text-gray-400 text-sm mt-1">
+                  선택: {compareList.length}/3
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 투자 가이드 탭 */}
         {mainTab === 'guide' && (
