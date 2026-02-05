@@ -172,6 +172,36 @@ const allTools: Tool[] = [
     category: 'calculator',
     relatedTo: ['/savings', '/loan', '/salary'],
   },
+  {
+    path: '/stock',
+    emoji: '📊',
+    title: '주식 수익률 계산기',
+    shortTitle: '주식계산기',
+    description: '수수료/세금 포함 실제 수익',
+    gradient: 'from-green-500 to-emerald-600',
+    category: 'calculator',
+    relatedTo: ['/compound', '/dividend', '/savings'],
+  },
+  {
+    path: '/dividend',
+    emoji: '💵',
+    title: '배당금 계산기',
+    shortTitle: '배당계산기',
+    description: '예상 배당 수익 계산',
+    gradient: 'from-amber-500 to-orange-600',
+    category: 'calculator',
+    relatedTo: ['/stock', '/compound', '/savings'],
+  },
+  {
+    path: '/invest-test',
+    emoji: '📈',
+    title: '투자 성향 테스트',
+    shortTitle: '투자성향',
+    description: '나에게 맞는 투자 스타일',
+    gradient: 'from-violet-500 to-purple-600',
+    category: 'test',
+    relatedTo: ['/stock', '/dividend', '/spending-quiz'],
+  },
 ];
 
 interface RecommendationsProps {

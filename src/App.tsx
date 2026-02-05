@@ -31,6 +31,9 @@ const TaxRefundCalculator = lazy(() => import('./features/tax-refund/TaxRefundCa
 const SavingsCalculator = lazy(() => import('./features/savings-calc/SavingsCalculator'));
 const LoanCalculator = lazy(() => import('./features/loan-calc/LoanCalculator'));
 const CompoundCalculator = lazy(() => import('./features/compound-calc/CompoundCalculator'));
+const StockCalculator = lazy(() => import('./features/stock-calc/StockCalculator'));
+const DividendCalculator = lazy(() => import('./features/stock-calc/DividendCalculator'));
+const InvestTest = lazy(() => import('./features/invest-test/InvestTest'));
 
 // 로딩 컴포넌트
 function PageLoader() {
@@ -73,6 +76,9 @@ function App() {
               <Route path="/savings" element={<SavingsCalculator />} />
               <Route path="/loan" element={<LoanCalculator />} />
               <Route path="/compound" element={<CompoundCalculator />} />
+              <Route path="/stock" element={<StockCalculator />} />
+              <Route path="/dividend" element={<DividendCalculator />} />
+              <Route path="/invest-test" element={<InvestTest />} />
               {/* 히든 테스트 */}
               <Route path="/resignation-test" element={<ResignationTest />} />
             </Routes>
