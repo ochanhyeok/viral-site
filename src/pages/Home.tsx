@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SEO } from '../components';
+import { SEO, VisitorCounter } from '../components';
 
 const tools = [
   {
@@ -78,10 +78,11 @@ export function Home() {
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
             직장인 <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">꿀툴</span> 모음
           </h1>
-          <p className="text-lg text-gray-500 max-w-md mx-auto">
+          <p className="text-lg text-gray-500 max-w-md mx-auto mb-6">
             필요한 계산부터 재미있는 테스트까지<br />
             직장인 필수 도구를 한 곳에서!
           </p>
+          <VisitorCounter />
         </div>
 
         {/* 도구 그리드 */}
