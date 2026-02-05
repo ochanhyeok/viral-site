@@ -88,9 +88,11 @@ export function Grid({
                   disabled={disabled || cell.state === 'hit' || cell.state === 'miss' || cell.state === 'sunk'}
                   className={`
                     w-7 h-7 sm:w-8 sm:h-8 m-[1px] rounded-sm
-                    transition-all duration-200
+                    transition-all duration-150
                     ${getCellColor(cell)}
-                    ${!disabled && cell.state === 'empty' ? 'cursor-pointer active:scale-90' : 'cursor-default'}
+                    ${!disabled && cell.state === 'empty'
+                      ? 'cursor-crosshair hover:scale-110 hover:ring-2 hover:ring-yellow-400 hover:bg-yellow-500/40 active:scale-95 active:bg-red-500/60'
+                      : 'cursor-default'}
                     ${isHighlighted(rowIndex, colIndex) ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-blue-950' : ''}
                     ${isLastAttack(rowIndex, colIndex) ? 'animate-pulse ring-2 ring-white' : ''}
                     relative overflow-hidden z-10

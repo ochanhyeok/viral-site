@@ -556,6 +556,22 @@ export function BattleshipGame() {
             </div>
           </div>
         </div>
+
+        {/* 폴백 로딩 (조건에 해당하지 않는 상태) */}
+        {room && !['lobby', 'setup', 'battle', 'finished'].includes(room.status) && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="bg-gradient-to-br from-gray-500 to-gray-600 rounded-3xl p-8 text-white text-center">
+              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 animate-spin">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold">로딩 중...</h2>
+              <p className="text-white/70 text-sm mt-2">상태: {room.status}</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
