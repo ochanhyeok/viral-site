@@ -56,14 +56,14 @@ export function Home() {
   return (
     <>
       <SEO
-        title="홈"
-        description="연봉 실수령액 계산기, 퇴직금 계산기, 소비성향 테스트, 직장인 MBTI, 스트레스 테스트, 꼰대력 테스트까지! 20-30대 직장인을 위한 필수 무료 도구 모음."
-        keywords="연봉계산기,퇴직금계산기,소비성향테스트,직장인MBTI,실수령액,2025연봉,심리테스트,꼰대테스트"
+        title="연봉 계산기 & 직장인 심리테스트"
+        description="2025 연봉 실수령액 계산기, 퇴직금 계산기, 직장인 MBTI, 소비성향 테스트, 스트레스 테스트, 꼰대력 테스트까지! 직장인 필수 무료 도구 모음."
+        keywords="연봉계산기,연봉실수령액,퇴직금계산기,심리테스트,직장인MBTI,스트레스테스트,소비성향테스트,꼰대테스트,무료"
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: '직장인 꿀툴 모음',
-          description: '연봉 계산기, 퇴직금 계산기, 심리테스트 등 직장인을 위한 무료 도구 모음',
+          name: '연봉 계산기 & 직장인 심리테스트 모음',
+          description: '2025 연봉 실수령액 계산기, 퇴직금 계산기, 직장인 MBTI, 심리테스트 등 직장인 무료 도구 모음',
           url: 'https://viral-site-opal.vercel.app',
           potentialAction: {
             '@type': 'SearchAction',
@@ -83,8 +83,8 @@ export function Home() {
             </span>
             무료로 이용 가능
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            직장인 <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">꿀툴</span> 모음
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">연봉 계산기</span> &<br className="sm:hidden" /> 직장인 심리테스트
           </h1>
           <p className="text-lg text-gray-500 max-w-md mx-auto mb-6">
             필요한 계산부터 재미있는 테스트까지<br />

@@ -324,7 +324,7 @@ export function KkondaeTest() {
                 <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
                   <p className="text-white/90 text-sm leading-relaxed">{result.description}</p>
                 </div>
-                <p className="text-white/50 text-xs">직장인 꿀툴 | viral-site-opal.vercel.app</p>
+                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
               </div>
             </div>
 

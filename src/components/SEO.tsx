@@ -21,7 +21,7 @@ export function SEO({
   structuredData
 }: SEOProps) {
   const location = useLocation();
-  const siteTitle = '직장인 꿀툴 모음';
+  const siteTitle = '연봉 계산기 & 직장인 심리테스트';
   const fullTitle = title === '홈' ? siteTitle : `${title} | ${siteTitle}`;
   const defaultOgImage = `${BASE_URL}/og-image.png`;
   const canonicalUrl = `${BASE_URL}${location.pathname}`;

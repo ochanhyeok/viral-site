@@ -19,7 +19,7 @@ export function Layout({ children }: LayoutProps) {
           >
             <span className="text-xl sm:text-2xl">🛠️</span>
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-              직장인 꿀툴
+              연봉계산기 & 심리테스트
             </span>
           </Link>
           {!isHome && (
@@ -42,7 +42,7 @@ export function Layout({ children }: LayoutProps) {
 
       <footer className="bg-gray-50 border-t border-gray-100 mt-auto safe-area-bottom">
         <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 text-center text-gray-400 text-xs">
-          <p>© 2025 직장인 꿀툴 모음</p>
+          <p>© 2025 연봉계산기 & 심리테스트 모음</p>
         </div>
       </footer>
     </div>
