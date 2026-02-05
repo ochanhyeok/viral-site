@@ -61,7 +61,16 @@ export function Layout({ children }: LayoutProps) {
       </main>
 
       <footer className="bg-gray-50 border-t border-gray-100 mt-auto safe-area-bottom">
-        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 text-center text-gray-400 text-xs">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 text-center text-gray-400 text-xs space-y-2">
+          <div className="flex items-center justify-center gap-4">
+            <Link to="/privacy" className="hover:text-gray-600 transition-colors">
+              개인정보처리방침
+            </Link>
+            <span>|</span>
+            <a href="mailto:contact@example.com" className="hover:text-gray-600 transition-colors">
+              문의하기
+            </a>
+          </div>
           <p>© 2025 연봉계산기 & 심리테스트 모음</p>
         </div>
       </footer>
