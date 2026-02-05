@@ -302,7 +302,10 @@ export function TaxRefundCalculator() {
         ) : result && (
           <div className="space-y-6 animate-fadeIn">
             {/* 결과 카드 */}
-            <div className={`bg-gradient-to-br ${result.isRefund ? 'from-green-500 to-emerald-600' : 'from-red-500 to-rose-600'} rounded-3xl p-6 text-white shadow-xl text-center`}>
+            <div
+              id="tax-refund-result"
+              className={`bg-gradient-to-br ${result.isRefund ? 'from-green-500 to-emerald-600' : 'from-red-500 to-rose-600'} rounded-3xl p-6 text-white shadow-xl text-center`}
+            >
               <p className="text-white/70 text-sm mb-2">
                 {result.isRefund ? '예상 환급액' : '예상 추가 납부액'}
               </p>
@@ -378,6 +381,8 @@ export function TaxRefundCalculator() {
               <ShareButtons
                 title="연말정산 환급액 예측"
                 description={`예상 ${result.isRefund ? '환급액' : '추가납부'}: ${formatNumber(Math.abs(result.refund))}원`}
+                captureElementId="tax-refund-result"
+                captureFileName="tax-refund-result"
               />
             </div>
 

@@ -85,6 +85,10 @@ export function Grid({
                 <button
                   key={`${rowIndex}-${colIndex}`}
                   onClick={() => onCellClick?.(rowIndex, colIndex)}
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    onCellClick?.(rowIndex, colIndex);
+                  }}
                   disabled={disabled || cell.state === 'hit' || cell.state === 'miss' || cell.state === 'sunk'}
                   className={`
                     w-7 h-7 sm:w-8 sm:h-8 m-[1px] rounded-sm

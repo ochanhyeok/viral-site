@@ -480,7 +480,7 @@ export function MultiplayerReaction() {
 
             {/* 대기 화면 */}
             {phase === 'waiting' && (
-              <div onClick={handleClick} className="cursor-pointer">
+              <div onClick={handleClick} onTouchEnd={(e) => { e.preventDefault(); handleClick(); }} className="cursor-pointer select-none">
                 <div className="bg-gradient-to-br from-red-500 to-red-700 rounded-3xl p-8 min-h-[350px] flex flex-col items-center justify-center shadow-2xl">
                   <div className="w-20 h-20 rounded-full bg-red-400/50 flex items-center justify-center mb-6 animate-pulse">
                     <div className="w-12 h-12 rounded-full bg-white/90 shadow-inner"></div>
@@ -492,7 +492,7 @@ export function MultiplayerReaction() {
 
             {/* 준비 화면 */}
             {phase === 'ready' && (
-              <div onClick={handleClick} className="cursor-pointer">
+              <div onClick={handleClick} onTouchEnd={(e) => { e.preventDefault(); handleClick(); }} className="cursor-pointer select-none">
                 <div className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl p-8 min-h-[350px] flex flex-col items-center justify-center shadow-2xl animate-pulse">
                   <div className="w-20 h-20 rounded-full bg-green-300/50 flex items-center justify-center mb-6">
                     <div className="w-12 h-12 rounded-full bg-white shadow-lg"></div>
