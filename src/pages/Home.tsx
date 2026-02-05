@@ -15,7 +15,7 @@ interface Tool {
 const tools: Tool[] = [
   {
     path: '/salary',
-    emoji: '💰',
+    emoji: '₩',
     title: '연봉 실수령액 계산기',
     description: '2025년 최신 세율 적용',
     gradient: 'from-blue-500 via-blue-600 to-indigo-600',
@@ -25,7 +25,7 @@ const tools: Tool[] = [
   },
   {
     path: '/retirement',
-    emoji: '🏦',
+    emoji: '◎',
     title: '퇴직금 계산기',
     description: '예상 퇴직금 미리 계산',
     gradient: 'from-emerald-500 via-green-500 to-teal-600',
@@ -34,7 +34,7 @@ const tools: Tool[] = [
   },
   {
     path: '/spending-quiz',
-    emoji: '💸',
+    emoji: '◈',
     title: '소비성향 테스트',
     description: '나는 어떤 소비 유형?',
     gradient: 'from-purple-500 via-violet-500 to-fuchsia-600',
@@ -44,7 +44,7 @@ const tools: Tool[] = [
   },
   {
     path: '/work-mbti',
-    emoji: '💼',
+    emoji: '■',
     title: '직장인 MBTI',
     description: '회사에서 나의 유형은?',
     gradient: 'from-orange-500 via-amber-500 to-yellow-500',
@@ -54,7 +54,7 @@ const tools: Tool[] = [
   },
   {
     path: '/stress-test',
-    emoji: '🧠',
+    emoji: '○',
     title: '스트레스 지수 테스트',
     description: '현재 나의 스트레스 수준',
     gradient: 'from-rose-500 via-pink-500 to-red-500',
@@ -63,7 +63,7 @@ const tools: Tool[] = [
   },
   {
     path: '/kkondae-test',
-    emoji: '👴',
+    emoji: '△',
     title: '꼰대력 테스트',
     description: '나는 MZ? 아니면 꼰대?',
     gradient: 'from-slate-600 via-slate-700 to-slate-800',
@@ -72,7 +72,7 @@ const tools: Tool[] = [
   },
   {
     path: '/color-test',
-    emoji: '🎨',
+    emoji: '●',
     title: '색감 테스트',
     description: '당신의 색 구분 능력은?',
     gradient: 'from-violet-500 via-purple-500 to-fuchsia-500',
@@ -82,7 +82,7 @@ const tools: Tool[] = [
   },
   {
     path: '/reaction-test',
-    emoji: '⚡',
+    emoji: '◇',
     title: '반응속도 테스트',
     description: '프로게이머급 반사신경?',
     gradient: 'from-yellow-400 via-amber-500 to-orange-500',
@@ -91,9 +91,9 @@ const tools: Tool[] = [
   },
   {
     path: '/emoji-quiz',
-    emoji: '🎯',
+    emoji: '▣',
     title: '이모지 퀴즈',
-    description: '🦁👑 이게 뭘까?',
+    description: '힌트 보고 정답 맞추기',
     gradient: 'from-pink-500 via-orange-500 to-yellow-500',
     shadowColor: 'shadow-pink-500/30',
     badge: 'new',
@@ -114,9 +114,9 @@ function BadgeComponent({ badge }: { badge?: 'hot' | 'new' | 'popular' }) {
   };
 
   const labels = {
-    hot: '🔥 HOT',
-    new: '✨ NEW',
-    popular: '👑 인기',
+    hot: 'HOT',
+    new: 'NEW',
+    popular: 'BEST',
   };
 
   return (
@@ -208,7 +208,7 @@ export function Home() {
         {/* 계산기 섹션 */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">🧮</span>
+            <span className="w-6 h-6 rounded bg-gradient-to-br from-blue-500 to-indigo-600" />
             <h2 className="text-xl font-bold text-gray-900">계산기</h2>
             <span className="text-sm text-gray-400">정확한 계산이 필요할 때</span>
           </div>
@@ -222,7 +222,7 @@ export function Home() {
         {/* 심리테스트 섹션 */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">🎯</span>
+            <span className="w-6 h-6 rounded bg-gradient-to-br from-violet-500 to-purple-600" />
             <h2 className="text-xl font-bold text-gray-900">심리테스트</h2>
             <span className="text-sm text-gray-400">나를 알아가는 시간</span>
           </div>

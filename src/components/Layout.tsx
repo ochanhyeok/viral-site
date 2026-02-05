@@ -17,7 +17,7 @@ export function Layout({ children }: LayoutProps) {
             to="/"
             className="flex items-center gap-2 text-lg sm:text-xl font-bold text-gray-800 hover:text-violet-600 transition-colors active:scale-95"
           >
-            <span className="text-xl sm:text-2xl">🛠️</span>
+            <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600" />
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
               연봉계산기 & 심리테스트
             </span>
@@ -38,7 +38,9 @@ export function Layout({ children }: LayoutProps) {
               to="/ranking"
               className="flex items-center gap-1 px-3 py-2 text-sm text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all active:scale-95"
             >
-              <span className="text-base">🏆</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
               <span className="hidden sm:inline">랭킹</span>
             </Link>
             <Link

@@ -57,8 +57,8 @@ export function MyPage() {
         <div className="bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-3xl p-6 text-white shadow-xl">
           {userData.profile ? (
             <div className="text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl mx-auto mb-3">
-                {earnedBadges.length > 0 ? earnedBadges[earnedBadges.length - 1].emoji : '👤'}
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-3 font-bold">
+                {earnedBadges.length > 0 ? earnedBadges[earnedBadges.length - 1].emoji : userData.profile?.nickname?.charAt(0) || '?'}
               </div>
               <h1 className="text-2xl font-bold mb-1">{userData.profile.nickname}</h1>
               <p className="text-white/70 text-sm">
@@ -77,8 +77,8 @@ export function MyPage() {
             </div>
           ) : (
             <div className="text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl mx-auto mb-3">
-                👤
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-3 font-bold">
+                ?
               </div>
               <h2 className="text-lg font-bold mb-3">닉네임을 설정하세요</h2>
               <div className="flex gap-2">
@@ -104,9 +104,9 @@ export function MyPage() {
         {/* 탭 네비게이션 */}
         <div className="flex bg-gray-100 rounded-xl p-1">
           {[
-            { id: 'records' as Tab, label: '기록', emoji: '📋' },
-            { id: 'badges' as Tab, label: '뱃지', emoji: '🏆' },
-            { id: 'stats' as Tab, label: '통계', emoji: '📊' },
+            { id: 'records' as Tab, label: '기록' },
+            { id: 'badges' as Tab, label: '뱃지' },
+            { id: 'stats' as Tab, label: '통계' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -117,7 +117,7 @@ export function MyPage() {
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {tab.emoji} {tab.label}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -127,7 +127,7 @@ export function MyPage() {
           <div className="space-y-3">
             {userData.records.length === 0 ? (
               <div className="bg-white rounded-2xl p-8 text-center shadow-lg border border-gray-100">
-                <p className="text-4xl mb-3">📝</p>
+                <div className="w-12 h-12 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-gray-400 text-xl">—</div>
                 <p className="text-gray-500 mb-4">아직 기록이 없어요</p>
                 <Link
                   to="/"
@@ -183,9 +183,7 @@ export function MyPage() {
             {/* 획득한 뱃지 */}
             {earnedBadges.length > 0 && (
               <div>
-                <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <span>🏆</span> 획득한 뱃지
-                </h3>
+                <h3 className="font-bold text-gray-900 mb-3">획득한 뱃지</h3>
                 <div className="grid grid-cols-3 gap-3">
                   {earnedBadges.map((badge) => (
                     <div
@@ -205,16 +203,14 @@ export function MyPage() {
 
             {/* 미획득 뱃지 */}
             <div>
-              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span>🔒</span> 미획득 뱃지
-              </h3>
+              <h3 className="font-bold text-gray-500 mb-3">미획득 뱃지</h3>
               <div className="grid grid-cols-3 gap-3">
                 {lockedBadges.map((badge) => (
                   <div
                     key={badge.id}
                     className="bg-gray-100 rounded-2xl p-4 text-center relative opacity-60"
                   >
-                    <span className="text-3xl grayscale">🔒</span>
+                    <span className="text-2xl text-gray-400">?</span>
                     <p className="text-xs font-bold mt-1 text-gray-500 truncate">{badge.name}</p>
                     <span className={`absolute top-2 right-2 text-[10px] ${rarityColors[badge.rarity].text} ${rarityColors[badge.rarity].bg} px-1.5 py-0.5 rounded-full`}>
                       {rarityNames[badge.rarity]}
@@ -231,7 +227,7 @@ export function MyPage() {
           <div className="space-y-4">
             {Object.keys(userData.stats).length === 0 ? (
               <div className="bg-white rounded-2xl p-8 text-center shadow-lg border border-gray-100">
-                <p className="text-4xl mb-3">📊</p>
+                <div className="w-12 h-12 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-gray-400 text-xl">—</div>
                 <p className="text-gray-500 mb-4">아직 통계가 없어요</p>
                 <Link
                   to="/"

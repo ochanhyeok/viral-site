@@ -29,7 +29,7 @@ export const grades: ReactionGrade[] = [
   {
     id: 'gamer',
     name: '게이머 반응',
-    emoji: '🎮',
+    emoji: '◈',
     minMs: 180,
     maxMs: 220,
     title: '게이머 반응',
@@ -41,7 +41,7 @@ export const grades: ReactionGrade[] = [
   {
     id: 'fast',
     name: '빠른 편',
-    emoji: '👍',
+    emoji: '◆',
     minMs: 220,
     maxMs: 270,
     title: '빠른 편',
@@ -53,7 +53,7 @@ export const grades: ReactionGrade[] = [
   {
     id: 'average',
     name: '보통',
-    emoji: '😐',
+    emoji: '●',
     minMs: 270,
     maxMs: 330,
     title: '보통',
@@ -65,7 +65,7 @@ export const grades: ReactionGrade[] = [
   {
     id: 'slow',
     name: '느긋한 편',
-    emoji: '🐢',
+    emoji: '○',
     minMs: 330,
     maxMs: 400,
     title: '느긋한 편',
@@ -77,7 +77,7 @@ export const grades: ReactionGrade[] = [
   {
     id: 'sleepy',
     name: '졸린 상태',
-    emoji: '😴',
+    emoji: '—',
     minMs: 400,
     maxMs: 9999,
     title: '졸린 상태',
@@ -134,9 +134,9 @@ export const reactionTestFAQ = [
 
 // 반응속도별 비교 대상
 export const comparisonData = [
-  { name: '눈 깜빡임', ms: 100, emoji: '👁️' },
-  { name: '프로게이머', ms: 170, emoji: '🎮' },
-  { name: 'F1 드라이버', ms: 200, emoji: '🏎️' },
-  { name: '일반인 평균', ms: 270, emoji: '👤' },
-  { name: '졸린 상태', ms: 400, emoji: '😴' },
+  { name: '눈 깜빡임', ms: 100, emoji: '◎' },
+  { name: '프로게이머', ms: 170, emoji: '◈' },
+  { name: 'F1 드라이버', ms: 200, emoji: '◆' },
+  { name: '일반인 평균', ms: 270, emoji: '●' },
+  { name: '졸린 상태', ms: 400, emoji: '○' },
 ];

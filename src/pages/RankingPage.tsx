@@ -15,22 +15,22 @@ interface TabConfig {
 const tabs: TabConfig[] = [
   {
     id: 'color-test',
-    label: '색감 테스트',
-    emoji: '🎨',
+    label: '색감',
+    emoji: '●',
     gradient: 'from-violet-500 to-fuchsia-500',
     scoreLabel: '점수',
   },
   {
     id: 'reaction-test',
     label: '반응속도',
-    emoji: '⚡',
+    emoji: '◇',
     gradient: 'from-yellow-400 to-orange-500',
     scoreLabel: '기록',
   },
   {
     id: 'emoji-quiz',
-    label: '이모지 퀴즈',
-    emoji: '🎯',
+    label: '퀴즈',
+    emoji: '▣',
     gradient: 'from-pink-500 to-orange-500',
     scoreLabel: '점수',
   },
@@ -77,9 +77,7 @@ export function RankingPage() {
       <div className="max-w-lg mx-auto space-y-6">
         {/* 헤더 */}
         <div className="text-center py-4">
-          <h1 className="text-2xl font-black text-gray-900 flex items-center justify-center gap-2">
-            <span>🏆</span> 랭킹
-          </h1>
+          <h1 className="text-2xl font-black text-gray-900">랭킹</h1>
           <p className="text-gray-500 text-sm mt-1">실시간 TOP 100</p>
         </div>
 
@@ -152,7 +150,7 @@ export function RankingPage() {
           {/* 빈 상태 */}
           {!isLoading && rankings.length === 0 && (
             <div className="py-12 text-center">
-              <p className="text-4xl mb-2">🏆</p>
+              <div className="w-12 h-12 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-gray-400 text-xl">—</div>
               <p className="text-gray-500">아직 기록이 없어요</p>
               <p className="text-gray-400 text-sm mt-1">첫 번째 도전자가 되어보세요!</p>
             </div>
