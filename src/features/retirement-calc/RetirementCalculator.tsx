@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { ko } from 'date-fns/locale';
 import { SEO, Button, Input, ShareButtons } from '../../components';
 import { useRetirementCalc, formatCurrency } from './useRetirementCalc';
+import 'react-datepicker/dist/react-datepicker.css';
 
 export function RetirementCalculator() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [salary1, setSalary1] = useState('');
   const [salary2, setSalary2] = useState('');
   const [salary3, setSalary3] = useState('');
@@ -14,9 +17,14 @@ export function RetirementCalculator() {
 
   const parseSalary = (value: string) => parseInt(value.replace(/,/g, '')) || 0;
 
+  const formatDateString = (date: Date | null) => {
+    if (!date) return '';
+    return date.toISOString().split('T')[0];
+  };
+
   const result = useRetirementCalc({
-    startDate,
-    endDate,
+    startDate: formatDateString(startDate),
+    endDate: formatDateString(endDate),
     monthlySalaries: [parseSalary(salary1), parseSalary(salary2), parseSalary(salary3)],
     annualBonus: parseSalary(annualBonus),
     unusedLeave: parseInt(unusedLeave) || 0,
@@ -61,36 +69,70 @@ export function RetirementCalculator() {
         {/* 입력 폼 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="space-y-5">
+            {/* 날짜 선택 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   입사일
                 </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date: Date | null) => {
+                    setStartDate(date);
                     setCalculated(false);
                   }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+                  dateFormat="yyyy년 MM월 dd일"
+                  locale={ko}
+                  placeholderText="날짜 선택"
+                  maxDate={new Date()}
+                  showYearDropdown
+                  showMonthDropdown
+                  dropdownMode="select"
+                  yearDropdownItemNumber={30}
+                  scrollableYearDropdown
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer"
+                  calendarClassName="custom-calendar"
+                  wrapperClassName="w-full"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   퇴사일
                 </label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => {
-                    setEndDate(e.target.value);
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date: Date | null) => {
+                    setEndDate(date);
                     setCalculated(false);
                   }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+                  dateFormat="yyyy년 MM월 dd일"
+                  locale={ko}
+                  placeholderText="날짜 선택"
+                  minDate={startDate || undefined}
+                  maxDate={new Date()}
+                  showYearDropdown
+                  showMonthDropdown
+                  dropdownMode="select"
+                  yearDropdownItemNumber={30}
+                  scrollableYearDropdown
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer"
+                  calendarClassName="custom-calendar"
+                  wrapperClassName="w-full"
                 />
               </div>
             </div>
+
+            {/* 근무 기간 표시 */}
+            {startDate && endDate && (
+              <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-700 font-medium">예상 근무기간</span>
+                  <span className="text-emerald-800 font-bold">
+                    {result ? `${result.years}년 ${result.months}개월 ${result.days}일` : '-'}
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -247,6 +289,79 @@ export function RetirementCalculator() {
           </>
         )}
       </div>
+
+      <style>{`
+        .react-datepicker-wrapper {
+          width: 100%;
+        }
+        .react-datepicker {
+          font-family: inherit;
+          border: 1px solid #e5e7eb;
+          border-radius: 1rem;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .react-datepicker__header {
+          background: linear-gradient(135deg, #10b981, #14b8a6);
+          border-bottom: none;
+          border-radius: 1rem 1rem 0 0;
+          padding-top: 12px;
+        }
+        .react-datepicker__current-month {
+          color: white;
+          font-weight: 600;
+          font-size: 1rem;
+          margin-bottom: 8px;
+        }
+        .react-datepicker__day-name {
+          color: rgba(255,255,255,0.9);
+          font-weight: 500;
+        }
+        .react-datepicker__day {
+          border-radius: 0.5rem;
+          transition: all 0.15s;
+        }
+        .react-datepicker__day:hover {
+          background-color: #d1fae5;
+          border-radius: 0.5rem;
+        }
+        .react-datepicker__day--selected {
+          background: linear-gradient(135deg, #10b981, #14b8a6) !important;
+          border-radius: 0.5rem;
+          font-weight: 600;
+        }
+        .react-datepicker__day--keyboard-selected {
+          background: #d1fae5;
+          border-radius: 0.5rem;
+        }
+        .react-datepicker__day--today {
+          font-weight: 700;
+          color: #10b981;
+        }
+        .react-datepicker__navigation {
+          top: 12px;
+        }
+        .react-datepicker__navigation-icon::before {
+          border-color: white;
+        }
+        .react-datepicker__year-dropdown,
+        .react-datepicker__month-dropdown {
+          background-color: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.75rem;
+        }
+        .react-datepicker__year-option:hover,
+        .react-datepicker__month-option:hover {
+          background-color: #d1fae5;
+        }
+        .react-datepicker__year-option--selected,
+        .react-datepicker__month-option--selected {
+          background-color: #10b981 !important;
+          color: white;
+        }
+        .react-datepicker__triangle {
+          display: none;
+        }
+      `}</style>
     </>
   );
 }
