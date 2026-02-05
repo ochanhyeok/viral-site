@@ -5,14 +5,29 @@ interface ShipSvgProps {
   isHorizontal?: boolean;
 }
 
+// 세로 배치용 래퍼 컴포넌트
+function VerticalWrapper({ children, aspectRatio }: { children: React.ReactNode; aspectRatio: number }) {
+  // aspectRatio = width / height of original SVG (e.g., 96/32 = 3 for submarine)
+  return (
+    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+      <div
+        className="origin-center"
+        style={{
+          transform: 'rotate(90deg)',
+          width: `${aspectRatio * 100}%`,
+          height: `${100 / aspectRatio}%`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // 항공모함 (5칸) - 갑판 + 활주로
 export function CarrierSvg({ className = '', isHorizontal = true }: ShipSvgProps) {
-  return (
-    <svg
-      viewBox="0 0 160 32"
-      className={`${className} ${isHorizontal ? '' : 'rotate-90 origin-center'}`}
-      style={!isHorizontal ? { transform: 'rotate(90deg)' } : undefined}
-    >
+  const svg = (
+    <svg viewBox="0 0 160 32" className={isHorizontal ? className : 'w-full h-full'}>
       <defs>
         <linearGradient id="carrierGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#6366f1" />
@@ -34,16 +49,15 @@ export function CarrierSvg({ className = '', isHorizontal = true }: ShipSvgProps
       <rect x="110" y="11" width="4" height="4" rx="1" fill="#6366f1" />
     </svg>
   );
+
+  if (isHorizontal) return svg;
+  return <VerticalWrapper aspectRatio={5}>{svg}</VerticalWrapper>;
 }
 
 // 전함 (4칸) - 포탑 + 굴뚝
 export function BattleshipSvg({ className = '', isHorizontal = true }: ShipSvgProps) {
-  return (
-    <svg
-      viewBox="0 0 128 32"
-      className={`${className} ${isHorizontal ? '' : 'rotate-90 origin-center'}`}
-      style={!isHorizontal ? { transform: 'rotate(90deg)' } : undefined}
-    >
+  const svg = (
+    <svg viewBox="0 0 128 32" className={isHorizontal ? className : 'w-full h-full'}>
       <defs>
         <linearGradient id="battleshipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#8b5cf6" />
@@ -67,16 +81,15 @@ export function BattleshipSvg({ className = '', isHorizontal = true }: ShipSvgPr
       <rect x="96" y="6" width="8" height="4" rx="1" fill="#5b21b6" />
     </svg>
   );
+
+  if (isHorizontal) return svg;
+  return <VerticalWrapper aspectRatio={4}>{svg}</VerticalWrapper>;
 }
 
 // 순양함 (3칸) - 날렵한 선체
 export function CruiserSvg({ className = '', isHorizontal = true }: ShipSvgProps) {
-  return (
-    <svg
-      viewBox="0 0 96 32"
-      className={`${className} ${isHorizontal ? '' : 'rotate-90 origin-center'}`}
-      style={!isHorizontal ? { transform: 'rotate(90deg)' } : undefined}
-    >
+  const svg = (
+    <svg viewBox="0 0 96 32" className={isHorizontal ? className : 'w-full h-full'}>
       <defs>
         <linearGradient id="cruiserGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#ec4899" />
@@ -97,16 +110,15 @@ export function CruiserSvg({ className = '', isHorizontal = true }: ShipSvgProps
       <circle cx="76" cy="16" r="6" fill="#9d174d" />
     </svg>
   );
+
+  if (isHorizontal) return svg;
+  return <VerticalWrapper aspectRatio={3}>{svg}</VerticalWrapper>;
 }
 
 // 잠수함 (3칸) - 유선형 + 잠망경
 export function SubmarineSvg({ className = '', isHorizontal = true }: ShipSvgProps) {
-  return (
-    <svg
-      viewBox="0 0 96 32"
-      className={`${className} ${isHorizontal ? '' : 'rotate-90 origin-center'}`}
-      style={!isHorizontal ? { transform: 'rotate(90deg)' } : undefined}
-    >
+  const svg = (
+    <svg viewBox="0 0 96 32" className={isHorizontal ? className : 'w-full h-full'}>
       <defs>
         <linearGradient id="subGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#14b8a6" />
@@ -128,16 +140,15 @@ export function SubmarineSvg({ className = '', isHorizontal = true }: ShipSvgPro
       <ellipse cx="90" cy="18" rx="3" ry="6" fill="#0f766e" />
     </svg>
   );
+
+  if (isHorizontal) return svg;
+  return <VerticalWrapper aspectRatio={3}>{svg}</VerticalWrapper>;
 }
 
 // 구축함 (2칸) - 작고 빠른 배
 export function DestroyerSvg({ className = '', isHorizontal = true }: ShipSvgProps) {
-  return (
-    <svg
-      viewBox="0 0 64 32"
-      className={`${className} ${isHorizontal ? '' : 'rotate-90 origin-center'}`}
-      style={!isHorizontal ? { transform: 'rotate(90deg)' } : undefined}
-    >
+  const svg = (
+    <svg viewBox="0 0 64 32" className={isHorizontal ? className : 'w-full h-full'}>
       <defs>
         <linearGradient id="destroyerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#f59e0b" />
@@ -158,6 +169,9 @@ export function DestroyerSvg({ className = '', isHorizontal = true }: ShipSvgPro
       <circle cx="52" cy="16" r="4" fill="#92400e" />
     </svg>
   );
+
+  if (isHorizontal) return svg;
+  return <VerticalWrapper aspectRatio={2}>{svg}</VerticalWrapper>;
 }
 
 // 배 ID로 SVG 컴포넌트 가져오기
