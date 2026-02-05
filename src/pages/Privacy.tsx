@@ -108,7 +108,7 @@ export function Privacy() {
                 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.
               </p>
               <div className="mt-2 p-4 bg-gray-50 rounded-xl">
-                <p><strong>이메일:</strong> contact@example.com</p>
+                <p><strong>이메일:</strong> pon07084@gmail.com</p>
               </div>
             </section>
 

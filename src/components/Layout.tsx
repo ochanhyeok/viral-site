@@ -67,7 +67,7 @@ export function Layout({ children }: LayoutProps) {
               개인정보처리방침
             </Link>
             <span>|</span>
-            <a href="mailto:contact@example.com" className="hover:text-gray-600 transition-colors">
+            <a href="mailto:pon07084@gmail.com" className="hover:text-gray-600 transition-colors">
               문의하기
             </a>
           </div>
