@@ -233,7 +233,7 @@ export function BattleshipGame() {
                 <button
                   onClick={handleJoinRoom}
                   disabled={!nickname.trim() || isLoading}
-                  className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                  className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {isLoading ? '참가 중...' : '방 참가하기'}
                 </button>
@@ -242,7 +242,7 @@ export function BattleshipGame() {
               <button
                 onClick={handleCreateRoom}
                 disabled={!nickname.trim() || isLoading}
-                className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100"
               >
                 {isLoading ? '생성 중...' : '방 만들기'}
               </button>
@@ -311,7 +311,7 @@ export function BattleshipGame() {
             {isHost && players.length === 2 ? (
               <button
                 onClick={startSetup}
-                className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all animate-pulse"
               >
                 게임 시작!
               </button>
@@ -323,7 +323,7 @@ export function BattleshipGame() {
 
             <button
               onClick={() => { leaveRoom(); navigate('/battleship'); }}
-              className="w-full py-3.5 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl font-medium transition-all"
+              className="w-full py-3.5 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 hover:scale-[1.02] active:scale-[0.98] text-red-500 rounded-xl font-medium transition-all"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

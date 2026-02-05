@@ -57,8 +57,11 @@ function generatePlayerId(): string {
 }
 
 export function useBattleship() {
+  // 세션 스토리지에서 playerId 복원
   const [room, setRoom] = useState<BattleshipRoom | null>(null);
-  const [playerId, setPlayerId] = useState<string>('');
+  const [playerId, setPlayerId] = useState<string>(() => {
+    return sessionStorage.getItem('battleship_playerId') || '';
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,6 +69,23 @@ export function useBattleship() {
   const [attackGrid, setAttackGrid] = useState<Cell[][]>(createEmptyGrid());
 
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // playerId 변경 시 세션 스토리지에 저장
+  useEffect(() => {
+    if (playerId) {
+      sessionStorage.setItem('battleship_playerId', playerId);
+    }
+  }, [playerId]);
+
+  // 컴포넌트 마운트 시 저장된 roomId로 폴링 시작
+  useEffect(() => {
+    const savedRoomId = sessionStorage.getItem('battleship_roomId');
+    const savedPlayerId = sessionStorage.getItem('battleship_playerId');
+    if (savedRoomId && savedPlayerId && !room) {
+      setPlayerId(savedPlayerId);
+      startPolling(savedRoomId);
+    }
+  }, []);
 
   // 방 상태 폴링
   const startPolling = useCallback((roomId: string) => {
@@ -135,6 +155,7 @@ export function useBattleship() {
       });
 
       setRoom({ ...newRoom, id: roomId });
+      sessionStorage.setItem('battleship_roomId', roomId);
       startPolling(roomId);
 
       return roomId;
@@ -188,6 +209,7 @@ export function useBattleship() {
         body: JSON.stringify(newPlayer),
       });
 
+      sessionStorage.setItem('battleship_roomId', roomId);
       startPolling(roomId);
       return true;
     } catch (err) {
@@ -215,12 +237,19 @@ export function useBattleship() {
         }),
       });
 
+      // Firebase 동기화를 위해 잠시 대기
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // 두 플레이어 모두 준비되었는지 확인
       const response = await fetch(`${FIREBASE_DB_URL}/battleship/${room.id}/players.json`);
       const players = await response.json();
-      const allReady = Object.values(players as { [key: string]: BattleshipPlayer }).every(p => p.isReady);
 
-      if (allReady && Object.keys(players).length === 2) {
+      if (!players) return true;
+
+      const playerList = Object.values(players as { [key: string]: BattleshipPlayer });
+      const allReady = playerList.every(p => p.isReady);
+
+      if (allReady && playerList.length === 2) {
         // 게임 시작! 호스트가 먼저
         const hostId = room.hostId;
         await fetch(`${FIREBASE_DB_URL}/battleship/${room.id}.json`, {
@@ -357,6 +386,8 @@ export function useBattleship() {
 
     setRoom(null);
     setPlayerId('');
+    sessionStorage.removeItem('battleship_playerId');
+    sessionStorage.removeItem('battleship_roomId');
     setAttackGrid(createEmptyGrid());
   }, [room, playerId, stopPolling]);
 
