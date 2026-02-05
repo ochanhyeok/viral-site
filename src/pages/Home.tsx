@@ -229,7 +229,7 @@ function ToolCard({ tool, index }: { tool: Tool; index: number }) {
   return (
     <Link
       to={tool.path}
-      className={`group relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 active:scale-[0.98]`}
+      className={`group relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 active:scale-[0.98]`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <BadgeComponent badge={tool.badge} />
@@ -239,23 +239,23 @@ function ToolCard({ tool, index }: { tool: Tool; index: number }) {
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-      <div className="relative flex items-start gap-4">
-        <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-          <span className="text-4xl filter drop-shadow-lg">
+      <div className="relative flex items-center gap-3">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+          <span className="text-2xl sm:text-3xl filter drop-shadow-lg">
             {tool.emoji}
           </span>
         </div>
-        <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-extrabold mb-1 group-hover:translate-x-1 transition-transform truncate">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <h2 className="text-sm sm:text-base font-extrabold mb-0.5 group-hover:translate-x-1 transition-transform line-clamp-1">
             {tool.title}
           </h2>
-          <p className="text-white/80 text-sm">
+          <p className="text-white/80 text-xs sm:text-sm line-clamp-1">
             {tool.description}
           </p>
         </div>
-        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 group-hover:translate-x-1 transition-all">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 group-hover:translate-x-1 transition-all">
           <svg
-            className="w-5 h-5 opacity-70 group-hover:opacity-100"
+            className="w-4 h-4 sm:w-5 sm:h-5 opacity-70 group-hover:opacity-100"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -355,7 +355,7 @@ export function Home() {
             subtitle="정확한 계산이 필요할 때"
             gradient="from-blue-500 to-indigo-600"
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
             {calculators.map((tool, index) => (
               <ToolCard key={tool.path} tool={tool} index={index} />
             ))}
@@ -370,7 +370,7 @@ export function Home() {
             subtitle="나를 알아가는 시간"
             gradient="from-violet-500 to-purple-600"
           />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {tests.map((tool, index) => (
               <ToolCard key={tool.path} tool={tool} index={index} />
             ))}
