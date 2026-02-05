@@ -94,8 +94,20 @@ export function StressTest() {
     <>
       <SEO
         title="스트레스 지수 테스트"
-        description="10개의 질문으로 알아보는 나의 스트레스 수준! 맞춤 음악 추천까지!"
-        keywords="스트레스테스트,스트레스지수,스트레스측정,심리테스트,멘탈헬스"
+        description="10개의 질문으로 알아보는 나의 스트레스 수준! 수면, 업무, 대인관계 등 영역별 분석과 맞춤 힐링 음악 추천까지!"
+        keywords="스트레스테스트,스트레스지수,스트레스측정,심리테스트,멘탈헬스,번아웃테스트,힐링"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Quiz',
+          name: '스트레스 지수 테스트',
+          description: '10개의 질문으로 스트레스 수준을 측정하고 맞춤 음악을 추천받는 심리테스트',
+          url: 'https://viral-site-opal.vercel.app/stress-test',
+          educationalLevel: 'beginner',
+          about: {
+            '@type': 'Thing',
+            name: '스트레스 관리'
+          }
+        }}
       />
 
       <div className="space-y-6">

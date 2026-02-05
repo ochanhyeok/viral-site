@@ -58,8 +58,20 @@ export function SpendingQuiz() {
     <>
       <SEO
         title="나의 소비성향 테스트"
-        description="당신은 플렉스형? 짠돌이형? 12개의 질문으로 알아보는 나의 진짜 소비 유형!"
-        keywords="소비성향테스트,소비유형,소비습관,심리테스트"
+        description="당신은 플렉스형? 짠돌이형? 가치소비형? 12개의 질문으로 알아보는 나의 진짜 소비 유형! 무료 소비습관 심리테스트."
+        keywords="소비성향테스트,소비유형,소비습관,심리테스트,돈관리테스트,재테크성향"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Quiz',
+          name: '소비성향 테스트',
+          description: '12개의 상황 질문으로 알아보는 나의 소비 유형 심리테스트',
+          url: 'https://viral-site-opal.vercel.app/spending-quiz',
+          educationalLevel: 'beginner',
+          about: {
+            '@type': 'Thing',
+            name: '소비 습관'
+          }
+        }}
       />
 
       <div className="space-y-6">

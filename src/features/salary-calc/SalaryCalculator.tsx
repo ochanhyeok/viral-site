@@ -61,8 +61,22 @@ export function SalaryCalculator() {
     <>
       <SEO
         title="연봉 실수령액 계산기"
-        description="2025년 최신 세율 적용! 연봉에서 4대보험과 세금을 제외한 실수령액을 정확하게 계산해보세요."
-        keywords="연봉계산기,실수령액,세후연봉,4대보험,소득세계산"
+        description="2025년 최신 세율 적용! 연봉에서 4대보험과 세금을 제외한 실수령액을 정확하게 계산해보세요. 국민연금, 건강보험, 고용보험, 소득세 공제액 자동 계산."
+        keywords="연봉계산기,실수령액,세후연봉,4대보험,소득세계산,2025연봉계산,월급계산기"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '연봉 실수령액 계산기',
+          description: '2025년 최신 세율로 연봉 실수령액을 계산하는 무료 온라인 도구',
+          url: 'https://viral-site-opal.vercel.app/salary',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'KRW'
+          }
+        }}
       />
 
       <div className="space-y-6">

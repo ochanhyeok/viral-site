@@ -49,8 +49,20 @@ export function Home() {
     <>
       <SEO
         title="홈"
-        description="연봉 계산기, 퇴직금 계산기, 소비성향 테스트, 직장인 MBTI까지! 20-30대 직장인을 위한 필수 도구 모음"
-        keywords="연봉계산기,퇴직금계산기,소비성향테스트,직장인MBTI,실수령액"
+        description="연봉 실수령액 계산기, 퇴직금 계산기, 소비성향 테스트, 직장인 MBTI, 스트레스 테스트까지! 20-30대 직장인을 위한 필수 무료 도구 모음."
+        keywords="연봉계산기,퇴직금계산기,소비성향테스트,직장인MBTI,실수령액,2025연봉,심리테스트"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: '직장인 꿀툴 모음',
+          description: '연봉 계산기, 퇴직금 계산기, 심리테스트 등 직장인을 위한 무료 도구 모음',
+          url: 'https://viral-site-opal.vercel.app',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: 'https://viral-site-opal.vercel.app/?q={search_term_string}',
+            'query-input': 'required name=search_term_string'
+          }
+        }}
       />
 
       <div className="space-y-10">

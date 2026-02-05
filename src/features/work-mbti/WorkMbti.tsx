@@ -62,8 +62,20 @@ export function WorkMbti() {
     <>
       <SEO
         title="직장인 MBTI 테스트"
-        description="회사에서 나는 어떤 유형? 12가지 질문으로 알아보는 직장인 성격 유형 테스트!"
-        keywords="직장인MBTI,회사MBTI,직장성격테스트,업무스타일"
+        description="회사에서 나는 어떤 유형? 12가지 직장 상황 질문으로 알아보는 업무 스타일 MBTI! 16가지 유형 중 나는?"
+        keywords="직장인MBTI,회사MBTI,직장성격테스트,업무스타일,회사성격,직장심리테스트"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Quiz',
+          name: '직장인 MBTI 테스트',
+          description: '12개의 직장 상황 질문으로 알아보는 나의 업무 성격 유형',
+          url: 'https://viral-site-opal.vercel.app/work-mbti',
+          educationalLevel: 'beginner',
+          about: {
+            '@type': 'Thing',
+            name: 'MBTI 성격 유형'
+          }
+        }}
       />
 
       <div className="space-y-6">

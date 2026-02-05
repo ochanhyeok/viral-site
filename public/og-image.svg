@@ -1,0 +1,47 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED"/>
+      <stop offset="100%" style="stop-color:#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="white" fill-opacity="0.05"/>
+  <circle cx="1100" cy="530" r="250" fill="white" fill-opacity="0.05"/>
+
+  <!-- Main card -->
+  <rect x="100" y="120" width="1000" height="390" rx="40" fill="url(#card)"/>
+
+  <!-- Icon -->
+  <text x="200" y="280" font-size="80">🛠️</text>
+
+  <!-- Title -->
+  <text x="320" y="260" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="white">직장인 꿀툴 모음</text>
+
+  <!-- Subtitle -->
+  <text x="320" y="340" font-family="Arial, sans-serif" font-size="32" fill="white" fill-opacity="0.9">연봉계산기 · 퇴직금계산기 · 심리테스트</text>
+
+  <!-- Feature tags -->
+  <rect x="320" y="380" width="120" height="40" rx="20" fill="white" fill-opacity="0.2"/>
+  <text x="345" y="408" font-family="Arial, sans-serif" font-size="18" fill="white">💰 연봉</text>
+
+  <rect x="460" y="380" width="120" height="40" rx="20" fill="white" fill-opacity="0.2"/>
+  <text x="485" y="408" font-family="Arial, sans-serif" font-size="18" fill="white">🏦 퇴직금</text>
+
+  <rect x="600" y="380" width="140" height="40" rx="20" fill="white" fill-opacity="0.2"/>
+  <text x="625" y="408" font-family="Arial, sans-serif" font-size="18" fill="white">💼 MBTI</text>
+
+  <rect x="760" y="380" width="160" height="40" rx="20" fill="white" fill-opacity="0.2"/>
+  <text x="785" y="408" font-family="Arial, sans-serif" font-size="18" fill="white">🧠 스트레스</text>
+
+  <!-- URL -->
+  <text x="600" y="580" font-family="Arial, sans-serif" font-size="24" fill="white" fill-opacity="0.7" text-anchor="middle">viral-site-opal.vercel.app</text>
+</svg>

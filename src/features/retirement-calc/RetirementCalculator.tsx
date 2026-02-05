@@ -52,8 +52,22 @@ export function RetirementCalculator() {
     <>
       <SEO
         title="퇴직금 계산기"
-        description="입사일, 퇴사일, 최근 3개월 급여를 입력하면 예상 퇴직금을 정확하게 계산해드립니다."
-        keywords="퇴직금계산기,퇴직금,평균임금,퇴직급여"
+        description="입사일, 퇴사일, 최근 3개월 급여를 입력하면 예상 퇴직금을 정확하게 계산해드립니다. 평균임금 기준 법정 퇴직금 자동 계산."
+        keywords="퇴직금계산기,퇴직금,평균임금,퇴직급여,퇴직금정산,1년퇴직금"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '퇴직금 계산기',
+          description: '근무기간과 급여 정보로 예상 퇴직금을 계산하는 무료 온라인 도구',
+          url: 'https://viral-site-opal.vercel.app/retirement',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'KRW'
+          }
+        }}
       />
 
       <div className="space-y-6">
