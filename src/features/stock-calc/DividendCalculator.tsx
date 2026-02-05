@@ -246,6 +246,93 @@ const TECH_PRESETS = [
 
 type PresetType = typeof KOREA_PRESETS[0];
 
+// 배당 투자 스타일 테스트 질문
+const TEST_QUESTIONS = [
+  {
+    question: '투자 기간은 어느 정도로 생각하시나요?',
+    options: [
+      { text: '1년 이내 단기', score: { stable: 0, growth: 0, income: 1, aggressive: 0 } },
+      { text: '1~3년 중기', score: { stable: 1, growth: 1, income: 1, aggressive: 0 } },
+      { text: '5년 이상 장기', score: { stable: 2, growth: 2, income: 0, aggressive: 1 } },
+      { text: '10년 이상 초장기', score: { stable: 1, growth: 3, income: 0, aggressive: 2 } },
+    ]
+  },
+  {
+    question: '배당금을 어떻게 사용할 계획인가요?',
+    options: [
+      { text: '생활비/월급처럼 사용', score: { stable: 2, growth: 0, income: 3, aggressive: 0 } },
+      { text: '재투자해서 복리 효과', score: { stable: 0, growth: 3, income: 0, aggressive: 2 } },
+      { text: '일부는 쓰고 일부는 재투자', score: { stable: 1, growth: 2, income: 1, aggressive: 1 } },
+      { text: '아직 잘 모르겠음', score: { stable: 1, growth: 1, income: 1, aggressive: 1 } },
+    ]
+  },
+  {
+    question: '주가가 20% 하락하면 어떻게 하시겠어요?',
+    options: [
+      { text: '당장 손절한다', score: { stable: 0, growth: 0, income: 0, aggressive: 0 } },
+      { text: '불안하지만 버틴다', score: { stable: 2, growth: 1, income: 2, aggressive: 0 } },
+      { text: '오히려 추가 매수 기회', score: { stable: 0, growth: 2, income: 1, aggressive: 3 } },
+      { text: '배당만 나오면 상관없음', score: { stable: 1, growth: 0, income: 3, aggressive: 1 } },
+    ]
+  },
+  {
+    question: '선호하는 배당 수익률은?',
+    options: [
+      { text: '1~3% (안정적인 대형주)', score: { stable: 3, growth: 2, income: 0, aggressive: 0 } },
+      { text: '4~6% (중간 수준)', score: { stable: 2, growth: 1, income: 2, aggressive: 0 } },
+      { text: '7~10% (고배당주)', score: { stable: 0, growth: 0, income: 3, aggressive: 1 } },
+      { text: '10% 이상 (초고배당)', score: { stable: 0, growth: 0, income: 1, aggressive: 3 } },
+    ]
+  },
+  {
+    question: '해외 주식 투자 경험이 있으신가요?',
+    options: [
+      { text: '없고 관심도 없음', score: { stable: 2, growth: 0, income: 1, aggressive: 0 } },
+      { text: '없지만 관심 있음', score: { stable: 1, growth: 1, income: 1, aggressive: 1 } },
+      { text: '미국 주식 투자 중', score: { stable: 0, growth: 2, income: 1, aggressive: 2 } },
+      { text: '다양한 국가 투자 중', score: { stable: 0, growth: 1, income: 0, aggressive: 3 } },
+    ]
+  },
+];
+
+// 테스트 결과 유형
+const TEST_RESULTS: Record<string, {
+  title: string;
+  emoji: string;
+  description: string;
+  recommendedPresets: string[];
+  color: string;
+}> = {
+  stable: {
+    title: '안정형 배당 투자자',
+    emoji: '🛡️',
+    description: '원금 보존을 중시하며, 검증된 대형 우량주를 선호합니다. 배당왕/배당귀족 기업이 적합합니다.',
+    recommendedPresets: ['삼성전자', '코카콜라 (KO)', 'P&G (PG)', 'J&J (JNJ)'],
+    color: 'blue',
+  },
+  growth: {
+    title: '성장형 배당 투자자',
+    emoji: '🌱',
+    description: '배당금 재투자를 통한 복리 성장을 추구합니다. 배당 성장률이 높은 기업이 적합합니다.',
+    recommendedPresets: ['MS (MSFT)', '애플 (AAPL)', '브로드컴 (AVGO)', 'KT&G'],
+    color: 'green',
+  },
+  income: {
+    title: '인컴형 배당 투자자',
+    emoji: '💰',
+    description: '정기적인 현금 수입을 원합니다. 높은 배당수익률과 월배당 종목이 적합합니다.',
+    recommendedPresets: ['리얼티인컴 (O)', 'JEPI', '하나금융지주', 'SK텔레콤'],
+    color: 'amber',
+  },
+  aggressive: {
+    title: '공격형 배당 투자자',
+    emoji: '🚀',
+    description: '높은 수익을 위해 위험을 감수합니다. 커버드콜 ETF나 고위험 고수익 종목이 적합합니다.',
+    recommendedPresets: ['JEPQ', 'QYLD', 'TSLY', 'NVDY'],
+    color: 'purple',
+  },
+};
+
 export default function DividendCalculator() {
   const [investAmount, setInvestAmount] = useState<string>('1000'); // 만원
   const [stockPrice, setStockPrice] = useState<string>('55000'); // 원 (삼성전자 기준)
@@ -254,8 +341,11 @@ export default function DividendCalculator() {
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
   const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'tech' | 'covered'>('korea');
-  const [mainTab, setMainTab] = useState<'calculator' | 'guide' | 'compare' | 'simulate'>('calculator');
+  const [mainTab, setMainTab] = useState<'calculator' | 'guide' | 'compare' | 'simulate' | 'test'>('calculator');
   const [compareList, setCompareList] = useState<typeof KOREA_PRESETS>([]);
+  const [testStep, setTestStep] = useState(0);
+  const [testAnswers, setTestAnswers] = useState<number[]>([]);
+  const [testResult, setTestResult] = useState<string | null>(null);
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
@@ -433,7 +523,7 @@ export default function DividendCalculator() {
         </div>
 
         {/* 메인 탭 */}
-        <div className="grid grid-cols-4 bg-gray-100 rounded-xl p-1 gap-1">
+        <div className="grid grid-cols-5 bg-gray-100 rounded-xl p-1 gap-1">
           <button
             onClick={() => setMainTab('calculator')}
             className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
@@ -463,6 +553,16 @@ export default function DividendCalculator() {
             }`}
           >
             📈 시뮬
+          </button>
+          <button
+            onClick={() => setMainTab('test')}
+            className={`py-2.5 px-1 rounded-lg font-semibold text-[10px] sm:text-xs transition-all ${
+              mainTab === 'test'
+                ? 'bg-white text-purple-600 shadow-md'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            🧪 테스트
           </button>
           <button
             onClick={() => setMainTab('guide')}
@@ -641,6 +741,239 @@ export default function DividendCalculator() {
                   </p>
                 </div>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* 투자 스타일 테스트 탭 */}
+        {mainTab === 'test' && (
+          <div className="space-y-4 animate-fadeIn">
+            {/* 테스트 결과가 없으면 질문 표시 */}
+            {!testResult ? (
+              <>
+                {/* 진행 바 */}
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                      <span className="text-lg">🧪</span>
+                      투자 스타일 테스트
+                    </h3>
+                    <span className="text-sm text-purple-600 font-semibold">
+                      {testStep + 1} / {TEST_QUESTIONS.length}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full transition-all duration-300"
+                      style={{ width: `${((testStep + 1) / TEST_QUESTIONS.length) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* 질문 카드 */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                  <h4 className="text-lg font-bold text-gray-900 mb-6 text-center">
+                    {TEST_QUESTIONS[testStep].question}
+                  </h4>
+
+                  <div className="space-y-3">
+                    {TEST_QUESTIONS[testStep].options.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          const newAnswers = [...testAnswers, index];
+                          setTestAnswers(newAnswers);
+
+                          if (testStep < TEST_QUESTIONS.length - 1) {
+                            // 다음 질문으로
+                            setTestStep(testStep + 1);
+                          } else {
+                            // 결과 계산
+                            const scores = { stable: 0, growth: 0, income: 0, aggressive: 0 };
+                            newAnswers.forEach((answerIdx, questionIdx) => {
+                              const selectedOption = TEST_QUESTIONS[questionIdx].options[answerIdx];
+                              Object.keys(selectedOption.score).forEach((key) => {
+                                scores[key as keyof typeof scores] += selectedOption.score[key as keyof typeof selectedOption.score];
+                              });
+                            });
+
+                            // 가장 높은 점수 유형 찾기
+                            const maxScore = Math.max(...Object.values(scores));
+                            const resultType = Object.keys(scores).find(key => scores[key as keyof typeof scores] === maxScore) || 'stable';
+                            setTestResult(resultType);
+                          }
+                        }}
+                        className="w-full p-4 text-left rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 font-bold group-hover:bg-purple-500 group-hover:text-white transition-all">
+                            {index + 1}
+                          </span>
+                          <span className="text-gray-800 font-medium group-hover:text-purple-700">
+                            {option.text}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 이전으로 버튼 */}
+                {testStep > 0 && (
+                  <button
+                    onClick={() => {
+                      setTestStep(testStep - 1);
+                      setTestAnswers(testAnswers.slice(0, -1));
+                    }}
+                    className="w-full py-3 bg-gray-100 text-gray-600 rounded-xl font-semibold hover:bg-gray-200 transition-all"
+                  >
+                    ← 이전 질문
+                  </button>
+                )}
+
+                {/* 다시 시작 버튼 */}
+                <button
+                  onClick={() => {
+                    setTestStep(0);
+                    setTestAnswers([]);
+                    setTestResult(null);
+                  }}
+                  className="w-full py-3 text-gray-400 text-sm hover:text-gray-600 transition-all"
+                >
+                  처음부터 다시 시작
+                </button>
+              </>
+            ) : (
+              /* 테스트 결과 표시 */
+              <>
+                {/* 결과 카드 */}
+                <div className={`bg-gradient-to-br ${
+                  TEST_RESULTS[testResult].color === 'blue' ? 'from-blue-500 to-indigo-600' :
+                  TEST_RESULTS[testResult].color === 'green' ? 'from-green-500 to-emerald-600' :
+                  TEST_RESULTS[testResult].color === 'amber' ? 'from-amber-500 to-orange-600' :
+                  'from-purple-500 to-pink-600'
+                } rounded-2xl p-6 text-white shadow-xl`}>
+                  <div className="text-center">
+                    <span className="text-5xl mb-4 block">{TEST_RESULTS[testResult].emoji}</span>
+                    <h3 className="text-2xl font-bold mb-2">
+                      {TEST_RESULTS[testResult].title}
+                    </h3>
+                    <p className="text-white/90 text-sm leading-relaxed">
+                      {TEST_RESULTS[testResult].description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 추천 종목 */}
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-lg">✨</span>
+                    당신에게 추천하는 배당주
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    {TEST_RESULTS[testResult].recommendedPresets.map((presetName) => {
+                      const preset = allPresets.find(p => p.name === presetName);
+                      if (!preset) return null;
+                      return (
+                        <div
+                          key={presetName}
+                          className="p-3 bg-gray-50 rounded-xl border border-gray-200"
+                        >
+                          <div className="font-semibold text-gray-800 text-sm">{preset.name}</div>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-xs text-gray-500">{preset.price.toLocaleString()}원</span>
+                            <span className={`text-xs font-bold ${
+                              TEST_RESULTS[testResult].color === 'blue' ? 'text-blue-600' :
+                              TEST_RESULTS[testResult].color === 'green' ? 'text-green-600' :
+                              TEST_RESULTS[testResult].color === 'amber' ? 'text-amber-600' :
+                              'text-purple-600'
+                            }`}>
+                              {preset.yield}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-gray-400 mt-1">{preset.note}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* 비교하기 버튼 */}
+                  <button
+                    onClick={() => {
+                      // 추천 종목을 compareList에 추가 (최대 3개)
+                      const recommended = TEST_RESULTS[testResult].recommendedPresets
+                        .slice(0, 3)
+                        .map(name => allPresets.find(p => p.name === name))
+                        .filter((p): p is NonNullable<typeof p> => p !== undefined);
+                      setCompareList(recommended);
+                      setMainTab('compare');
+                    }}
+                    className={`w-full py-4 bg-gradient-to-r ${
+                      TEST_RESULTS[testResult].color === 'blue' ? 'from-blue-500 to-indigo-600' :
+                      TEST_RESULTS[testResult].color === 'green' ? 'from-green-500 to-emerald-600' :
+                      TEST_RESULTS[testResult].color === 'amber' ? 'from-amber-500 to-orange-600' :
+                      'from-purple-500 to-pink-600'
+                    } text-white rounded-xl font-bold text-lg hover:shadow-lg transition-all`}
+                  >
+                    ⚖️ 추천 종목 비교하기
+                  </button>
+                </div>
+
+                {/* 다른 유형 보기 */}
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <span className="text-lg">📊</span>
+                    다른 투자 유형
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(TEST_RESULTS)
+                      .filter(([key]) => key !== testResult)
+                      .map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="p-3 bg-gray-50 rounded-xl border border-gray-200"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{value.emoji}</span>
+                            <span className="text-sm font-medium text-gray-700">{value.title}</span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                {/* 다시 테스트 버튼 */}
+                <button
+                  onClick={() => {
+                    setTestStep(0);
+                    setTestAnswers([]);
+                    setTestResult(null);
+                  }}
+                  className="w-full py-4 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                >
+                  🔄 다시 테스트하기
+                </button>
+
+                {/* 공유 버튼들 */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      const text = `나의 배당 투자 스타일은 "${TEST_RESULTS[testResult].title}"입니다! ${TEST_RESULTS[testResult].emoji}\n\n${TEST_RESULTS[testResult].description}\n\n`;
+                      const url = window.location.href;
+                      if (navigator.share) {
+                        navigator.share({ title: '배당 투자 스타일 테스트 결과', text, url });
+                      } else {
+                        navigator.clipboard.writeText(text + url);
+                        alert('결과가 클립보드에 복사되었습니다!');
+                      }
+                    }}
+                    className="flex-1 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl font-semibold hover:from-gray-800 hover:to-gray-900 transition-all"
+                  >
+                    📤 결과 공유하기
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}
