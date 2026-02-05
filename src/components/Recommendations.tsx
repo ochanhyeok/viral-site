@@ -142,6 +142,36 @@ const allTools: Tool[] = [
     category: 'test',
     relatedTo: ['/burnout-test', '/stress-test', '/work-mbti'],
   },
+  {
+    path: '/savings',
+    emoji: '🏦',
+    title: '적금/예금 이자 계산기',
+    shortTitle: '이자계산기',
+    description: '세전/세후 이자 한번에 계산',
+    gradient: 'from-emerald-500 to-teal-600',
+    category: 'calculator',
+    relatedTo: ['/salary', '/retirement', '/tax-refund'],
+  },
+  {
+    path: '/loan',
+    emoji: '💳',
+    title: '대출 이자 계산기',
+    shortTitle: '대출계산기',
+    description: '월 상환액 미리 계산',
+    gradient: 'from-rose-500 to-pink-600',
+    category: 'calculator',
+    relatedTo: ['/savings', '/salary', '/retirement'],
+  },
+  {
+    path: '/compound',
+    emoji: '📈',
+    title: '복리 계산기',
+    shortTitle: '복리계산기',
+    description: '복리의 마법 체험하기',
+    gradient: 'from-indigo-500 to-purple-600',
+    category: 'calculator',
+    relatedTo: ['/savings', '/loan', '/salary'],
+  },
 ];
 
 interface RecommendationsProps {

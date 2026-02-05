@@ -28,6 +28,9 @@ const ResignationTest = lazy(() => import('./features/hidden-tests/ResignationTe
 const BurnoutTest = lazy(() => import('./features/burnout-test/BurnoutTest').then(m => ({ default: m.BurnoutTest })));
 const HoesikTest = lazy(() => import('./features/hoesik-test/HoesikTest').then(m => ({ default: m.HoesikTest })));
 const TaxRefundCalculator = lazy(() => import('./features/tax-refund/TaxRefundCalculator').then(m => ({ default: m.TaxRefundCalculator })));
+const SavingsCalculator = lazy(() => import('./features/savings-calc/SavingsCalculator'));
+const LoanCalculator = lazy(() => import('./features/loan-calc/LoanCalculator'));
+const CompoundCalculator = lazy(() => import('./features/compound-calc/CompoundCalculator'));
 
 // 로딩 컴포넌트
 function PageLoader() {
@@ -67,6 +70,9 @@ function App() {
               <Route path="/burnout-test" element={<BurnoutTest />} />
               <Route path="/hoesik-test" element={<HoesikTest />} />
               <Route path="/tax-refund" element={<TaxRefundCalculator />} />
+              <Route path="/savings" element={<SavingsCalculator />} />
+              <Route path="/loan" element={<LoanCalculator />} />
+              <Route path="/compound" element={<CompoundCalculator />} />
               {/* 히든 테스트 */}
               <Route path="/resignation-test" element={<ResignationTest />} />
             </Routes>
