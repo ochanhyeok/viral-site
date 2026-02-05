@@ -68,11 +68,12 @@ export function Layout({ children }: LayoutProps) {
             </Link>
             <span>|</span>
             <button
+              type="button"
               onClick={() => {
                 navigator.clipboard.writeText('pon07084@gmail.com');
                 alert('이메일이 복사되었습니다!');
               }}
-              className="hover:text-gray-600 transition-colors"
+              className="hover:text-gray-600 transition-colors cursor-pointer px-1 py-0.5"
             >
               문의하기
             </button>
