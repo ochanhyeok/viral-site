@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SEO, VisitorCounter, MascotGreeting, DailyFortune } from '../components';
+import { SEO, VisitorCounter, MascotGreeting, DailyFortune, HiddenTests } from '../components';
 
 interface Tool {
   path: string;
@@ -315,6 +315,9 @@ export function Home() {
             </div>
           </div>
         )}
+
+        {/* 히든 테스트 */}
+        <HiddenTests />
 
         {/* 푸터 안내 */}
         <div className="text-center py-6">

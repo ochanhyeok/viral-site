@@ -16,6 +16,7 @@ import { RankingPage } from './pages/RankingPage';
 import { MultiplayerReaction } from './pages/MultiplayerReaction';
 import { BattleshipGame } from './features/battleship/BattleshipGame';
 import { Privacy } from './pages/Privacy';
+import { ResignationTest } from './features/hidden-tests/ResignationTest';
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
             <Route path="/play/reaction" element={<MultiplayerReaction />} />
             <Route path="/battleship" element={<BattleshipGame />} />
             <Route path="/privacy" element={<Privacy />} />
+            {/* 히든 테스트 */}
+            <Route path="/resignation-test" element={<ResignationTest />} />
           </Routes>
         </Layout>
       </BrowserRouter>
