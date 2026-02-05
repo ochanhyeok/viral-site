@@ -236,7 +236,7 @@ export function KkondaeTest() {
             </div>
 
             {/* 나이대 비교 */}
-            {ageGroup && (
+            {ageGroup && ageGroupLabels[ageGroup] && (
               <div className="bg-gradient-to-br from-slate-600 to-slate-800 rounded-3xl p-6 text-white shadow-xl">
                 <h3 className="font-bold mb-3 flex items-center gap-2">
                   <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
