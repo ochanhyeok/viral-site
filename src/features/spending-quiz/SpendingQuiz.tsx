@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../../components';
 import { quizQuestions, calculateResult } from './quizData';
 import type { SpendingType } from './quizData';
 import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
+import { fireConfetti } from '../../hooks/useConfetti';
 
 type QuizState = 'intro' | 'ageSelect' | 'quiz' | 'result';
 
@@ -15,8 +16,17 @@ export function SpendingQuiz() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
+  const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('spending', ageGroup);
+
+  // 결과 나올 때 폭죽 발사
+  useEffect(() => {
+    if (state === 'result' && result && !confettiFired.current) {
+      confettiFired.current = true;
+      fireConfetti();
+    }
+  }, [state, result]);
 
   const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
 
@@ -69,6 +79,7 @@ export function SpendingQuiz() {
     setSelectedOption(null);
     setAgeGroup(null);
     setResultSaved(false);
+    confettiFired.current = false;
   };
 
   const question = quizQuestions[currentQuestion];

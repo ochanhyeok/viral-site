@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../../components';
 import { mbtiQuestions, calculateMbti, getMbtiResult } from './mbtiData';
 import type { WorkMbtiType } from './mbtiData';
 import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
+import { fireConfetti } from '../../hooks/useConfetti';
 
 type QuizState = 'intro' | 'ageSelect' | 'quiz' | 'result';
 
@@ -15,8 +16,17 @@ export function WorkMbti() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
+  const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('mbti', ageGroup);
+
+  // 결과 나올 때 폭죽 발사
+  useEffect(() => {
+    if (state === 'result' && result && !confettiFired.current) {
+      confettiFired.current = true;
+      fireConfetti();
+    }
+  }, [state, result]);
 
   const progress = ((currentQuestion + 1) / mbtiQuestions.length) * 100;
 
@@ -73,6 +83,7 @@ export function WorkMbti() {
     setSelectedOption(null);
     setAgeGroup(null);
     setResultSaved(false);
+    confettiFired.current = false;
   };
 
   const question = mbtiQuestions[currentQuestion];

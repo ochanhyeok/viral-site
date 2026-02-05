@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { stressQuestions, answerOptions } from '../../data/stressQuestions';
 import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
 import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../index';
 import { stressTips, stressMusic } from '../../data/stressQuestions';
 import { STRESS_LEVELS } from '../../types/stressTest';
 import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
+import { fireConfetti } from '../../hooks/useConfetti';
 
 type TestPhase = 'intro' | 'ageSelect' | 'questions' | 'result';
 
@@ -24,8 +25,17 @@ export function StressTest() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
+  const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('stress', ageGroup);
+
+  // 결과 나올 때 폭죽 발사
+  useEffect(() => {
+    if (phase === 'result' && result && !confettiFired.current) {
+      confettiFired.current = true;
+      fireConfetti();
+    }
+  }, [phase, result]);
 
   const currentQuestion = stressQuestions[currentIndex];
   const progress = ((currentIndex + 1) / stressQuestions.length) * 100;
@@ -104,6 +114,7 @@ export function StressTest() {
     setSelectedScore(null);
     setAgeGroup(null);
     setResultSaved(false);
+    confettiFired.current = false;
   };
 
   const levelInfo = result ? STRESS_LEVELS[result.level] : null;
