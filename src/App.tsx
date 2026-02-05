@@ -34,12 +34,21 @@ const CompoundCalculator = lazy(() => import('./features/compound-calc/CompoundC
 const StockCalculator = lazy(() => import('./features/stock-calc/StockCalculator'));
 const DividendCalculator = lazy(() => import('./features/stock-calc/DividendCalculator'));
 const InvestTest = lazy(() => import('./features/invest-test/InvestTest'));
+const NotFound = lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
 
-// 로딩 컴포넌트
+// 로딩 컴포넌트 - AdSense 정책 준수를 위해 콘텐츠 포함
 function PageLoader() {
   return (
-    <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-violet-200 border-t-violet-600" />
+    <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+        <span className="text-3xl">✨</span>
+      </div>
+      <div className="animate-spin rounded-full h-8 w-8 border-3 border-violet-200 border-t-violet-600" />
+      <div className="text-center">
+        <h2 className="text-lg font-bold text-gray-800 mb-1">연봉계산기 & 심리테스트</h2>
+        <p className="text-sm text-gray-500">페이지를 불러오는 중입니다...</p>
+        <p className="text-xs text-gray-400 mt-2">직장인을 위한 필수 도구 모음</p>
+      </div>
     </div>
   );
 }
@@ -81,6 +90,8 @@ function App() {
               <Route path="/invest-test" element={<InvestTest />} />
               {/* 히든 테스트 */}
               <Route path="/resignation-test" element={<ResignationTest />} />
+              {/* 404 페이지 */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </Layout>
