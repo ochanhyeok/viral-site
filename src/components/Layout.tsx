@@ -110,7 +110,7 @@ export function Layout({ children }: LayoutProps) {
 
           {/* 저작권 */}
           <p className="text-center text-xs text-gray-400">
-            © 2025 연봉계산기 & 심리테스트. All rights reserved.
+            © 2026 연봉계산기 & 심리테스트. All rights reserved.
           </p>
         </div>
       </footer>
