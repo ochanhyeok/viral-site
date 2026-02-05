@@ -415,16 +415,79 @@ export default function DividendCalculator() {
               : '* 커버드콜 ETF는 원금 손실 위험이 있음. 배당수익률은 변동 가능'}
           </p>
 
-          {/* 커버드콜 경고 */}
+          {/* 커버드콜 상세 설명 */}
           {presetTab === 'covered' && (
-            <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-3 border border-pink-200 mt-3">
-              <p className="text-xs text-pink-700 flex items-start gap-2">
-                <span>⚠️</span>
-                <span>
-                  <strong>주의:</strong> 커버드콜 ETF는 초고배당이지만 주가 하락 시 원금 손실이 클 수 있습니다.
-                  TSLY, NVDY, CONY 등은 주간 배당으로 변동성이 매우 큽니다.
-                </span>
-              </p>
+            <div className="space-y-3 mt-4">
+              {/* 커버드콜이란? */}
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-200">
+                <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2">
+                  <span>📚</span> 커버드콜 전략이란?
+                </h4>
+                <p className="text-xs text-purple-700 leading-relaxed">
+                  주식을 보유하면서 <strong>콜옵션을 매도</strong>하여 프리미엄 수익을 얻는 전략입니다.
+                  기초자산(S&P500, 나스닥100 등)의 주가가 크게 오르지 않으면 옵션 프리미엄만큼 추가 수익을 얻고,
+                  이를 배당금으로 지급합니다.
+                </p>
+              </div>
+
+              {/* ETF 유형 비교 */}
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                  <span>📊</span> ETF 유형 비교
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2 p-2 bg-teal-50 rounded-lg">
+                    <span className="font-bold text-teal-700 w-16">JEPI</span>
+                    <span className="text-teal-600">S&P500 기반 | 월배당 8% | 안정적, 변동성 낮음</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-orange-50 rounded-lg">
+                    <span className="font-bold text-orange-700 w-16">JEPQ</span>
+                    <span className="text-orange-600">나스닥 기반 | 월배당 10% | 성장+인컴 밸런스</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
+                    <span className="font-bold text-red-700 w-16">QYLD</span>
+                    <span className="text-red-600">나스닥100 | 월배당 11% | ATM 옵션, 상승제한 큼</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-pink-50 rounded-lg">
+                    <span className="font-bold text-pink-700 w-16">TSLY 등</span>
+                    <span className="text-pink-600">개별주식 | 주간배당 50~100%+ | 초고위험·초고수익</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 장단점 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-green-50 rounded-xl p-3 border border-green-200">
+                  <h5 className="font-bold text-green-700 text-xs mb-2">✅ 장점</h5>
+                  <ul className="text-[10px] text-green-600 space-y-1">
+                    <li>• 매월 안정적인 현금흐름</li>
+                    <li>• 횡보장에서 유리</li>
+                    <li>• 하락장 방어력 (프리미엄)</li>
+                    <li>• 변동성 클수록 프리미엄 증가</li>
+                  </ul>
+                </div>
+                <div className="bg-red-50 rounded-xl p-3 border border-red-200">
+                  <h5 className="font-bold text-red-700 text-xs mb-2">❌ 단점</h5>
+                  <ul className="text-[10px] text-red-600 space-y-1">
+                    <li>• 상승장 수익 제한 (캡)</li>
+                    <li>• 장기 수익률 S&P500 대비 낮음</li>
+                    <li>• 원금 손실 가능성</li>
+                    <li>• 배당소득세 부과</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* 경고 */}
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-3 border border-red-300">
+                <p className="text-xs text-red-700 flex items-start gap-2">
+                  <span className="text-base">⚠️</span>
+                  <span>
+                    <strong>투자 주의사항:</strong> TSLY, NVDY, CONY 등 개별주식 커버드콜 ETF는
+                    배당수익률 50~100%+로 매우 높지만, 기초자산 하락 시 <strong>원금 손실이 매우 클 수 있습니다.</strong>
+                    과도한 분배금 지급으로 ETF 주가가 지속 하락하는 "밑빠진 독에 물 붓기"가 될 수 있습니다.
+                  </span>
+                </p>
+              </div>
             </div>
           )}
         </div>
