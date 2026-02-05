@@ -14,6 +14,13 @@ export interface BattleshipPlayer {
   attacks?: { row: number; col: number; result: AttackResult }[];
 }
 
+export interface ChatMessage {
+  senderId: string;
+  senderName: string;
+  emoji: string;
+  timestamp: number;
+}
+
 export interface BattleshipRoom {
   id: string;
   hostId: string;
@@ -31,6 +38,7 @@ export interface BattleshipRoom {
     sunkShip?: string;
     timestamp: number;
   };
+  lastChat?: ChatMessage;
 }
 
 // 랜덤 방 코드 생성 (6자리)
@@ -371,13 +379,38 @@ export function useBattleship() {
     }
   }, [room, playerId]);
 
-  // 계산된 값들
+  // 계산된 값들 (sendEmoji보다 먼저 선언)
   const currentPlayer = room?.players[playerId] || null;
   const isHost = currentPlayer?.isHost || false;
   const players = room ? Object.values(room.players) : [];
   const opponent = room ? Object.values(room.players).find(p => p.id !== playerId) : null;
   const isMyTurn = room?.currentTurn === playerId;
   const isWinner = room?.winner === playerId;
+
+  // 이모지 보내기
+  const sendEmoji = useCallback(async (emoji: string): Promise<boolean> => {
+    if (!room || !playerId || !currentPlayer) return false;
+
+    try {
+      const chatMessage: ChatMessage = {
+        senderId: playerId,
+        senderName: currentPlayer.nickname,
+        emoji,
+        timestamp: Date.now(),
+      };
+
+      await fetch(`${FIREBASE_DB_URL}/battleship/${room.id}/lastChat.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(chatMessage),
+      });
+
+      return true;
+    } catch (err) {
+      console.error('Failed to send emoji:', err);
+      return false;
+    }
+  }, [room, playerId, currentPlayer]);
 
   // 상대방 공격 기록으로 내 격자 상태 업데이트
   useEffect(() => {
@@ -417,5 +450,6 @@ export function useBattleship() {
     submitPlacement,
     attack,
     leaveRoom,
+    sendEmoji,
   };
 }

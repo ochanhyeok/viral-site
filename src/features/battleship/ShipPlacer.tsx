@@ -10,6 +10,7 @@ import {
   placeShip,
   randomPlaceShips,
 } from './battleshipData';
+import { getShipSvg } from './ShipGraphics';
 
 interface ShipPlacerProps {
   onComplete: (grid: Cell[][], ships: PlacedShip[]) => void;
@@ -137,28 +138,61 @@ export function ShipPlacer({ onComplete }: ShipPlacerProps) {
         </div>
 
         {/* 격자 */}
-        {grid.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex">
-            <div className="w-6 h-7 sm:h-8 flex items-center justify-center text-xs font-bold text-blue-300/70">
-              {ROW_LABELS[rowIndex]}
+        <div className="relative">
+          {grid.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex">
+              <div className="w-6 h-7 sm:h-8 flex items-center justify-center text-xs font-bold text-blue-300/70">
+                {ROW_LABELS[rowIndex]}
+              </div>
+              {row.map((cell, colIndex) => (
+                <button
+                  key={`${rowIndex}-${colIndex}`}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  onMouseEnter={() => handleCellHover(rowIndex, colIndex)}
+                  onMouseLeave={() => { setHoverCells([]); setCanPlace(false); }}
+                  disabled={cell.state === 'ship'}
+                  className={`
+                    w-7 h-7 sm:w-8 sm:h-8 m-[1px] rounded-sm
+                    transition-all duration-150
+                    ${cell.state === 'ship' ? 'bg-transparent' : getCellStyle(cell, rowIndex, colIndex)}
+                    ${cell.state !== 'ship' && selectedShip ? 'cursor-crosshair' : 'cursor-default'}
+                    z-10
+                  `}
+                />
+              ))}
             </div>
-            {row.map((cell, colIndex) => (
-              <button
-                key={`${rowIndex}-${colIndex}`}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-                onMouseEnter={() => handleCellHover(rowIndex, colIndex)}
-                onMouseLeave={() => { setHoverCells([]); setCanPlace(false); }}
-                disabled={cell.state === 'ship'}
-                className={`
-                  w-7 h-7 sm:w-8 sm:h-8 m-[1px] rounded-sm
-                  transition-all duration-150
-                  ${getCellStyle(cell, rowIndex, colIndex)}
-                  ${cell.state !== 'ship' && selectedShip ? 'cursor-crosshair' : 'cursor-default'}
-                `}
-              />
-            ))}
-          </div>
-        ))}
+          ))}
+
+          {/* 배치된 배 그래픽 오버레이 */}
+          {placedShips.map((ship) => {
+            const shipType = SHIPS.find(s => s.id === ship.shipId);
+            if (!shipType) return null;
+
+            const cellSize = 30; // w-7 + m-[1px]*2 ≈ 30
+            const labelWidth = 24;
+
+            const left = labelWidth + ship.startCol * cellSize + 2;
+            const top = ship.startRow * cellSize + 2;
+
+            const width = ship.isHorizontal ? shipType.size * cellSize - 2 : cellSize - 2;
+            const height = ship.isHorizontal ? cellSize - 2 : shipType.size * cellSize - 2;
+
+            return (
+              <div
+                key={ship.shipId}
+                className="absolute pointer-events-none"
+                style={{
+                  left: `${left}px`,
+                  top: `${top}px`,
+                  width: `${width}px`,
+                  height: `${height}px`,
+                }}
+              >
+                {getShipSvg(ship.shipId, ship.isHorizontal, 'w-full h-full drop-shadow-lg')}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* 방향 전환 버튼 */}
@@ -209,16 +243,9 @@ export function ShipPlacer({ onComplete }: ShipPlacerProps) {
                   }
                 `}
               >
-                {/* 배 시각화 */}
-                <div className="flex gap-0.5">
-                  {Array.from({ length: ship.size }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`w-5 h-5 rounded-sm bg-gradient-to-br ${ship.gradient} ${
-                        isPlaced ? 'opacity-30' : ''
-                      }`}
-                    />
-                  ))}
+                {/* 배 그래픽 */}
+                <div className={`h-8 flex-shrink-0 ${isPlaced ? 'opacity-30' : ''}`} style={{ width: `${ship.size * 24}px` }}>
+                  {getShipSvg(ship.id, true, 'h-full w-full')}
                 </div>
 
                 {/* 배 정보 */}
