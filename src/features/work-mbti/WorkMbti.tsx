@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SEO, Card, Button, ShareButtons } from '../../components';
+import { SEO, Button, ShareButtons } from '../../components';
 import { mbtiQuestions, calculateMbti, getMbtiResult } from './mbtiData';
 import type { WorkMbtiType } from './mbtiData';
 
@@ -45,7 +45,7 @@ export function WorkMbti() {
         setState('result');
       }
       setIsAnimating(false);
-    }, 400);
+    }, 300);
   };
 
   const handleRestart = () => {
@@ -68,66 +68,73 @@ export function WorkMbti() {
 
       <div className="space-y-6">
         {state === 'intro' && (
-          <div className="text-center">
-            <div className="text-6xl mb-6">💼</div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-3">
-              직장인 MBTI 테스트
+          <div className="text-center animate-fadeIn">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl flex items-center justify-center shadow-xl shadow-orange-500/30">
+              <span className="text-5xl">💼</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">
+              직장인 MBTI
             </h1>
-            <p className="text-gray-600 mb-8 text-lg">
-              회사에서 나는 어떤 유형일까?<br />
-              업무 스타일로 알아보는 직장인 성격 유형!
+            <p className="text-gray-500 mb-8">
+              회사에서 나는 어떤 유형?<br />
+              업무 스타일로 알아보는 성격 유형!
             </p>
 
-            <Card className="mb-6 text-left">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🏢</span>
-                  <span className="text-gray-700">직장 상황 기반 질문</span>
+            <div className="bg-white rounded-2xl p-5 mb-8 shadow-sm border border-gray-100">
+              <div className="flex items-center justify-around text-sm">
+                <div className="text-center">
+                  <div className="text-2xl mb-1">🏢</div>
+                  <div className="text-gray-500">직장 상황</div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">⏱️</span>
-                  <span className="text-gray-700">약 2분 소요</span>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">⏱️</div>
+                  <div className="text-gray-500">2분</div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🎯</span>
-                  <span className="text-gray-700">16가지 직장인 유형 분석</span>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">🎯</div>
+                  <div className="text-gray-500">16가지 유형</div>
                 </div>
               </div>
-            </Card>
+            </div>
 
-            <Button onClick={handleStart} size="lg" className="px-12">
+            <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
             </Button>
           </div>
         )}
 
         {state === 'quiz' && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
+            {/* 프로그레스 바 */}
             <div className="relative">
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex justify-between text-xs text-gray-400 mb-2">
+                <span>Q{currentQuestion + 1}</span>
+                <span>{currentQuestion + 1} / {mbtiQuestions.length}</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-center text-sm text-gray-500 mt-2">
-                {currentQuestion + 1} / {mbtiQuestions.length}
-              </p>
             </div>
 
-            <Card className="overflow-hidden">
-              <div
-                className={`transition-opacity duration-300 ${
-                  isAnimating ? 'opacity-0' : 'opacity-100'
-                }`}
-              >
-                {question.situation && (
-                  <div className="bg-indigo-50 -mx-6 -mt-6 px-6 py-4 mb-6 border-b border-indigo-100">
-                    <p className="text-indigo-700 font-medium">{question.situation}</p>
-                  </div>
-                )}
+            {/* 질문 카드 */}
+            <div
+              className={`bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 ${
+                isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+              }`}
+            >
+              {question.situation && (
+                <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-4">
+                  <p className="text-white font-medium">{question.situation}</p>
+                </div>
+              )}
 
-                <h2 className="text-xl font-bold text-gray-800 mb-6 leading-relaxed">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 leading-relaxed">
                   {question.question}
                 </h2>
 
@@ -137,81 +144,88 @@ export function WorkMbti() {
                       key={index}
                       onClick={() => handleSelectOption(index)}
                       disabled={isAnimating}
-                      className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 ${
+                      className={`w-full text-left p-5 rounded-2xl border-2 transition-all duration-200 ${
                         selectedOption === index
-                          ? 'border-indigo-500 bg-indigo-50 scale-[0.98]'
-                          : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
-                      } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                          ? 'border-orange-500 bg-orange-50 scale-[0.98]'
+                          : 'border-gray-100 hover:border-orange-200 hover:bg-orange-50/50'
+                      } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer active:scale-[0.98]'}`}
                     >
                       <span className="text-gray-700 leading-relaxed text-lg">{option.text}</span>
                     </button>
                   ))}
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
         {state === 'result' && result && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
+            {/* 결과 헤더 */}
             <div className="text-center">
-              <div className="text-6xl mb-4">{result.emoji}</div>
-              <p className="text-gray-500 mb-1">당신의 직장인 MBTI는</p>
-              <h1 className="text-4xl font-bold text-gray-800 mb-1">
+              <div className={`w-24 h-24 mx-auto mb-4 bg-gradient-to-br ${result.color} rounded-3xl flex items-center justify-center shadow-xl`}>
+                <span className="text-5xl">{result.emoji}</span>
+              </div>
+              <p className="text-gray-400 text-sm mb-1">당신의 직장인 MBTI는</p>
+              <h1 className="text-4xl font-extrabold text-gray-900 mb-1">
                 {result.type}
               </h1>
-              <p className="text-xl font-semibold text-indigo-600 mb-2">
+              <p className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-1">
                 {result.name}
               </p>
               <p className="text-gray-600">{result.title}</p>
             </div>
 
-            <Card className={`bg-gradient-to-br ${result.color} text-white`}>
+            {/* 설명 카드 */}
+            <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl`}>
               <p className="text-lg leading-relaxed">{result.description}</p>
-            </Card>
+            </div>
 
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <span>💪</span> 강점
+            {/* 강점 & 성장 포인트 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">💪</span> 강점
               </h3>
               <ul className="space-y-2 mb-6">
                 {result.strengths.map((strength, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="text-green-500 mt-0.5">✓</span>
-                    <span className="text-gray-700">{strength}</span>
+                    <span className="text-gray-600">{strength}</span>
                   </li>
                 ))}
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🎯</span> 성장 포인트
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">🎯</span> 성장 포인트
               </h3>
               <ul className="space-y-2">
                 {result.weaknesses.map((weakness, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <span className="text-orange-500 mt-0.5">•</span>
-                    <span className="text-gray-700">{weakness}</span>
+                    <span className="text-gray-600">{weakness}</span>
                   </li>
                 ))}
               </ul>
-            </Card>
+            </div>
 
-            <Card className="bg-indigo-50 border border-indigo-200">
-              <h3 className="text-lg font-semibold text-indigo-800 mb-2 flex items-center gap-2">
-                <span>🤝</span> 팀워크 TIP
+            {/* 팀워크 팁 */}
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-3xl p-6 border border-indigo-100">
+              <h3 className="font-bold text-indigo-800 mb-2 flex items-center gap-2">
+                <span className="text-xl">🤝</span> 팀워크 TIP
               </h3>
               <p className="text-indigo-700 leading-relaxed">{result.teamTip}</p>
-            </Card>
+            </div>
 
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+            {/* 공유 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 text-center">
                 친구에게 공유하기
               </h3>
               <ShareButtons
                 title="직장인 MBTI 테스트"
                 description={`나의 직장인 MBTI는 ${result.type} - ${result.name}!`}
               />
-            </Card>
+            </div>
 
             <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
               다시 테스트하기
@@ -219,6 +233,16 @@ export function WorkMbti() {
           </div>
         )}
       </div>
+
+      <style>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }

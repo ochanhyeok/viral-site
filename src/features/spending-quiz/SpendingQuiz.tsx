@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SEO, Card, Button, ShareButtons } from '../../components';
+import { SEO, Button, ShareButtons } from '../../components';
 import { quizQuestions, calculateResult } from './quizData';
 import type { SpendingType } from './quizData';
 
@@ -41,7 +41,7 @@ export function SpendingQuiz() {
         setState('result');
       }
       setIsAnimating(false);
-    }, 400);
+    }, 300);
   };
 
   const handleRestart = () => {
@@ -64,66 +64,73 @@ export function SpendingQuiz() {
 
       <div className="space-y-6">
         {state === 'intro' && (
-          <div className="text-center">
-            <div className="text-6xl mb-6">💸</div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-3">
-              나의 소비성향 테스트
+          <div className="text-center animate-fadeIn">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-xl shadow-purple-500/30">
+              <span className="text-5xl">💸</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">
+              소비성향 테스트
             </h1>
-            <p className="text-gray-600 mb-8 text-lg">
-              당신은 어떤 유형의 소비자일까요?<br />
-              12개의 상황으로 알아보는 진짜 내 소비 스타일!
+            <p className="text-gray-500 mb-8">
+              12개의 상황으로 알아보는<br />
+              나의 진짜 소비 스타일!
             </p>
 
-            <Card className="mb-6 text-left">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🎯</span>
-                  <span className="text-gray-700">현실적인 상황 기반 질문</span>
+            <div className="bg-white rounded-2xl p-5 mb-8 shadow-sm border border-gray-100">
+              <div className="flex items-center justify-around text-sm">
+                <div className="text-center">
+                  <div className="text-2xl mb-1">📝</div>
+                  <div className="text-gray-500">12문항</div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">⏱️</span>
-                  <span className="text-gray-700">약 2-3분 소요</span>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">⏱️</div>
+                  <div className="text-gray-500">2-3분</div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">📊</span>
-                  <span className="text-gray-700">6가지 소비 유형 분석</span>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">🎯</div>
+                  <div className="text-gray-500">6가지 유형</div>
                 </div>
               </div>
-            </Card>
+            </div>
 
-            <Button onClick={handleStart} size="lg" className="px-12">
+            <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
             </Button>
           </div>
         )}
 
         {state === 'quiz' && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
+            {/* 프로그레스 바 */}
             <div className="relative">
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex justify-between text-xs text-gray-400 mb-2">
+                <span>Q{currentQuestion + 1}</span>
+                <span>{currentQuestion + 1} / {quizQuestions.length}</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-center text-sm text-gray-500 mt-2">
-                {currentQuestion + 1} / {quizQuestions.length}
-              </p>
             </div>
 
-            <Card className="overflow-hidden">
-              <div
-                className={`transition-opacity duration-300 ${
-                  isAnimating ? 'opacity-0' : 'opacity-100'
-                }`}
-              >
-                {question.situation && (
-                  <div className="bg-blue-50 -mx-6 -mt-6 px-6 py-4 mb-6 border-b border-blue-100">
-                    <p className="text-blue-700 font-medium">{question.situation}</p>
-                  </div>
-                )}
+            {/* 질문 카드 */}
+            <div
+              className={`bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 ${
+                isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+              }`}
+            >
+              {question.situation && (
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-4">
+                  <p className="text-white font-medium">{question.situation}</p>
+                </div>
+              )}
 
-                <h2 className="text-xl font-bold text-gray-800 mb-6 leading-relaxed">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 leading-relaxed">
                   {question.question}
                 </h2>
 
@@ -133,66 +140,75 @@ export function SpendingQuiz() {
                       key={index}
                       onClick={() => handleSelectOption(index)}
                       disabled={isAnimating}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 ${
+                      className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 ${
                         selectedOption === index
-                          ? 'border-blue-500 bg-blue-50 scale-[0.98]'
-                          : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                      } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                          ? 'border-purple-500 bg-purple-50 scale-[0.98]'
+                          : 'border-gray-100 hover:border-purple-200 hover:bg-purple-50/50'
+                      } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer active:scale-[0.98]'}`}
                     >
                       <span className="text-gray-700 leading-relaxed">{option.text}</span>
                     </button>
                   ))}
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
         {state === 'result' && result && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fadeIn">
+            {/* 결과 헤더 */}
             <div className="text-center">
-              <div className="text-6xl mb-4">{result.emoji}</div>
-              <p className="text-gray-500 mb-1">당신의 소비 유형은</p>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              <div className={`w-24 h-24 mx-auto mb-4 bg-gradient-to-br ${result.color} rounded-3xl flex items-center justify-center shadow-xl`}>
+                <span className="text-5xl">{result.emoji}</span>
+              </div>
+              <p className="text-gray-400 text-sm mb-1">당신의 소비 유형은</p>
+              <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
                 {result.name}
               </h1>
               <p className="text-lg text-gray-600">{result.title}</p>
             </div>
 
-            <Card className={`bg-gradient-to-br ${result.color} text-white`}>
+            {/* 설명 카드 */}
+            <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl`}>
               <p className="text-lg leading-relaxed">{result.description}</p>
-            </Card>
+            </div>
 
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <span>✨</span> 이런 특징이 있어요
+            {/* 특징 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">✨</span> 이런 특징이 있어요
               </h3>
               <ul className="space-y-3">
                 {result.characteristics.map((char, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-0.5">•</span>
-                    <span className="text-gray-700">{char}</span>
+                    <span className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      {index + 1}
+                    </span>
+                    <span className="text-gray-600">{char}</span>
                   </li>
                 ))}
               </ul>
-            </Card>
+            </div>
 
-            <Card className="bg-yellow-50 border border-yellow-200">
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2 flex items-center gap-2">
-                <span>💡</span> 한마디 조언
+            {/* 조언 */}
+            <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-3xl p-6 border border-amber-100">
+              <h3 className="font-bold text-amber-800 mb-2 flex items-center gap-2">
+                <span className="text-xl">💡</span> 한마디 조언
               </h3>
-              <p className="text-yellow-700 leading-relaxed">{result.advice}</p>
-            </Card>
+              <p className="text-amber-700 leading-relaxed">{result.advice}</p>
+            </div>
 
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+            {/* 공유 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 text-center">
                 친구에게 공유하기
               </h3>
               <ShareButtons
-                title="나의 소비성향 테스트"
+                title="소비성향 테스트"
                 description={`나는 ${result.name}! ${result.title}`}
               />
-            </Card>
+            </div>
 
             <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
               다시 테스트하기
@@ -200,6 +216,16 @@ export function SpendingQuiz() {
           </div>
         )}
       </div>
+
+      <style>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
