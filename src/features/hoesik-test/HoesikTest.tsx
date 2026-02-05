@@ -1,6 +1,7 @@
 // 회식 생존 테스트
 import { useState, useCallback, useMemo } from 'react';
-import { SEO, Button, ShareButtons, Recommendations } from '../../components';
+import { SEO, Button, ShareButtons, Recommendations, FAQ } from '../../components';
+import { hoesikFAQ } from '../../components/FAQ';
 
 interface Question {
   question: string;
@@ -326,6 +327,8 @@ export function HoesikTest() {
             </Button>
 
             <Recommendations currentPath="/hoesik-test" />
+
+            <FAQ items={hoesikFAQ} />
           </div>
         );
         })()}

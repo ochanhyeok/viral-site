@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { SEO } from '../../components/SEO';
 import { ShareButtons } from '../../components/ShareButtons';
 import { Recommendations } from '../../components/Recommendations';
+import { FAQ } from '../../components/FAQ';
+import { investFAQ } from '../../components/FAQ';
 
 interface Question {
   id: number;
@@ -407,6 +409,9 @@ export default function InvestTest() {
 
         {/* 추천 */}
         {showResult && <Recommendations currentPath="/invest-test" maxItems={3} />}
+
+        {/* FAQ */}
+        {showResult && <FAQ items={investFAQ} />}
       </div>
 
       <style>{`
