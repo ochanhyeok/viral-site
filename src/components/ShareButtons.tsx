@@ -91,7 +91,7 @@ export function ShareButtons({
         content: {
           title: title,
           description: description,
-          imageUrl: 'https://viral-site-opal.vercel.app/og-image.png',
+          imageUrl: 'https://viral-site-opal.vercel.app/og-share-v2.png',
           link: {
             mobileWebUrl: shareUrl,
             webUrl: shareUrl,
