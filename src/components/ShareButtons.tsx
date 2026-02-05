@@ -49,6 +49,14 @@ export function ShareButtons({
   const [copied, setCopied] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showNotification = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
   const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
   const shareText = `${title}\n${description}`;
 
@@ -102,7 +110,7 @@ export function ShareButtons({
       } else {
         // 파일 공유 미지원 시 이미지 다운로드 후 안내
         await captureAndDownload(captureElementId, captureFileName);
-        alert('이미지가 저장되었습니다!\n카카오톡에서 직접 이미지를 첨부해서 공유해주세요.');
+        showNotification('이미지가 저장되었습니다! 카카오톡에서 직접 이미지를 첨부해서 공유해주세요.');
       }
     } catch (err) {
       if ((err as Error).name !== 'AbortError') {
@@ -292,6 +300,22 @@ export function ShareButtons({
           <span className="text-violet-500 font-medium">"내 결과 이미지로 공유하기"</span> 버튼을 눌러주세요!
         </p>
       )}
+
+      {/* Toast Notification */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+          showToast
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 text-white text-sm rounded-xl shadow-lg max-w-xs text-center">
+          <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{toastMessage}</span>
+        </div>
+      </div>
     </div>
   );
 }

@@ -13,6 +13,105 @@ import {
 
 type GamePhase = 'lobby' | 'waiting' | 'ready' | 'result' | 'tooEarly' | 'final' | 'compare';
 
+// CSS Icons
+const Icons = {
+  // 멀티플레이 헤더 아이콘
+  multiplayer: (
+    <div className="flex items-center gap-2">
+      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+        </svg>
+      </div>
+    </div>
+  ),
+  // 복사 아이콘
+  copy: (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+  ),
+  // 참가자 아이콘
+  users: (
+    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+      <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+      </svg>
+    </div>
+  ),
+  // 방장 크라운
+  crown: (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M10 2L5 8l-3-2 2 10h12l2-10-3 2-5-6z" clipRule="evenodd" />
+      </svg>
+    </div>
+  ),
+  // 일반 플레이어
+  player: (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+      </svg>
+    </div>
+  ),
+  // 트로피
+  trophy: (
+    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-xl mx-auto">
+      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-1.17a3 3 0 01-5.66 0H6.83A3 3 0 014 10H3.17a3 3 0 01-1-5.83A3 3 0 015 5zm5 0a1 1 0 10-2 0v4a1 1 0 102 0V5zm3 5v3h2v2H5v-2h2v-3a3 3 0 116 0z" clipRule="evenodd" />
+      </svg>
+    </div>
+  ),
+  // 메달
+  gold: (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md text-white font-bold text-sm">1</div>
+  ),
+  silver: (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center shadow-md text-white font-bold text-sm">2</div>
+  ),
+  bronze: (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-600 to-amber-700 flex items-center justify-center shadow-md text-white font-bold text-sm">3</div>
+  ),
+  // 랭킹 아이콘
+  ranking: (
+    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+      <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    </div>
+  ),
+  // 완료 체크
+  check: (
+    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg">
+      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+  ),
+  // 대기 중
+  waiting: (
+    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center animate-pulse">
+      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+  ),
+  // 완료됨
+  done: (
+    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+      <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+  ),
+};
+
 interface RoundResult {
   round: number;
   reactionTime: number;
@@ -31,6 +130,8 @@ export function MultiplayerReaction() {
   const [currentRound, setCurrentRound] = useState(0);
   const [results, setResults] = useState<RoundResult[]>([]);
   const [currentReactionTime, setCurrentReactionTime] = useState(0);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const startTimeRef = useRef<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -147,6 +248,19 @@ export function MultiplayerReaction() {
   const copyLink = () => {
     const link = `${window.location.origin}/play/reaction?room=${room?.id}`;
     navigator.clipboard.writeText(link);
+    setToastMessage('링크가 복사되었습니다');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
+  // 코드 복사
+  const copyCode = () => {
+    if (room?.id) {
+      navigator.clipboard.writeText(room.id);
+      setToastMessage('방 코드가 복사되었습니다');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    }
   };
 
   // 게임 결과 계산
@@ -187,7 +301,7 @@ export function MultiplayerReaction() {
           <div className="space-y-6 animate-fadeIn">
             {/* 헤더 */}
             <div className="text-center py-6">
-              <div className="text-6xl mb-4">👥⚡</div>
+              <div className="flex justify-center mb-4">{Icons.multiplayer}</div>
               <h1 className="text-2xl font-black text-gray-900">같이하기</h1>
               <p className="text-gray-500">친구와 반응속도 대결!</p>
             </div>
@@ -254,19 +368,37 @@ export function MultiplayerReaction() {
             {/* 방 정보 */}
             <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 text-white text-center">
               <p className="text-white/70 text-sm mb-1">방 코드</p>
-              <p className="text-3xl font-black tracking-wider">{room.id}</p>
               <button
-                onClick={copyLink}
-                className="mt-3 px-4 py-2 bg-white/20 rounded-xl text-sm font-medium hover:bg-white/30 transition-all"
+                onClick={copyCode}
+                className="text-3xl font-black tracking-wider hover:scale-105 transition-transform cursor-pointer"
               >
-                📋 링크 복사
+                {room.id}
               </button>
+              <div className="flex justify-center gap-2 mt-3">
+                <button
+                  onClick={copyCode}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-white/20 rounded-xl text-sm font-medium hover:bg-white/30 transition-all"
+                >
+                  {Icons.copy}
+                  <span>코드 복사</span>
+                </button>
+                <button
+                  onClick={copyLink}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-white/20 rounded-xl text-sm font-medium hover:bg-white/30 transition-all"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  <span>링크 복사</span>
+                </button>
+              </div>
             </div>
 
             {/* 참가자 목록 */}
             <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span>👥</span> 참가자 ({players.length}/4)
+                {Icons.users}
+                <span>참가자 ({players.length}/4)</span>
               </h3>
               <div className="space-y-2">
                 {players.map((player, index) => (
@@ -276,9 +408,7 @@ export function MultiplayerReaction() {
                       player.id === playerId ? 'bg-violet-50' : 'bg-gray-50'
                     }`}
                   >
-                    <span className="text-2xl">
-                      {index === 0 ? '👑' : '👤'}
-                    </span>
+                    {index === 0 ? Icons.crown : Icons.player}
                     <span className={`font-medium ${player.id === playerId ? 'text-violet-600' : 'text-gray-700'}`}>
                       {player.nickname}
                       {player.id === playerId && ' (나)'}
@@ -346,7 +476,9 @@ export function MultiplayerReaction() {
             {phase === 'waiting' && (
               <div onClick={handleClick} className="cursor-pointer">
                 <div className="bg-gradient-to-br from-red-500 to-red-700 rounded-3xl p-8 min-h-[350px] flex flex-col items-center justify-center shadow-2xl">
-                  <div className="text-6xl mb-6 animate-pulse">🔴</div>
+                  <div className="w-20 h-20 rounded-full bg-red-400/50 flex items-center justify-center mb-6 animate-pulse">
+                    <div className="w-12 h-12 rounded-full bg-white/90 shadow-inner"></div>
+                  </div>
                   <p className="text-white text-2xl font-bold">대기...</p>
                 </div>
               </div>
@@ -356,7 +488,9 @@ export function MultiplayerReaction() {
             {phase === 'ready' && (
               <div onClick={handleClick} className="cursor-pointer">
                 <div className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl p-8 min-h-[350px] flex flex-col items-center justify-center shadow-2xl animate-pulse">
-                  <div className="text-6xl mb-6">🟢</div>
+                  <div className="w-20 h-20 rounded-full bg-green-300/50 flex items-center justify-center mb-6">
+                    <div className="w-12 h-12 rounded-full bg-white shadow-lg"></div>
+                  </div>
                   <p className="text-white text-3xl font-black">지금!</p>
                 </div>
               </div>
@@ -366,7 +500,11 @@ export function MultiplayerReaction() {
             {phase === 'tooEarly' && (
               <div className="text-center space-y-4">
                 <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 min-h-[250px] flex flex-col items-center justify-center shadow-2xl">
-                  <div className="text-6xl mb-4">😅</div>
+                  <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
                   <p className="text-white text-2xl font-bold">Too Early!</p>
                 </div>
                 <button onClick={handleRetry} className="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold">
@@ -394,20 +532,15 @@ export function MultiplayerReaction() {
         {phase === 'final' && room?.status === 'playing' && (
           <div className="text-center space-y-6 animate-fadeIn">
             <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-3xl p-8 text-white">
-              <div className="text-6xl mb-4">✅</div>
+              <div className="flex justify-center mb-4">{Icons.check}</div>
               <h2 className="text-2xl font-bold mb-2">완료!</h2>
               <p className="text-4xl font-black">{getMyResult()?.avgTime}ms</p>
               <p className="text-white/70 mt-2">다른 플레이어를 기다리는 중...</p>
             </div>
             <div className="flex justify-center gap-2">
               {players.map((p) => (
-                <div
-                  key={p.id}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-lg ${
-                    p.result ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400 animate-pulse'
-                  }`}
-                >
-                  {p.result ? '✓' : '⏳'}
+                <div key={p.id}>
+                  {p.result ? Icons.done : Icons.waiting}
                 </div>
               ))}
             </div>
@@ -419,15 +552,18 @@ export function MultiplayerReaction() {
           <div className="space-y-6 animate-fadeIn">
             {/* 승자 */}
             <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl p-6 text-white text-center">
-              <div className="text-6xl mb-2">🏆</div>
-              <p className="text-white/80 text-sm">승자</p>
+              {Icons.trophy}
+              <p className="text-white/80 text-sm mt-3">승자</p>
               <p className="text-3xl font-black">{sortedResults[0]?.nickname}</p>
               <p className="text-2xl font-bold mt-1">{sortedResults[0]?.result?.score}ms</p>
             </div>
 
             {/* 순위 */}
             <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-3">🏅 최종 순위</h3>
+              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                {Icons.ranking}
+                <span>최종 순위</span>
+              </h3>
               <div className="space-y-2">
                 {sortedResults.map((player, index) => (
                   <div
@@ -436,9 +572,9 @@ export function MultiplayerReaction() {
                       player.id === playerId ? 'bg-violet-50 ring-2 ring-violet-300' : 'bg-gray-50'
                     }`}
                   >
-                    <span className="text-2xl">
-                      {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
-                    </span>
+                    {index === 0 ? Icons.gold : index === 1 ? Icons.silver : index === 2 ? Icons.bronze : (
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">{index + 1}</div>
+                    )}
                     <span className="font-medium flex-1">
                       {player.nickname}
                       {player.id === playerId && ' (나)'}
@@ -469,6 +605,22 @@ export function MultiplayerReaction() {
             </div>
           </div>
         )}
+
+        {/* Toast Notification */}
+        <div
+          className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+            showToast
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+        >
+          <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 text-white text-sm rounded-xl shadow-lg">
+            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            {toastMessage}
+          </div>
+        </div>
       </div>
     </>
   );
