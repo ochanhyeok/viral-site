@@ -186,6 +186,64 @@ const COVERED_CALL_PRESETS = [
   },
 ];
 
+// 테크주 프리셋 (2026년 2월 기준, 환율 1,450원)
+const TECH_PRESETS = [
+  {
+    name: '애플 (AAPL)',
+    price: 401000,  // $276 × 1,450
+    dividend: 370,  // 분기 $0.255 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.4%',
+    tag: '시총1위',
+    note: '아이폰·서비스'
+  },
+  {
+    name: 'MS (MSFT)',
+    price: 601000,  // $414 × 1,450
+    dividend: 1200,  // 분기 $0.83 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.8%',
+    tag: 'AI리더',
+    note: '클라우드·AI'
+  },
+  {
+    name: '엔비디아 (NVDA)',
+    price: 252000,  // $174 × 1,450
+    dividend: 15,  // 분기 $0.01 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.02%',
+    tag: 'GPU독점',
+    note: 'AI칩 1위'
+  },
+  {
+    name: '구글 (GOOGL)',
+    price: 268000,  // $185 × 1,450
+    dividend: 305,  // 분기 $0.21 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.25%',
+    tag: '검색·AI',
+    note: '2024 첫 배당'
+  },
+  {
+    name: '메타 (META)',
+    price: 970000,  // $669 × 1,450
+    dividend: 770,  // 분기 $0.53 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.31%',
+    tag: 'SNS왕',
+    note: '2024 첫 배당'
+  },
+  {
+    name: '브로드컴 (AVGO)',
+    price: 319000,  // $220 × 1,450
+    dividend: 870,  // 분기 $0.60 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '1.1%',
+    tag: 'AI반도체',
+    note: '14년 연속 인상'
+  },
+];
+
 type PresetType = typeof KOREA_PRESETS[0];
 
 export default function DividendCalculator() {
@@ -195,7 +253,7 @@ export default function DividendCalculator() {
   const [dividendFrequency, setDividendFrequency] = useState<'annual' | 'quarterly'>('quarterly');
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
-  const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'covered'>('korea');
+  const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'tech' | 'covered'>('korea');
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
@@ -203,6 +261,8 @@ export default function DividendCalculator() {
     ? KOREA_PRESETS
     : presetTab === 'overseas'
     ? OVERSEAS_PRESETS
+    : presetTab === 'tech'
+    ? TECH_PRESETS
     : COVERED_CALL_PRESETS;
 
   const handlePresetSelect = (preset: PresetType) => {
@@ -314,11 +374,11 @@ export default function DividendCalculator() {
             인기 배당주로 계산해보기
           </h3>
 
-          {/* 국내/해외/커버드콜 탭 */}
-          <div className="flex gap-1.5 mb-4">
+          {/* 국내/해외/테크/커버드콜 탭 */}
+          <div className="grid grid-cols-4 gap-1 mb-4">
             <button
               onClick={() => setPresetTab('korea')}
-              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+              className={`py-2 px-1 rounded-lg font-medium text-[10px] sm:text-xs transition-all ${
                 presetTab === 'korea'
                   ? 'bg-amber-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -328,17 +388,27 @@ export default function DividendCalculator() {
             </button>
             <button
               onClick={() => setPresetTab('overseas')}
-              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+              className={`py-2 px-1 rounded-lg font-medium text-[10px] sm:text-xs transition-all ${
                 presetTab === 'overseas'
                   ? 'bg-blue-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              🇺🇸 해외
+              🌍 해외
+            </button>
+            <button
+              onClick={() => setPresetTab('tech')}
+              className={`py-2 px-1 rounded-lg font-medium text-[10px] sm:text-xs transition-all ${
+                presetTab === 'tech'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              💻 테크
             </button>
             <button
               onClick={() => setPresetTab('covered')}
-              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+              className={`py-2 px-1 rounded-lg font-medium text-[10px] sm:text-xs transition-all ${
                 presetTab === 'covered'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -359,6 +429,8 @@ export default function DividendCalculator() {
                       ? 'bg-amber-100 border-2 border-amber-400 shadow-md'
                       : presetTab === 'overseas'
                       ? 'bg-blue-100 border-2 border-blue-400 shadow-md'
+                      : presetTab === 'tech'
+                      ? 'bg-cyan-100 border-2 border-cyan-400 shadow-md'
                       : 'bg-purple-100 border-2 border-purple-400 shadow-md'
                     : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
                 }`}
@@ -384,6 +456,10 @@ export default function DividendCalculator() {
                       ? 'bg-teal-100 text-teal-600'
                       : preset.tag === '인기'
                       ? 'bg-orange-100 text-orange-600'
+                      : preset.tag === '시총1위' || preset.tag === 'AI리더' || preset.tag === 'GPU독점'
+                      ? 'bg-cyan-100 text-cyan-700'
+                      : preset.tag === '검색·AI' || preset.tag === 'SNS왕' || preset.tag === 'AI반도체'
+                      ? 'bg-sky-100 text-sky-600'
                       : 'bg-gray-200 text-gray-600'
                   }`}>
                     {preset.tag}
@@ -399,6 +475,8 @@ export default function DividendCalculator() {
                       ? 'text-amber-600'
                       : presetTab === 'overseas'
                       ? 'text-blue-600'
+                      : presetTab === 'tech'
+                      ? 'text-cyan-600'
                       : 'text-purple-600'
                   }`}>
                     {preset.yield}
@@ -412,8 +490,56 @@ export default function DividendCalculator() {
               ? '* 2026년 2월 기준 예상 배당. 실제 주가/배당과 다를 수 있음'
               : presetTab === 'overseas'
               ? '* 2026년 2월 기준, 환율 1,450원 적용. 실제와 다를 수 있음'
+              : presetTab === 'tech'
+              ? '* 테크주는 배당수익률이 낮지만 성장성이 높음. 환율 1,450원 적용'
               : '* 커버드콜 ETF는 원금 손실 위험이 있음. 배당수익률은 변동 가능'}
           </p>
+
+          {/* 테크주 설명 */}
+          {presetTab === 'tech' && (
+            <div className="space-y-3 mt-4">
+              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 border border-cyan-200">
+                <h4 className="font-bold text-cyan-800 mb-2 flex items-center gap-2">
+                  <span>💡</span> 테크주 배당 특징
+                </h4>
+                <p className="text-xs text-cyan-700 leading-relaxed">
+                  빅테크 기업들은 <strong>배당수익률이 1% 미만</strong>으로 낮지만,
+                  막대한 현금 창출 능력으로 <strong>자사주 매입 + 배당</strong>을 병행합니다.
+                  구글과 메타는 2024년 첫 배당을 시작했으며, 애플·MS는 지속적으로 배당을 인상 중입니다.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-green-50 rounded-xl p-3 border border-green-200">
+                  <h5 className="font-bold text-green-700 text-xs mb-2">✅ 장점</h5>
+                  <ul className="text-[10px] text-green-600 space-y-1">
+                    <li>• AI·클라우드 성장성</li>
+                    <li>• 자사주 매입 활발</li>
+                    <li>• 배당 인상 여력 큼</li>
+                    <li>• 현금흐름 우수</li>
+                  </ul>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3 border border-amber-200">
+                  <h5 className="font-bold text-amber-700 text-xs mb-2">⚠️ 주의</h5>
+                  <ul className="text-[10px] text-amber-600 space-y-1">
+                    <li>• 배당수익률 매우 낮음</li>
+                    <li>• 밸류에이션 부담</li>
+                    <li>• 규제 리스크 존재</li>
+                    <li>• 성장주 특성</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-3 border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💰 배당 현황:</strong>
+                  애플(분기 $0.25), MS(분기 $0.83), 구글(분기 $0.21), 메타(분기 $0.53)
+                  <br/>
+                  <strong>🚫 무배당:</strong> 테슬라, 아마존은 현재 배당을 지급하지 않음
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* 커버드콜 상세 설명 */}
           {presetTab === 'covered' && (
