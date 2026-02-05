@@ -22,7 +22,7 @@ interface StatsState {
 
 // 결과 저장
 export async function saveTestResult(
-  testType: 'spending' | 'mbti' | 'stress',
+  testType: 'spending' | 'mbti' | 'stress' | 'kkondae',
   resultType: string,
   ageGroup: string,
   score?: number
@@ -58,7 +58,7 @@ export async function saveTestResult(
 
 // 나이대별 통계 조회
 export function useTestStats(
-  testType: 'spending' | 'mbti' | 'stress',
+  testType: 'spending' | 'mbti' | 'stress' | 'kkondae',
   ageGroup: string | null
 ): StatsState {
   const [state, setState] = useState<StatsState>({

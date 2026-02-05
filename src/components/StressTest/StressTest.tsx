@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { stressQuestions, answerOptions } from '../../data/stressQuestions';
+import { stressQuestions, answerOptions, categoryAnalysis } from '../../data/stressQuestions';
 import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
 import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../index';
 import { stressTips, stressMusic } from '../../data/stressQuestions';
@@ -8,12 +8,20 @@ import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/u
 import { fireConfetti } from '../../hooks/useConfetti';
 
 type TestPhase = 'intro' | 'ageSelect' | 'questions' | 'result';
+type MusicGenre = 'korean' | 'pop';
 
 function getStressLevel(totalScore: number): StressLevel {
   if (totalScore <= 15) return 'low';
   if (totalScore <= 25) return 'moderate';
   if (totalScore <= 35) return 'high';
   return 'veryHigh';
+}
+
+function getCategoryLevel(score: number): 'low' | 'moderate' | 'high' | 'danger' {
+  if (score <= 1) return 'low';
+  if (score <= 2) return 'moderate';
+  if (score <= 4) return 'high';
+  return 'danger';
 }
 
 export function StressTest() {
@@ -25,6 +33,8 @@ export function StressTest() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [resultSaved, setResultSaved] = useState(false);
+  const [musicGenre, setMusicGenre] = useState<MusicGenre>('korean');
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('stress', ageGroup);
@@ -114,15 +124,28 @@ export function StressTest() {
     setSelectedScore(null);
     setAgeGroup(null);
     setResultSaved(false);
+    setExpandedCategory(null);
     confettiFired.current = false;
   };
 
   const levelInfo = result ? STRESS_LEVELS[result.level] : null;
   const tips = result ? stressTips[result.level] : [];
-  const musicList = result ? stressMusic[result.level] : [];
+  const musicList = result
+    ? stressMusic[result.level].filter(m => m.genre === musicGenre)
+    : [];
 
   // 나이대 비교 데이터
   const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.level) : 0;
+
+  // 주의 필요 카테고리 (점수 4 이상)
+  const dangerCategories = result
+    ? result.categoryScores.filter(c => c.score >= 4)
+    : [];
+
+  // 양호한 카테고리 (점수 2 이하)
+  const goodCategories = result
+    ? result.categoryScores.filter(c => c.score <= 2)
+    : [];
 
   return (
     <>
@@ -329,35 +352,138 @@ export function StressTest() {
               <p className="text-lg leading-relaxed">{levelInfo.description}</p>
             </div>
 
-            {/* 영역별 분석 */}
+            {/* 종합 분석 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-4">영역별 분석</h3>
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">🔬</span> 종합 분석 리포트
+              </h3>
+
+              {/* 주의 필요 영역 */}
+              {dangerCategories.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                      주의 필요
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {dangerCategories.map(cat => {
+                      const analysis = categoryAnalysis[cat.category];
+                      return (
+                        <div key={cat.category} className="bg-red-50 rounded-xl p-3 border border-red-100">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{analysis?.emoji}</span>
+                            <span className="font-bold text-red-800">{analysis?.name || cat.category}</span>
+                            <span className="ml-auto text-red-600 font-bold">{cat.score}/5</span>
+                          </div>
+                          <p className="text-red-700 text-sm mt-1">
+                            {analysis?.descriptions[cat.score >= 5 ? 'danger' : 'high']}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* 양호한 영역 */}
+              {goodCategories.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                      양호
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {goodCategories.map(cat => {
+                      const analysis = categoryAnalysis[cat.category];
+                      return (
+                        <span key={cat.category} className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm border border-green-100">
+                          <span>{analysis?.emoji}</span>
+                          <span>{cat.category}</span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 영역별 상세 분석 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">📋</span> 영역별 상세 분석
+              </h3>
               <div className="space-y-3">
                 {result.categoryScores.map((cat) => {
                   const percentage = (cat.score / cat.maxScore) * 100;
+                  const catLevel = getCategoryLevel(cat.score);
+                  const analysis = categoryAnalysis[cat.category];
+                  const isExpanded = expandedCategory === cat.category;
+
                   let barColor = '#22c55e';
-                  if (percentage > 40) barColor = '#eab308';
-                  if (percentage > 60) barColor = '#f97316';
-                  if (percentage > 80) barColor = '#ef4444';
+                  let bgColor = 'bg-green-50';
+                  let borderColor = 'border-green-100';
+                  if (percentage > 40) { barColor = '#eab308'; bgColor = 'bg-yellow-50'; borderColor = 'border-yellow-100'; }
+                  if (percentage > 60) { barColor = '#f97316'; bgColor = 'bg-orange-50'; borderColor = 'border-orange-100'; }
+                  if (percentage > 80) { barColor = '#ef4444'; bgColor = 'bg-red-50'; borderColor = 'border-red-100'; }
 
                   return (
-                    <div key={cat.category}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="text-gray-600">{cat.category}</span>
-                        <span className="font-medium" style={{ color: barColor }}>
-                          {cat.score}/5
-                        </span>
-                      </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{ width: `${percentage}%`, backgroundColor: barColor }}
-                        />
-                      </div>
+                    <div key={cat.category} className={`rounded-2xl border ${borderColor} overflow-hidden`}>
+                      <button
+                        onClick={() => setExpandedCategory(isExpanded ? null : cat.category)}
+                        className={`w-full p-4 ${bgColor} text-left transition-all`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{analysis?.emoji || '📊'}</span>
+                            <span className="font-bold text-gray-800">{cat.category}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold" style={{ color: barColor }}>
+                              {cat.score}/5
+                            </span>
+                            <svg
+                              className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-white/50 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%`, backgroundColor: barColor }}
+                          />
+                        </div>
+                      </button>
+
+                      {isExpanded && analysis && (
+                        <div className="p-4 bg-white border-t border-gray-100">
+                          <p className="text-gray-700 mb-3">
+                            {analysis.descriptions[catLevel]}
+                          </p>
+                          <div className="space-y-2">
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">맞춤 TIP</p>
+                            {analysis.tips.map((tip, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <span className="text-green-500 mt-0.5">✓</span>
+                                <span className="text-gray-600 text-sm">{tip}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
+              <p className="text-gray-400 text-xs mt-3 text-center">
+                각 영역을 클릭하면 상세 분석을 볼 수 있어요
+              </p>
             </div>
 
             {/* 음악 추천 */}
@@ -365,6 +491,31 @@ export function StressTest() {
               <h3 className="font-bold text-violet-900 mb-4 flex items-center gap-2">
                 <span className="text-xl">🎵</span> 지금 이 노래 어때요?
               </h3>
+
+              {/* 장르 선택 토글 */}
+              <div className="flex bg-violet-100 rounded-xl p-1 mb-4">
+                <button
+                  onClick={() => setMusicGenre('korean')}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    musicGenre === 'korean'
+                      ? 'bg-white text-violet-700 shadow-sm'
+                      : 'text-violet-600 hover:text-violet-700'
+                  }`}
+                >
+                  🇰🇷 국내 음악
+                </button>
+                <button
+                  onClick={() => setMusicGenre('pop')}
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    musicGenre === 'pop'
+                      ? 'bg-white text-violet-700 shadow-sm'
+                      : 'text-violet-600 hover:text-violet-700'
+                  }`}
+                >
+                  🌎 팝송
+                </button>
+              </div>
+
               <div className="space-y-3">
                 {musicList.map((music, index) => (
                   <a
