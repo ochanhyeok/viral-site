@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
-import { SEO, ShareButtons, Recommendations, FAQ } from '../../components';
+import { SEO, ShareButtons, Recommendations, FAQ, BadgeNotification } from '../../components';
 import {
   TOTAL_ROUNDS,
   MIN_WAIT_TIME,
@@ -11,6 +11,8 @@ import {
   comparisonData,
 } from './reactionTestData';
 import { useTotalParticipants } from '../../hooks/useTestStats';
+import { useUserData } from '../../hooks/useLocalStorage';
+import { useBadges } from '../../hooks/useBadges';
 
 type GamePhase = 'intro' | 'waiting' | 'ready' | 'result' | 'tooEarly' | 'final';
 
@@ -94,6 +96,8 @@ export function ReactionTest() {
 
   const { stats, loading: statsLoading, submitResult, getStats } = useReactionTestStats();
   const { totalCount, isLoading: totalLoading } = useTotalParticipants('reaction-test' as any);
+  const { saveRecord } = useUserData();
+  const { checkBadges, newBadge, dismissNewBadge } = useBadges();
 
   // 타이머 정리
   const clearTimer = useCallback(() => {
@@ -179,13 +183,26 @@ export function ReactionTest() {
     return { avgTime, bestTime, worstTime, grade, validCount: validResults.length };
   };
 
-  // 최종 결과 제출
+  // 최종 결과 제출 및 로컬 저장
   useEffect(() => {
     if (phase === 'final') {
       const finalResults = getFinalResults();
       if (finalResults) {
         submitResult(finalResults.grade.id);
         getStats(finalResults.grade.id);
+
+        // 로컬에 기록 저장
+        saveRecord({
+          testType: 'reaction-test',
+          testName: '반응속도 테스트',
+          result: finalResults.grade.title,
+          resultEmoji: finalResults.grade.emoji,
+          score: finalResults.avgTime,
+          details: { avgTime: finalResults.avgTime, bestTime: finalResults.bestTime },
+        });
+
+        // 뱃지 체크
+        setTimeout(() => checkBadges(), 500);
 
         // 좋은 결과면 confetti
         if (finalResults.avgTime < 250) {
@@ -526,6 +543,9 @@ export function ReactionTest() {
           </div>
         )}
       </div>
+
+      {/* 뱃지 획득 알림 */}
+      <BadgeNotification badge={newBadge} onDismiss={dismissNewBadge} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { SEO, ShareButtons, Recommendations, FAQ } from '../../components';
+import { SEO, ShareButtons, Recommendations, FAQ, BadgeNotification } from '../../components';
 import type { QuizQuestion } from './emojiQuizData';
 import {
   getRandomQuestions,
@@ -10,6 +10,8 @@ import {
   QUESTIONS_PER_ROUND,
   TIME_PER_QUESTION,
 } from './emojiQuizData';
+import { useUserData } from '../../hooks/useLocalStorage';
+import { useBadges } from '../../hooks/useBadges';
 
 type GamePhase = 'intro' | 'playing' | 'result' | 'final';
 
@@ -34,6 +36,9 @@ export function EmojiQuiz() {
 
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const { saveRecord } = useUserData();
+  const { checkBadges, newBadge, dismissNewBadge } = useBadges();
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -132,10 +137,25 @@ export function EmojiQuiz() {
     return { totalScore, maxScore, correctCount, percent, grade };
   };
 
-  // 최종 결과 시 confetti
+  // 최종 결과 시 confetti 및 로컬 저장
   useEffect(() => {
     if (phase === 'final') {
       const finalResults = getFinalResults();
+
+      // 로컬에 기록 저장
+      saveRecord({
+        testType: 'emoji-quiz',
+        testName: '이모지 퀴즈',
+        result: finalResults.grade.title,
+        resultEmoji: finalResults.grade.emoji,
+        score: finalResults.totalScore,
+        maxScore: finalResults.maxScore,
+        percentage: finalResults.percent,
+      });
+
+      // 뱃지 체크
+      setTimeout(() => checkBadges(), 500);
+
       if (finalResults.percent >= 70) {
         confetti({
           particleCount: 100,
@@ -448,6 +468,9 @@ export function EmojiQuiz() {
           </div>
         )}
       </div>
+
+      {/* 뱃지 획득 알림 */}
+      <BadgeNotification badge={newBadge} onDismiss={dismissNewBadge} />
     </>
   );
 }

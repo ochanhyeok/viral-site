@@ -11,6 +11,7 @@ import { KkondaeTest } from './features/kkondae-test/KkondaeTest';
 import { ColorTest } from './features/color-test/ColorTest';
 import { ReactionTest } from './features/reaction-test/ReactionTest';
 import { EmojiQuiz } from './features/emoji-quiz/EmojiQuiz';
+import { MyPage } from './pages/MyPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/color-test" element={<ColorTest />} />
             <Route path="/reaction-test" element={<ReactionTest />} />
             <Route path="/emoji-quiz" element={<EmojiQuiz />} />
+            <Route path="/my" element={<MyPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>

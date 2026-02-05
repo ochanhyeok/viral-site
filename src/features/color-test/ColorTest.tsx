@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
-import { SEO, ShareButtons, Recommendations, FAQ } from '../../components';
+import { SEO, ShareButtons, Recommendations, FAQ, BadgeNotification } from '../../components';
 import { useColorTest } from './useColorTest';
 import { TOTAL_ROUNDS, funFacts, colorTestFAQ, difficultyLevels } from './colorTestData';
 import { useColorTestStats, useTotalParticipants } from '../../hooks/useTestStats';
+import { useUserData } from '../../hooks/useLocalStorage';
+import { useBadges } from '../../hooks/useBadges';
 
 // 색감 테스트용 간단한 희소성 정보
 function getColorRarityInfo(percentage: number) {
@@ -48,12 +50,28 @@ export function ColorTest() {
 
   const { submitResult, getStats, stats, loading: statsLoading } = useColorTestStats();
   const { totalCount, isLoading: totalLoading } = useTotalParticipants('color-test');
+  const { saveRecord } = useUserData();
+  const { checkBadges, newBadge, dismissNewBadge } = useBadges();
 
-  // 결과 제출
+  // 결과 제출 및 로컬 저장
   useEffect(() => {
     if (phase === 'result') {
       const results = getResults();
       submitResult(results.grade.id);
+
+      // 로컬에 기록 저장
+      saveRecord({
+        testType: 'color-test',
+        testName: '색감 테스트',
+        result: results.grade.title,
+        resultEmoji: results.grade.emoji,
+        score: results.score,
+        maxScore: results.maxScore,
+        percentage: results.percent,
+      });
+
+      // 뱃지 체크
+      setTimeout(() => checkBadges(), 500);
 
       // 높은 점수면 confetti
       if (results.percent >= 80) {
@@ -368,6 +386,9 @@ export function ColorTest() {
           animation: shake 0.3s ease-in-out;
         }
       `}</style>
+
+      {/* 뱃지 획득 알림 */}
+      <BadgeNotification badge={newBadge} onDismiss={dismissNewBadge} />
     </>
   );
 }
