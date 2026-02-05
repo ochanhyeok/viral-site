@@ -394,30 +394,60 @@ export function EmojiQuiz() {
         )}
 
         {/* 최종 결과 화면 */}
-        {phase === 'final' && (
+        {phase === 'final' && (() => {
+          const finalResults = getFinalResults();
+          const avgTimeMs = Math.round(results.reduce((sum, r) => sum + r.timeMs, 0) / results.length);
+          const hintsUsed = results.filter(r => r.usedHint).length;
+
+          return (
           <div className="space-y-6 animate-fadeIn">
             {/* 결과 카드 */}
             <div
               id="emoji-quiz-result"
-              className={`relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br ${getFinalResults().grade.bgGradient} text-white shadow-2xl`}
+              className={`relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br ${finalResults.grade.bgGradient} text-white shadow-2xl`}
             >
+              {/* 배경 장식 */}
               <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-1/4 left-4 w-3 h-3 bg-white/30 rounded-full" />
+              <div className="absolute top-1/3 right-8 w-2 h-2 bg-white/40 rounded-full" />
+              <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white/20 rounded-full" />
+              <div className="absolute top-8 left-1/4 text-white/20 text-2xl">✨</div>
+              <div className="absolute bottom-12 right-6 text-white/20 text-xl">🎯</div>
 
               <div className="relative text-center space-y-4">
-                <div className="text-7xl">{getFinalResults().grade.emoji}</div>
-                <h2 className="text-3xl font-black">{getFinalResults().grade.title}</h2>
-                <p className="text-xl text-white/90">{getFinalResults().grade.description}</p>
+                {/* 레벨 뱃지 */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                  <span className="text-white/80 text-sm font-medium">정답률</span>
+                  <span className="text-white font-bold text-lg">{finalResults.percent}%</span>
+                </div>
 
-                {/* 점수 */}
-                <div className="grid grid-cols-2 gap-4 py-4">
-                  <div className="bg-white/20 backdrop-blur rounded-xl p-3">
-                    <p className="text-sm text-white/70">점수</p>
-                    <p className="text-2xl font-bold">{getFinalResults().totalScore}</p>
+                {/* 메인 이모지 */}
+                <div className="text-7xl drop-shadow-lg">{finalResults.grade.emoji}</div>
+
+                {/* 타이틀 */}
+                <h2 className="text-3xl font-black drop-shadow-md">{finalResults.grade.title}</h2>
+                <p className="text-lg text-white/90">{finalResults.grade.description}</p>
+
+                {/* 핵심 점수 강조 */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mx-4">
+                  <p className="text-white/70 text-sm mb-1">총 점수</p>
+                  <p className="text-4xl font-black">{finalResults.totalScore}<span className="text-lg font-normal text-white/70">점</span></p>
+                </div>
+
+                {/* 상세 통계 */}
+                <div className="grid grid-cols-3 gap-2 pt-2">
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2.5">
+                    <p className="text-xs text-white/60">정답</p>
+                    <p className="text-lg font-bold">{finalResults.correctCount}/{results.length}</p>
                   </div>
-                  <div className="bg-white/20 backdrop-blur rounded-xl p-3">
-                    <p className="text-sm text-white/70">정답률</p>
-                    <p className="text-2xl font-bold">{getFinalResults().correctCount}/{results.length}</p>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2.5">
+                    <p className="text-xs text-white/60">평균 시간</p>
+                    <p className="text-lg font-bold">{(avgTimeMs / 1000).toFixed(1)}초</p>
+                  </div>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2.5">
+                    <p className="text-xs text-white/60">힌트</p>
+                    <p className="text-lg font-bold">{hintsUsed}회</p>
                   </div>
                 </div>
 
@@ -456,8 +486,8 @@ export function EmojiQuiz() {
 
             {/* 공유 버튼 */}
             <ShareButtons
-              title={`🎯 이모지 퀴즈 결과: ${getFinalResults().grade.title}`}
-              description={`${getFinalResults().grade.emoji} ${getFinalResults().correctCount}/${results.length} 정답! (${getFinalResults().totalScore}점)`}
+              title={`🎯 이모지 퀴즈 결과: ${finalResults.grade.title}`}
+              description={`${finalResults.grade.emoji} ${finalResults.correctCount}/${results.length} 정답! (${finalResults.totalScore}점)`}
               captureElementId="emoji-quiz-result"
               captureFileName="emoji-quiz-result"
             />
@@ -476,7 +506,8 @@ export function EmojiQuiz() {
             {/* FAQ */}
             <FAQ items={emojiQuizFAQ} title="이모지 퀴즈 FAQ" />
           </div>
-        )}
+        );
+        })()}
       </div>
 
       {/* 뱃지 획득 알림 */}

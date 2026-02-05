@@ -266,17 +266,72 @@ export function BurnoutTest() {
               </div>
             </div>
           </>
-        ) : (
+        ) : (() => {
+          const scorePercent = Math.round((totalScore / 30) * 100);
+
+          return (
           <div className="space-y-6 animate-fadeIn">
-            {/* 결과 */}
-            <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl text-center`}>
-              <p className="text-white/70 text-sm mb-2">나의 번아웃 위험도</p>
-              <div className="text-5xl mb-2">{result.emoji}</div>
-              <div className="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-bold mb-2">
-                {result.level}
+            {/* 결과 카드 - 이미지 캡처용 */}
+            <div
+              id="burnout-result"
+              className={`relative overflow-hidden bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-2xl`}
+            >
+              {/* 배경 장식 */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-1/4 left-6 w-3 h-3 bg-white/30 rounded-full" />
+              <div className="absolute top-1/3 right-10 w-2 h-2 bg-white/40 rounded-full" />
+              <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white/20 rounded-full" />
+              <div className="absolute top-8 left-1/4 text-white/20 text-2xl">🔥</div>
+              <div className="absolute bottom-16 right-6 text-white/20 text-xl">💊</div>
+
+              <div className="relative text-center space-y-4">
+                {/* 레벨 뱃지 */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                  <span className="text-white/80 text-sm font-medium">위험도</span>
+                  <span className="text-white font-bold">{result.level}</span>
+                </div>
+
+                {/* 메인 이모지 */}
+                <div className="text-6xl drop-shadow-lg">{result.emoji}</div>
+
+                {/* 타이틀 */}
+                <h2 className="text-3xl font-black drop-shadow-md">{result.title}</h2>
+                <p className="text-white/90">{result.description}</p>
+
+                {/* 게이지 바 */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mx-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-white/70">번아웃 지수</span>
+                    <span className="text-2xl font-black">{scorePercent}%</span>
+                  </div>
+                  <div className="h-3 bg-white/30 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-white rounded-full transition-all duration-1000"
+                      style={{ width: `${scorePercent}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-white/60 mt-1">
+                    <span>안전</span>
+                    <span>위험</span>
+                  </div>
+                </div>
+
+                {/* 점수 통계 */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                    <p className="text-xs text-white/60">총점</p>
+                    <p className="text-xl font-bold">{totalScore}<span className="text-sm text-white/70">/30</span></p>
+                  </div>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                    <p className="text-xs text-white/60">상태</p>
+                    <p className="text-xl font-bold">{result.level}</p>
+                  </div>
+                </div>
+
+                {/* 워터마크 */}
+                <p className="text-xs text-white/40 pt-2">viral-site-opal.vercel.app</p>
               </div>
-              <h2 className="text-2xl font-bold">{result.title}</h2>
-              <p className="text-white/80 text-sm mt-2">총점: {totalScore}/30</p>
             </div>
 
             {/* 설명 */}
@@ -307,13 +362,12 @@ export function BurnoutTest() {
             </div>
 
             {/* 공유 */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
-              <ShareButtons
-                title="번아웃 위험도 테스트"
-                description={`나의 번아웃 상태: ${result.title} (${result.level})`}
-              />
-            </div>
+            <ShareButtons
+              title="번아웃 위험도 테스트"
+              description={`나의 번아웃 상태: ${result.title} (${result.level})`}
+              captureElementId="burnout-result"
+              captureFileName="burnout-result"
+            />
 
             <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
               다시 테스트하기
@@ -321,7 +375,8 @@ export function BurnoutTest() {
 
             <Recommendations currentPath="/burnout-test" />
           </div>
-        )}
+        );
+        })()}
       </div>
 
       <style>{`

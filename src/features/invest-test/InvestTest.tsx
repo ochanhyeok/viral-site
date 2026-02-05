@@ -288,15 +288,57 @@ export default function InvestTest() {
         ) : (
           /* 결과 */
           <div className="space-y-4 animate-fadeIn">
-            {/* 결과 카드 */}
-            <div id="invest-result" className={`bg-gradient-to-br ${result.color} rounded-2xl p-6 text-white shadow-xl`}>
-              <div className="text-center">
-                <span className="text-6xl mb-4 block">{result.emoji}</span>
-                <h2 className="text-3xl font-bold mb-2">{result.title}</h2>
-                <p className="text-white/80 text-lg mb-4">{result.subtitle}</p>
-                <p className="text-white/90 text-sm leading-relaxed">
+            {/* 결과 카드 - 이미지 캡처용 */}
+            <div
+              id="invest-result"
+              className={`relative overflow-hidden bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-2xl`}
+            >
+              {/* 배경 장식 */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-1/4 left-6 w-3 h-3 bg-white/30 rounded-full" />
+              <div className="absolute top-1/3 right-10 w-2 h-2 bg-white/40 rounded-full" />
+              <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white/20 rounded-full" />
+              <div className="absolute top-8 left-1/4 text-white/20 text-2xl">📈</div>
+              <div className="absolute bottom-16 right-6 text-white/20 text-xl">💰</div>
+
+              <div className="relative text-center space-y-4">
+                {/* 유형 뱃지 */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                  <span className="text-white/80 text-sm font-medium">투자 성향</span>
+                </div>
+
+                {/* 메인 이모지 */}
+                <div className="text-6xl drop-shadow-lg">{result.emoji}</div>
+
+                {/* 타이틀 */}
+                <h2 className="text-3xl font-black drop-shadow-md">{result.title}</h2>
+                <p className="text-xl text-white/90 font-medium">{result.subtitle}</p>
+                <p className="text-sm text-white/80 leading-relaxed px-2">
                   {result.description}
                 </p>
+
+                {/* 포트폴리오 미니 바 */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mx-2">
+                  <p className="text-sm text-white/70 mb-2">추천 포트폴리오</p>
+                  <div className="h-4 rounded-full overflow-hidden flex">
+                    {result.portfolio.map((item, index) => (
+                      <div
+                        key={index}
+                        className={`${item.color} h-full`}
+                        style={{ width: `${item.ratio}%` }}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-xs text-white/60 mt-2">
+                    {result.portfolio.slice(0, 2).map((item, index) => (
+                      <span key={index}>{item.name} {item.ratio}%</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 워터마크 */}
+                <p className="text-xs text-white/40 pt-2">viral-site-opal.vercel.app</p>
               </div>
             </div>
 
@@ -346,15 +388,12 @@ export default function InvestTest() {
             </div>
 
             {/* 공유 */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
-              <ShareButtons
-                title={`나의 투자 성향: ${result.title}`}
-                description={result.subtitle}
-                captureElementId="invest-result"
-                captureFileName="invest-test-result"
-              />
-            </div>
+            <ShareButtons
+              title={`나의 투자 성향: ${result.title}`}
+              description={result.subtitle}
+              captureElementId="invest-result"
+              captureFileName="invest-test-result"
+            />
 
             {/* 다시하기 */}
             <button

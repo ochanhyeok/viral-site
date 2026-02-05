@@ -402,47 +402,63 @@ export function RetirementCalculator() {
               </div>
             </div>
 
-            {/* 이미지 저장용 캡처 카드 */}
+            {/* 이미지 저장용 캡처 카드 - 프리미엄 디자인 */}
             <div
               id="retirement-result-capture"
-              className="rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600"
+              className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 shadow-2xl"
             >
-              <div className="p-6 text-white text-center">
-                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">🏦</span>
+              {/* 배경 장식 */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-1/4 left-6 w-3 h-3 bg-white/30 rounded-full" />
+              <div className="absolute top-1/3 right-10 w-2 h-2 bg-white/40 rounded-full" />
+              <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white/20 rounded-full" />
+              <div className="absolute top-8 left-1/4 text-white/20 text-2xl">💼</div>
+              <div className="absolute bottom-16 right-6 text-white/20 text-xl">📈</div>
+
+              <div className="relative p-6 text-white text-center space-y-4">
+                {/* 타이틀 뱃지 */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                  <span className="text-white/80 text-sm font-medium">퇴직금 계산 결과</span>
                 </div>
-                <p className="text-white/70 text-sm mb-1">예상 퇴직금</p>
-                <h2 className="text-3xl font-extrabold mb-3">{formatCurrency(result.retirementPay)}원</h2>
-                <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-white/60">근속기간</p>
-                      <p className="font-bold text-lg">{result.years}년 {result.months}개월</p>
-                    </div>
-                    <div>
-                      <p className="text-white/60">총 근무일수</p>
-                      <p className="font-bold text-lg">{result.totalDays}일</p>
-                    </div>
+
+                {/* 메인 금액 */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5">
+                  <p className="text-white/70 text-sm mb-1">예상 퇴직금</p>
+                  <p className="text-4xl font-black drop-shadow-md">
+                    {formatCurrency(result.retirementPay)}
+                    <span className="text-xl font-bold">원</span>
+                  </p>
+                </div>
+
+                {/* 상세 정보 그리드 */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                    <p className="text-xs text-white/60">근속기간</p>
+                    <p className="text-lg font-bold">{result.years}년 {result.months}개월</p>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-white/20">
-                    <p className="text-white/60 text-sm">평균임금</p>
-                    <p className="font-bold">{formatCurrency(result.averageDailyWage)}원/일</p>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                    <p className="text-xs text-white/60">총 근무일</p>
+                    <p className="text-lg font-bold">{result.totalDays}일</p>
+                  </div>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+                    <p className="text-xs text-white/60">일 평균임금</p>
+                    <p className="text-lg font-bold">{formatCurrency(result.averageDailyWage)}원</p>
                   </div>
                 </div>
-                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+
+                {/* 워터마크 */}
+                <p className="text-xs text-white/40 pt-2">viral-site-opal.vercel.app</p>
               </div>
             </div>
 
             {/* 공유 */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
-              <ShareButtons
-                title="퇴직금 계산기"
-                description={`${result.years}년 ${result.months}개월 근무 시 예상 퇴직금: ${formatCurrency(result.retirementPay)}원`}
-                captureElementId="retirement-result-capture"
-                captureFileName="retirement-result"
-              />
-            </div>
+            <ShareButtons
+              title="퇴직금 계산기"
+              description={`${result.years}년 ${result.months}개월 근무 시 예상 퇴직금: ${formatCurrency(result.retirementPay)}원`}
+              captureElementId="retirement-result-capture"
+              captureFileName="retirement-result"
+            />
 
             {/* 다른 도구 추천 */}
             <Recommendations currentPath="/retirement" />

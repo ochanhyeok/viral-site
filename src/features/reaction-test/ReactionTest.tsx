@@ -427,66 +427,88 @@ export function ReactionTest() {
         {/* 최종 결과 화면 */}
         {phase === 'final' && finalResults && (
           <div className="space-y-6 animate-fadeIn">
-            {/* 결과 카드 */}
+            {/* 결과 카드 - 프리미엄 디자인 */}
             <div
               id="reaction-test-result"
-              className={`relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br ${finalResults.grade.bgGradient} text-white shadow-2xl`}
+              className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${finalResults.grade.bgGradient} text-white shadow-2xl`}
             >
               {/* 배경 장식 */}
-              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-
-              <div className="relative text-center space-y-4">
-                {/* 희귀도 뱃지 */}
-                {rarityInfo && rarityInfo.isRare && (
-                  <div className={`inline-flex items-center gap-1 px-3 py-1 ${rarityInfo.badgeColor} rounded-full text-sm font-bold`}>
-                    {rarityInfo.badge}
-                  </div>
-                )}
-
-                {/* 등급 */}
-                <div className="text-7xl">{finalResults.grade.emoji}</div>
-                <h2 className="text-3xl font-black">{finalResults.grade.title}</h2>
-                <p className="text-xl text-white/90">{finalResults.grade.description}</p>
-
-                {/* 평균 반응속도 */}
-                <div className="py-4">
-                  <p className="text-sm text-white/70 mb-1">평균 반응속도</p>
-                  <p className="text-5xl font-black">{finalResults.avgTime}<span className="text-xl">ms</span></p>
-                </div>
-
-                {/* 상세 기록 */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/20 backdrop-blur rounded-xl p-3">
-                    <p className="text-sm text-white/70">최고 기록</p>
-                    <p className="text-2xl font-bold">{finalResults.bestTime}ms</p>
-                  </div>
-                  <div className="bg-white/20 backdrop-blur rounded-xl p-3">
-                    <p className="text-sm text-white/70">최저 기록</p>
-                    <p className="text-2xl font-bold">{finalResults.worstTime}ms</p>
-                  </div>
-                </div>
-
-                {/* 상세 설명 */}
-                <p className="text-sm text-white/80 leading-relaxed bg-black/10 rounded-xl p-4">
-                  {finalResults.grade.detailDescription}
-                </p>
-
-                {/* 통계 */}
-                {!statsLoading && stats && (
-                  <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-                    <p className="text-sm text-white/70">{rarityInfo?.message}</p>
-                    <p className="text-xs text-white/50 mt-1">
-                      {stats.totalCount.toLocaleString()}명 중 {stats.count.toLocaleString()}명이 같은 등급
-                    </p>
-                  </div>
-                )}
-
-                {/* 워터마크 */}
-                <p className="text-xs text-white/40 pt-2">
-                  viral-site-opal.vercel.app
-                </p>
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
               </div>
+
+              <div className="relative p-8">
+                {/* 상단 뱃지 */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium">⚡ 반응속도 테스트</span>
+                  </div>
+                  {rarityInfo && rarityInfo.isRare && (
+                    <div className={`${rarityInfo.badgeColor} px-3 py-1 rounded-full shadow-lg`}>
+                      <span className="text-xs font-bold">{rarityInfo.badge}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center space-y-4">
+                  {/* 이모지 */}
+                  <div className="w-24 h-24 mx-auto bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/30">
+                    <span className="text-5xl">{finalResults.grade.emoji}</span>
+                  </div>
+
+                  {/* 등급 */}
+                  <h2 className="text-3xl font-black drop-shadow-lg">{finalResults.grade.title}</h2>
+                  <p className="text-lg text-white/90">{finalResults.grade.description}</p>
+
+                  {/* 구분선 */}
+                  <div className="w-16 h-1 bg-white/30 rounded-full mx-auto" />
+
+                  {/* 평균 반응속도 */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                    <p className="text-sm text-white/70 mb-1">평균 반응속도</p>
+                    <p className="text-5xl font-black">{finalResults.avgTime}<span className="text-xl">ms</span></p>
+                  </div>
+
+                  {/* 상세 기록 */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                      <p className="text-xs text-white/60">최고 기록</p>
+                      <p className="text-xl font-bold">{finalResults.bestTime}ms</p>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                      <p className="text-xs text-white/60">최저 기록</p>
+                      <p className="text-xl font-bold">{finalResults.worstTime}ms</p>
+                    </div>
+                  </div>
+
+                  {/* 통계 */}
+                  {!statsLoading && stats && (
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                      <p className="text-sm">{rarityInfo?.message}</p>
+                      <p className="text-xs text-white/50 mt-1">
+                        {stats.totalCount.toLocaleString()}명 중 {stats.count.toLocaleString()}명이 같은 등급
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* 하단 브랜딩 */}
+                <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-white/20">
+                  <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xs">✨</span>
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">viral-site-opal.vercel.app</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 상세 설명 */}
+            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {finalResults.grade.detailDescription}
+              </p>
             </div>
 
             {/* 비교 차트 */}

@@ -232,39 +232,74 @@ export function HoesikTest() {
               </div>
             </div>
           </>
-        ) : (
+        ) : (() => {
+          const maxScore = questions.length * 3;
+          const scorePercent = Math.round((totalScore / maxScore) * 100);
+
+          return (
           <div className="space-y-6 animate-fadeIn">
-            {/* 결과 */}
-            <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl text-center`}>
-              <p className="text-white/70 text-sm mb-2">나의 회식 유형</p>
-              <div className="text-5xl mb-2">{result.emoji}</div>
-              <h2 className="text-2xl font-bold mb-1">{result.title}</h2>
-              <p className="text-white/80 text-sm">회식력 점수: {totalScore}/24</p>
-            </div>
+            {/* 결과 카드 - 이미지 캡처용 */}
+            <div
+              id="hoesik-result"
+              className={`relative overflow-hidden bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-2xl`}
+            >
+              {/* 배경 장식 */}
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-1/4 left-6 w-3 h-3 bg-white/30 rounded-full" />
+              <div className="absolute top-1/3 right-10 w-2 h-2 bg-white/40 rounded-full" />
+              <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white/20 rounded-full" />
+              <div className="absolute top-8 left-1/4 text-white/20 text-2xl">🍻</div>
+              <div className="absolute bottom-16 right-6 text-white/20 text-xl">🎤</div>
 
-            {/* 설명 */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <p className="text-gray-700 leading-relaxed mb-4">{result.description}</p>
+              <div className="relative text-center space-y-4">
+                {/* 유형 뱃지 */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                  <span className="text-white/80 text-sm font-medium">회식 유형</span>
+                </div>
 
-              {/* 스킬 */}
-              <div className="mb-4">
-                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <span>⚔️</span> 보유 스킬
-                </h3>
-                <div className="flex flex-wrap gap-2">
+                {/* 메인 이모지 */}
+                <div className="text-6xl drop-shadow-lg">{result.emoji}</div>
+
+                {/* 타이틀 */}
+                <h2 className="text-3xl font-black drop-shadow-md">{result.title}</h2>
+                <p className="text-white/90 text-sm px-4">{result.description}</p>
+
+                {/* 회식력 점수 */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mx-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-white/70">회식 생존력</span>
+                    <span className="text-2xl font-black">{scorePercent}%</span>
+                  </div>
+                  <div className="h-3 bg-white/30 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-white rounded-full transition-all duration-1000"
+                      style={{ width: `${scorePercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* 보유 스킬 */}
+                <div className="flex flex-wrap justify-center gap-2 pt-2">
                   {result.skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm"
+                      className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
                   ))}
                 </div>
-              </div>
 
+                {/* 워터마크 */}
+                <p className="text-xs text-white/40 pt-2">viral-site-opal.vercel.app</p>
+              </div>
+            </div>
+
+            {/* 상세 정보 */}
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4">
               {/* 약점 */}
-              <div className="bg-red-50 rounded-xl p-4 border border-red-100 mb-4">
+              <div className="bg-red-50 rounded-xl p-4 border border-red-100">
                 <p className="text-red-800 text-sm">
                   <span className="font-bold">⚠️ 약점:</span> {result.weakness}
                 </p>
@@ -279,13 +314,12 @@ export function HoesikTest() {
             </div>
 
             {/* 공유 */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
-              <ShareButtons
-                title="회식 생존 테스트"
-                description={`나의 회식 유형: ${result.title} ${result.emoji}`}
-              />
-            </div>
+            <ShareButtons
+              title="회식 생존 테스트"
+              description={`나의 회식 유형: ${result.title} ${result.emoji}`}
+              captureElementId="hoesik-result"
+              captureFileName="hoesik-result"
+            />
 
             <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
               다시 테스트하기
@@ -293,7 +327,8 @@ export function HoesikTest() {
 
             <Recommendations currentPath="/hoesik-test" />
           </div>
-        )}
+        );
+        })()}
       </div>
 
       <style>{`
