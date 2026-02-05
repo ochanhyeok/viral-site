@@ -1,90 +1,81 @@
-import { useState, useCallback } from 'react';
-import { stressQuestions } from '../../data/stressQuestions';
-import type { Answer, StressResult, CategoryScore } from '../../types/stressTest';
-import { ProgressBar } from './ProgressBar';
-import { Question } from './Question';
-import { Result, getStressLevel } from './Result';
-import { SEO, Card } from '../index';
+import { useState } from 'react';
+import { stressQuestions, answerOptions } from '../../data/stressQuestions';
+import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
+import { SEO, Button, ShareButtons } from '../index';
+import { stressTips, stressMusic } from '../../data/stressQuestions';
+import { STRESS_LEVELS } from '../../types/stressTest';
 
 type TestPhase = 'intro' | 'questions' | 'result';
+
+function getStressLevel(totalScore: number): StressLevel {
+  if (totalScore <= 15) return 'low';
+  if (totalScore <= 25) return 'moderate';
+  if (totalScore <= 35) return 'high';
+  return 'veryHigh';
+}
 
 export function StressTest() {
   const [phase, setPhase] = useState<TestPhase>('intro');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [result, setResult] = useState<StressResult | null>(null);
+  const [selectedScore, setSelectedScore] = useState<number | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const currentQuestion = stressQuestions[currentIndex];
-  const selectedScore = answers.find(
-    (a) => a.questionId === currentQuestion?.id
-  )?.score ?? null;
+  const progress = ((currentIndex + 1) / stressQuestions.length) * 100;
 
   const handleStart = () => {
     setPhase('questions');
+    setCurrentIndex(0);
+    setAnswers([]);
   };
 
-  const handleAnswer = useCallback((score: number) => {
-    const questionId = stressQuestions[currentIndex].id;
+  const handleAnswer = (score: number) => {
+    if (isAnimating) return;
 
-    setAnswers((prev) => {
-      const existing = prev.findIndex((a) => a.questionId === questionId);
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = { questionId, score };
-        return updated;
-      }
-      return [...prev, { questionId, score }];
-    });
+    setSelectedScore(score);
+    setIsAnimating(true);
 
-    // 자동으로 다음 문항으로 이동 (마지막 문항이 아닌 경우)
     setTimeout(() => {
+      const newAnswer: Answer = {
+        questionId: currentQuestion.id,
+        score,
+      };
+
+      const newAnswers = [...answers, newAnswer];
+      setAnswers(newAnswers);
+
       if (currentIndex < stressQuestions.length - 1) {
         setCurrentIndex((prev) => prev + 1);
+        setSelectedScore(null);
+      } else {
+        // 결과 계산
+        const totalScore = newAnswers.reduce((sum, a) => sum + a.score, 0);
+        const level = getStressLevel(totalScore);
+
+        // 카테고리별 점수
+        const categoryMap = new Map<string, number>();
+        newAnswers.forEach((answer) => {
+          const question = stressQuestions.find((q) => q.id === answer.questionId);
+          if (question) {
+            categoryMap.set(question.category, answer.score);
+          }
+        });
+
+        const categoryScores = Array.from(categoryMap.entries()).map(
+          ([category, score]) => ({
+            category,
+            score,
+            maxScore: 5,
+          })
+        );
+
+        setResult({ totalScore, level, categoryScores });
+        setPhase('result');
       }
+      setIsAnimating(false);
     }, 300);
-  }, [currentIndex]);
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < stressQuestions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    }
-  };
-
-  const handleSubmit = () => {
-    const totalScore = answers.reduce((sum, a) => sum + a.score, 0);
-
-    // 카테고리별 점수 계산
-    const categoryMap = new Map<string, number>();
-    answers.forEach((answer) => {
-      const question = stressQuestions.find((q) => q.id === answer.questionId);
-      if (question) {
-        const current = categoryMap.get(question.category) || 0;
-        categoryMap.set(question.category, current + answer.score);
-      }
-    });
-
-    const categoryScores: CategoryScore[] = Array.from(categoryMap.entries()).map(
-      ([category, score]) => ({
-        category,
-        score,
-        maxScore: 5, // 각 카테고리당 1문항, 최대 5점
-      })
-    );
-
-    const level = getStressLevel(totalScore);
-
-    setResult({
-      totalScore,
-      level,
-      categoryScores,
-    });
-    setPhase('result');
   };
 
   const handleRetry = () => {
@@ -92,103 +83,265 @@ export function StressTest() {
     setCurrentIndex(0);
     setAnswers([]);
     setResult(null);
+    setSelectedScore(null);
   };
 
-  const allAnswered = answers.length === stressQuestions.length;
+  const levelInfo = result ? STRESS_LEVELS[result.level] : null;
+  const tips = result ? stressTips[result.level] : [];
+  const musicList = result ? stressMusic[result.level] : [];
 
   return (
     <>
       <SEO
         title="스트레스 지수 테스트"
-        description="간단한 10개의 질문으로 현재 나의 스트레스 수준을 측정해보세요. 스트레스 관리 팁도 제공됩니다."
+        description="10개의 질문으로 알아보는 나의 스트레스 수준! 맞춤 음악 추천까지!"
         keywords="스트레스테스트,스트레스지수,스트레스측정,심리테스트,멘탈헬스"
       />
 
-      <div className="max-w-lg mx-auto">
+      <div className="space-y-6">
         {/* 인트로 */}
         {phase === 'intro' && (
-          <Card className="text-center animate-fadeIn">
-            <div className="text-6xl mb-6">🧠</div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+          <div className="text-center animate-fadeIn">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-rose-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-xl shadow-rose-500/30">
+              <span className="text-5xl">🧠</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">
               스트레스 지수 테스트
             </h1>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              간단한 10개의 질문을 통해
-              <br />
-              현재 당신의 스트레스 수준을 측정해보세요.
+            <p className="text-gray-500 mb-8">
+              요즘 나의 스트레스 수준은 어떨까?<br />
+              솔직하게 답하면 맞춤 처방을 드려요!
             </p>
-            <div className="bg-purple-50 rounded-xl p-4 mb-6 text-left">
-              <p className="text-sm text-purple-800 font-medium mb-2">
-                📋 테스트 안내
-              </p>
-              <ul className="text-sm text-purple-700 space-y-1">
-                <li>• 총 10문항으로 구성되어 있습니다</li>
-                <li>• 각 문항은 5점 척도로 응답합니다</li>
-                <li>• 솔직하게 답변할수록 정확한 결과가 나옵니다</li>
-              </ul>
+
+            <div className="bg-white rounded-2xl p-5 mb-8 shadow-sm border border-gray-100">
+              <div className="flex items-center justify-around text-sm">
+                <div className="text-center">
+                  <div className="text-2xl mb-1">📝</div>
+                  <div className="text-gray-500">10문항</div>
+                </div>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">⏱️</div>
+                  <div className="text-gray-500">2분</div>
+                </div>
+                <div className="w-px h-10 bg-gray-200" />
+                <div className="text-center">
+                  <div className="text-2xl mb-1">🎵</div>
+                  <div className="text-gray-500">음악 추천</div>
+                </div>
+              </div>
             </div>
-            <button
-              onClick={handleStart}
-              className="w-full py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-bold text-lg hover:from-purple-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl"
-            >
+
+            <Button onClick={handleStart} size="lg" className="w-full max-w-xs bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600">
               테스트 시작하기
-            </button>
-          </Card>
+            </Button>
+          </div>
         )}
 
         {/* 질문 */}
         {phase === 'questions' && currentQuestion && (
-          <Card>
-            <ProgressBar
-              current={currentIndex + 1}
-              total={stressQuestions.length}
-            />
-
-            <div className="mt-8">
-              <Question
-                key={currentQuestion.id}
-                question={currentQuestion}
-                selectedScore={selectedScore}
-                onAnswer={handleAnswer}
-              />
+          <div className="space-y-6 animate-fadeIn">
+            {/* 프로그레스 */}
+            <div className="relative">
+              <div className="flex justify-between text-xs text-gray-400 mb-2">
+                <span className="font-medium text-rose-500">{currentQuestion.category}</span>
+                <span>{currentIndex + 1} / {stressQuestions.length}</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-rose-500 to-orange-500 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
 
-            {/* 네비게이션 버튼 */}
-            <div className="flex gap-3 mt-8">
-              <button
-                onClick={handlePrevious}
-                disabled={currentIndex === 0}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                이전
-              </button>
+            {/* 질문 카드 */}
+            <div
+              className={`bg-white rounded-3xl shadow-lg overflow-hidden transition-all duration-300 ${
+                isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+              }`}
+            >
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-8 leading-relaxed text-center">
+                  "{currentQuestion.question}"
+                </h2>
 
-              {currentIndex < stressQuestions.length - 1 ? (
-                <button
-                  onClick={handleNext}
-                  disabled={selectedScore === null}
-                  className="flex-1 py-3 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  다음
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  disabled={!allAnswered}
-                  className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  결과 보기
-                </button>
-              )}
+                <div className="space-y-3">
+                  {answerOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleAnswer(option.value)}
+                      disabled={isAnimating}
+                      className={`w-full p-4 rounded-2xl border-2 transition-all duration-200 flex items-center gap-4 ${
+                        selectedScore === option.value
+                          ? 'border-rose-500 bg-rose-50 scale-[0.98]'
+                          : 'border-gray-100 hover:border-rose-200 hover:bg-rose-50/50'
+                      } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer active:scale-[0.98]'}`}
+                    >
+                      <span className="text-2xl">{option.emoji}</span>
+                      <span className="text-gray-700 font-medium">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* 결과 */}
-        {phase === 'result' && result && (
-          <Result result={result} onRetry={handleRetry} />
+        {phase === 'result' && result && levelInfo && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* 결과 헤더 */}
+            <div className="text-center">
+              <div
+                className="w-24 h-24 mx-auto mb-4 rounded-3xl flex items-center justify-center shadow-xl"
+                style={{ background: `linear-gradient(135deg, ${levelInfo.color}, ${levelInfo.color}dd)` }}
+              >
+                <span className="text-5xl">
+                  {result.level === 'low' && '😊'}
+                  {result.level === 'moderate' && '😐'}
+                  {result.level === 'high' && '😰'}
+                  {result.level === 'veryHigh' && '😫'}
+                </span>
+              </div>
+              <p className="text-gray-400 text-sm mb-1">당신의 스트레스 지수는</p>
+              <h1 className="text-4xl font-extrabold mb-2" style={{ color: levelInfo.color }}>
+                {result.totalScore}점
+              </h1>
+              <p className="text-xl font-bold text-gray-900">{levelInfo.label}</p>
+            </div>
+
+            {/* 게이지 바 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-3">
+                <div
+                  className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${(result.totalScore / 50) * 100}%`,
+                    background: `linear-gradient(90deg, #22c55e, #eab308, #f97316, #ef4444)`,
+                  }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-gray-400">
+                <span>낮음</span>
+                <span>보통</span>
+                <span>높음</span>
+                <span>매우 높음</span>
+              </div>
+            </div>
+
+            {/* 설명 카드 */}
+            <div
+              className="rounded-3xl p-6 text-white shadow-xl"
+              style={{ background: `linear-gradient(135deg, ${levelInfo.color}, ${levelInfo.color}cc)` }}
+            >
+              <p className="text-lg leading-relaxed">{levelInfo.description}</p>
+            </div>
+
+            {/* 영역별 분석 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4">영역별 분석</h3>
+              <div className="space-y-3">
+                {result.categoryScores.map((cat) => {
+                  const percentage = (cat.score / cat.maxScore) * 100;
+                  let barColor = '#22c55e';
+                  if (percentage > 40) barColor = '#eab308';
+                  if (percentage > 60) barColor = '#f97316';
+                  if (percentage > 80) barColor = '#ef4444';
+
+                  return (
+                    <div key={cat.category}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-gray-600">{cat.category}</span>
+                        <span className="font-medium" style={{ color: barColor }}>
+                          {cat.score}/5
+                        </span>
+                      </div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{ width: `${percentage}%`, backgroundColor: barColor }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 음악 추천 */}
+            <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-3xl p-6 border border-violet-100">
+              <h3 className="font-bold text-violet-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">🎵</span> 지금 이 노래 어때요?
+              </h3>
+              <div className="space-y-3">
+                {musicList.map((music, index) => (
+                  <a
+                    key={index}
+                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(music.youtubeQuery)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-white rounded-2xl p-4 hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-xl">
+                        ▶
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-gray-900">{music.title}</p>
+                        <p className="text-sm text-gray-500">{music.artist}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-violet-600 mt-2">{music.reason}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* 관리 팁 */}
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-6 border border-blue-100">
+              <h3 className="font-bold text-blue-900 mb-4 flex items-center gap-2">
+                <span className="text-xl">💡</span> 스트레스 관리 TIP
+              </h3>
+              <ul className="space-y-3">
+                {tips.map((tip, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      {index + 1}
+                    </span>
+                    <span className="text-blue-800">{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 공유 */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 text-center">
+                친구에게 공유하기
+              </h3>
+              <ShareButtons
+                title="스트레스 지수 테스트"
+                description={`나의 스트레스 지수: ${result.totalScore}점 (${levelInfo.label})`}
+              />
+            </div>
+
+            <Button onClick={handleRetry} variant="outline" className="w-full" size="lg">
+              다시 테스트하기
+            </Button>
+          </div>
         )}
       </div>
+
+      <style>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
