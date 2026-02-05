@@ -306,6 +306,26 @@ export function WorkMbti() {
               <p className="text-indigo-700 leading-relaxed">{result.teamTip}</p>
             </div>
 
+            {/* 이미지 저장용 카드 */}
+            <div
+              id="mbti-result-capture"
+              className={`rounded-3xl overflow-hidden bg-gradient-to-br ${result.color}`}
+            >
+              <div className="p-6 text-white text-center">
+                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">{result.emoji}</span>
+                </div>
+                <p className="text-white/70 text-sm mb-1">나의 직장인 MBTI</p>
+                <h2 className="text-4xl font-extrabold mb-1">{result.type}</h2>
+                <p className="text-xl font-bold mb-1">{result.name}</p>
+                <p className="text-white/80 text-sm mb-3">{result.title}</p>
+                <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
+                  <p className="text-white/90 text-sm leading-relaxed">{result.description}</p>
+                </div>
+                <p className="text-white/50 text-xs">직장인 꿀툴 | viral-site-opal.vercel.app</p>
+              </div>
+            </div>
+
             {/* 공유 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-4 text-center">
@@ -314,6 +334,8 @@ export function WorkMbti() {
               <ShareButtons
                 title="직장인 MBTI 테스트"
                 description={`나의 직장인 MBTI는 ${result.type} - ${result.name}!`}
+                captureElementId="mbti-result-capture"
+                captureFileName="mbti-result"
               />
             </div>
 

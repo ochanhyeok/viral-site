@@ -557,6 +557,31 @@ export function StressTest() {
               </ul>
             </div>
 
+            {/* 이미지 저장용 카드 */}
+            <div
+              id="stress-result-capture"
+              className="rounded-3xl overflow-hidden"
+              style={{ background: `linear-gradient(135deg, ${levelInfo.color}, ${levelInfo.color}cc)` }}
+            >
+              <div className="p-6 text-white text-center">
+                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">
+                    {result.level === 'low' && '😊'}
+                    {result.level === 'moderate' && '😐'}
+                    {result.level === 'high' && '😰'}
+                    {result.level === 'veryHigh' && '😫'}
+                  </span>
+                </div>
+                <p className="text-white/70 text-sm mb-1">나의 스트레스 지수</p>
+                <h2 className="text-4xl font-extrabold mb-1">{result.totalScore}점</h2>
+                <p className="text-xl font-bold mb-3">{levelInfo.label}</p>
+                <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
+                  <p className="text-white/90 text-sm leading-relaxed">{levelInfo.description}</p>
+                </div>
+                <p className="text-white/50 text-xs">직장인 꿀툴 | viral-site-opal.vercel.app</p>
+              </div>
+            </div>
+
             {/* 공유 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-4 text-center">
@@ -565,6 +590,8 @@ export function StressTest() {
               <ShareButtons
                 title="스트레스 지수 테스트"
                 description={`나의 스트레스 지수: ${result.totalScore}점 (${levelInfo.label})`}
+                captureElementId="stress-result-capture"
+                captureFileName="stress-result"
               />
             </div>
 
