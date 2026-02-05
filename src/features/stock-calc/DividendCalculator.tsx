@@ -254,6 +254,7 @@ export default function DividendCalculator() {
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
   const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'tech' | 'covered'>('korea');
+  const [mainTab, setMainTab] = useState<'calculator' | 'guide'>('calculator');
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
@@ -367,6 +368,191 @@ export default function DividendCalculator() {
           </p>
         </div>
 
+        {/* 메인 탭: 계산기 / 투자 가이드 */}
+        <div className="flex bg-gray-100 rounded-xl p-1">
+          <button
+            onClick={() => setMainTab('calculator')}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all ${
+              mainTab === 'calculator'
+                ? 'bg-white text-amber-600 shadow-md'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            🧮 계산기
+          </button>
+          <button
+            onClick={() => setMainTab('guide')}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all ${
+              mainTab === 'guide'
+                ? 'bg-white text-amber-600 shadow-md'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            📚 투자 가이드
+          </button>
+        </div>
+
+        {/* 투자 가이드 탭 */}
+        {mainTab === 'guide' && (
+          <div className="space-y-4 animate-fadeIn">
+            {/* 배당 투자란? */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="text-lg">💡</span>
+                배당 투자란?
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                배당 투자는 <strong>기업이 이익의 일부를 주주에게 나눠주는 배당금</strong>을 통해
+                수익을 얻는 투자 방식입니다. 주가 상승 차익뿐만 아니라 정기적인 현금 수입을
+                얻을 수 있어 <strong>은퇴 자금, 월급 외 수입</strong>을 원하는 분들에게 인기 있습니다.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-green-50 rounded-xl p-3">
+                  <div className="font-semibold text-green-700 text-sm mb-1">✅ 장점</div>
+                  <ul className="text-xs text-green-600 space-y-1">
+                    <li>• 정기적인 현금 수입</li>
+                    <li>• 복리 효과 (재투자 시)</li>
+                    <li>• 하락장에서 수익 가능</li>
+                  </ul>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3">
+                  <div className="font-semibold text-amber-700 text-sm mb-1">⚠️ 주의</div>
+                  <ul className="text-xs text-amber-600 space-y-1">
+                    <li>• 배당락으로 주가 하락</li>
+                    <li>• 배당 삭감/중단 가능</li>
+                    <li>• 배당소득세 15.4%</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* 핵심 용어 정리 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-lg">📖</span>
+                핵심 용어 정리
+              </h3>
+              <div className="space-y-3">
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-800 text-sm">배당수익률 (Dividend Yield)</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    연간 배당금 ÷ 주가 × 100. 투자금 대비 배당금 비율. <strong>3% 이상이면 고배당주</strong>로 분류.
+                  </p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-800 text-sm">배당락일 (Ex-Dividend Date)</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    이 날 이후 주식을 사면 배당을 못 받음. <strong>배당락일 전날까지</strong> 매수해야 배당 수령 가능.
+                  </p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-800 text-sm">배당성향 (Payout Ratio)</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    순이익 중 배당으로 지급하는 비율. <strong>30~50%가 적정</strong>, 너무 높으면 배당 삭감 위험.
+                  </p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-800 text-sm">배당왕/배당귀족 (Dividend King/Aristocrat)</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    50년/25년 이상 연속 배당 인상 기업. 코카콜라, P&G, J&J 등이 대표적.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 배당 투자 전략 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-lg">🎯</span>
+                배당 투자 전략
+              </h3>
+              <div className="space-y-4">
+                <div className="border-l-4 border-amber-400 pl-4">
+                  <div className="font-semibold text-gray-800 text-sm">1. 배당 재투자 (DRIP)</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    받은 배당금으로 같은 주식을 다시 구매. <strong>복리 효과</strong>로 장기 수익 극대화.
+                  </p>
+                </div>
+                <div className="border-l-4 border-blue-400 pl-4">
+                  <div className="font-semibold text-gray-800 text-sm">2. 월배당 포트폴리오</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    배당 지급 월이 다른 종목 조합. <strong>매월 배당금</strong>을 받을 수 있도록 구성.
+                  </p>
+                </div>
+                <div className="border-l-4 border-green-400 pl-4">
+                  <div className="font-semibold text-gray-800 text-sm">3. 배당 성장주 투자</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    배당수익률보다 <strong>배당 인상률</strong>에 집중. 5년 후 수익률이 더 높아질 수 있음.
+                  </p>
+                </div>
+                <div className="border-l-4 border-purple-400 pl-4">
+                  <div className="font-semibold text-gray-800 text-sm">4. 분산 투자</div>
+                  <p className="text-xs text-gray-600 mt-1">
+                    국내+해외, 다양한 섹터에 분산. <strong>한 종목에 올인 금지</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 세금 가이드 */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <span className="text-lg">🧾</span>
+                배당소득세 가이드 (2026년)
+              </h3>
+              <div className="bg-blue-50 rounded-xl p-4 mb-4">
+                <div className="text-sm text-blue-800">
+                  <div className="font-semibold mb-2">기본 세율: 15.4%</div>
+                  <ul className="text-xs space-y-1 text-blue-700">
+                    <li>• 소득세 14% + 지방소득세 1.4%</li>
+                    <li>• 금융소득 2천만원 이하: 원천징수로 종결</li>
+                    <li>• 금융소득 2천만원 초과: 종합소득 합산과세</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-700 text-xs mb-1">🇰🇷 국내 주식</div>
+                  <p className="text-[10px] text-gray-500">
+                    15.4% 원천징수 후 입금
+                  </p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <div className="font-semibold text-gray-700 text-xs mb-1">🇺🇸 미국 주식</div>
+                  <p className="text-[10px] text-gray-500">
+                    미국 15% 원천징수, 국내 추가 없음
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 주의사항 */}
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-5 border border-red-200">
+              <h3 className="font-bold text-red-800 mb-3 flex items-center gap-2">
+                <span className="text-lg">⚠️</span>
+                투자 시 주의사항
+              </h3>
+              <ul className="text-sm text-red-700 space-y-2">
+                <li>• <strong>고배당률 함정</strong>: 배당수익률이 너무 높으면 주가 하락 or 배당 삭감 가능성</li>
+                <li>• <strong>배당락일 효과</strong>: 배당락 후 주가는 배당금만큼 하락하는 것이 일반적</li>
+                <li>• <strong>단기 투자 비추천</strong>: 배당 투자는 최소 1년 이상 장기 관점으로</li>
+                <li>• <strong>기업 실적 확인</strong>: 이익이 줄어도 배당을 유지하면 위험 신호</li>
+              </ul>
+            </div>
+
+            {/* 계산기로 이동 버튼 */}
+            <button
+              onClick={() => setMainTab('calculator')}
+              className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-bold text-lg hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-amber-500/30"
+            >
+              🧮 배당금 계산해보기
+            </button>
+          </div>
+        )}
+
+        {/* 계산기 탭 */}
+        {mainTab === 'calculator' && (
+          <>
         {/* 인기 배당주 프리셋 */}
         <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
           <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -823,6 +1009,9 @@ export default function DividendCalculator() {
               </div>
             </div>
           </div>
+        )}
+
+          </>
         )}
 
         {/* 추천 */}
