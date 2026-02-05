@@ -72,6 +72,16 @@ const allTools: Tool[] = [
     category: 'test',
     relatedTo: ['/work-mbti', '/stress-test', '/spending-quiz'],
   },
+  {
+    path: '/color-test',
+    emoji: '🎨',
+    title: '색감 테스트',
+    shortTitle: '색감테스트',
+    description: '당신의 색 구분 능력은?',
+    gradient: 'from-violet-500 to-fuchsia-500',
+    category: 'test',
+    relatedTo: ['/work-mbti', '/stress-test', '/kkondae-test'],
+  },
 ];
 
 interface RecommendationsProps {

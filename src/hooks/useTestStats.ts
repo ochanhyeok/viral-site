@@ -20,9 +20,11 @@ interface StatsState {
   isLoading: boolean;
 }
 
+export type TestType = 'spending' | 'mbti' | 'stress' | 'kkondae' | 'color-test';
+
 // 결과 저장
 export async function saveTestResult(
-  testType: 'spending' | 'mbti' | 'stress' | 'kkondae',
+  testType: TestType,
   resultType: string,
   ageGroup: string,
   score?: number
@@ -58,7 +60,7 @@ export async function saveTestResult(
 
 // 나이대별 통계 조회
 export function useTestStats(
-  testType: 'spending' | 'mbti' | 'stress' | 'kkondae',
+  testType: TestType,
   ageGroup: string | null
 ): StatsState {
   const [state, setState] = useState<StatsState>({
@@ -141,7 +143,7 @@ export function calculatePercentage(
 
 // 테스트별 총 참여자 수 조회 (인트로 화면용)
 export function useTotalParticipants(
-  testType: 'spending' | 'mbti' | 'stress' | 'kkondae'
+  testType: TestType
 ): { totalCount: number; isLoading: boolean } {
   const [state, setState] = useState<{ totalCount: number; isLoading: boolean }>({
     totalCount: 0,
@@ -178,4 +180,65 @@ export function useTotalParticipants(
   }, [testType]);
 
   return state;
+}
+
+// 색감 테스트용 간단한 통계 (나이대 없음)
+export function useColorTestStats() {
+  const [stats, setStats] = useState<{
+    count: number;
+    totalCount: number;
+    percentage: number;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const submitResult = async (resultType: string) => {
+    try {
+      // 결과 카운트 증가
+      const statsPath = `${FIREBASE_DB_URL}/stats/color-test/${resultType}.json`;
+      const currentRes = await fetch(statsPath);
+      const current = await currentRes.json() || 0;
+
+      await fetch(statsPath, {
+        method: 'PUT',
+        body: JSON.stringify(current + 1),
+      });
+    } catch (error) {
+      console.error('Failed to save color test result:', error);
+    }
+  };
+
+  const getStats = async (resultType: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${FIREBASE_DB_URL}/stats/color-test.json`);
+      const data = await response.json();
+
+      let totalCount = 0;
+      let myCount = 0;
+
+      if (data) {
+        Object.entries(data).forEach(([key, value]) => {
+          const count = value as number;
+          totalCount += count;
+          if (key === resultType) {
+            myCount = count;
+          }
+        });
+      }
+
+      const percentage = totalCount > 0 ? Math.round((myCount / totalCount) * 100) : 0;
+
+      setStats({
+        count: myCount,
+        totalCount,
+        percentage,
+      });
+    } catch (error) {
+      console.error('Failed to fetch color test stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { stats, loading, submitResult, getStats };
 }
