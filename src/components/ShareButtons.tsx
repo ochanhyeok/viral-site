@@ -180,7 +180,15 @@ export function ShareButtons({
     if (!captureElementId) return;
     setCapturing(true);
     try {
-      await captureAndDownload(captureElementId, captureFileName);
+      const success = await captureAndDownload(captureElementId, captureFileName);
+      if (success) {
+        // iOS/Safari가 아닌 경우에만 토스트 표시 (새 탭이 열리면 안내 문구가 거기에 있음)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (!isIOS && !isSafari) {
+          showNotification('이미지가 저장되었습니다!');
+        }
+      }
     } finally {
       setCapturing(false);
     }
