@@ -46,7 +46,7 @@ export function LiveFeed() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // 3-8초마다 새 피드 추가
+    // 8-15초마다 새 피드 추가
     const interval = setInterval(() => {
       setIsVisible(false);
 
@@ -58,7 +58,7 @@ export function LiveFeed() {
         });
         setIsVisible(true);
       }, 300);
-    }, 3000 + Math.random() * 5000);
+    }, 8000 + Math.random() * 7000);
 
     return () => clearInterval(interval);
   }, []);
@@ -113,20 +113,20 @@ export function LiveToast() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // 5-15초마다 토스트 표시
+    // 20-35초마다 토스트 표시
     const showToast = () => {
       const feed = generateRandomFeed();
       feed.time = '방금';
       setToast(feed);
       setShow(true);
 
-      setTimeout(() => setShow(false), 3000);
+      setTimeout(() => setShow(false), 4000);
     };
 
-    // 처음 3초 후 시작
-    const initialTimeout = setTimeout(showToast, 3000);
+    // 처음 10초 후 시작
+    const initialTimeout = setTimeout(showToast, 10000);
 
-    const interval = setInterval(showToast, 8000 + Math.random() * 7000);
+    const interval = setInterval(showToast, 20000 + Math.random() * 15000);
 
     return () => {
       clearTimeout(initialTimeout);
