@@ -352,12 +352,15 @@ export function MultiplayerReaction() {
               </button>
             )}
 
-            {/* 돌아가기 */}
+            {/* 혼자하기 */}
             <button
               onClick={() => navigate('/reaction-test')}
-              className="w-full py-3 text-gray-500 hover:text-gray-700"
+              className="w-full py-3.5 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-xl font-medium transition-all"
             >
-              혼자 하기
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>혼자 하기</span>
             </button>
           </div>
         )}
@@ -444,9 +447,12 @@ export function MultiplayerReaction() {
                 leaveRoom();
                 navigate('/play/reaction');
               }}
-              className="w-full py-3 text-red-500 hover:text-red-600"
+              className="w-full py-3.5 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 rounded-xl font-medium transition-all"
             >
-              나가기
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>나가기</span>
             </button>
           </div>
         )}
@@ -586,21 +592,28 @@ export function MultiplayerReaction() {
             </div>
 
             {/* 버튼들 */}
+            {/* 버튼들 */}
             <div className="space-y-3">
               <button
                 onClick={() => {
                   leaveRoom();
                   navigate('/play/reaction');
                 }}
-                className="w-full py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-2xl font-bold"
+                className="w-full py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
               >
-                다시 하기
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>다시 하기</span>
               </button>
               <button
                 onClick={() => navigate('/')}
-                className="w-full py-3 text-gray-500"
+                className="w-full py-3.5 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-xl font-medium transition-all"
               >
-                홈으로
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span>홈으로</span>
               </button>
             </div>
           </div>
