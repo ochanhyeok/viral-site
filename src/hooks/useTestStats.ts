@@ -20,7 +20,7 @@ interface StatsState {
   isLoading: boolean;
 }
 
-export type TestType = 'spending' | 'mbti' | 'stress' | 'kkondae' | 'color-test';
+export type TestType = 'spending' | 'mbti' | 'stress' | 'kkondae' | 'color-test' | 'reaction-test';
 
 // 결과 저장
 export async function saveTestResult(

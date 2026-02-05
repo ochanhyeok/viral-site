@@ -97,7 +97,7 @@ export function ReactionTest() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { stats, loading: statsLoading, submitResult, getStats } = useReactionTestStats();
-  const { totalCount, isLoading: totalLoading } = useTotalParticipants('reaction-test' as any);
+  const { totalCount, isLoading: totalLoading } = useTotalParticipants('reaction-test');
   const { userData, saveRecord } = useUserData();
   const { checkBadges, newBadge, dismissNewBadge } = useBadges();
   const [_myRank, setMyRank] = useState<number | null>(null);
