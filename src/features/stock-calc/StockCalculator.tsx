@@ -24,11 +24,11 @@ export default function StockCalculator() {
   const [marketType, setMarketType] = useState<MarketType>('kospi');
   const [showResult, setShowResult] = useState(false);
 
-  // 증권거래세율 (매도 시)
+  // 증권거래세율 (매도 시) - 2026년 기준
   const taxRates: Record<MarketType, number> = {
-    kospi: 0.0018,    // 0.18%
-    kosdaq: 0.0018,   // 0.18% (2023년부터 동일)
-    overseas: 0,       // 해외주식은 양도세로 별도
+    kospi: 0.0020,    // 0.20% (증권거래세 0.05% + 농어촌특별세 0.15%)
+    kosdaq: 0.0020,   // 0.20%
+    overseas: 0,       // 해외주식은 양도소득세로 별도 (22%)
   };
 
   const result = useMemo<Result | null>(() => {
@@ -94,9 +94,9 @@ export default function StockCalculator() {
   };
 
   const markets = [
-    { value: 'kospi', label: '코스피', tax: '0.18%' },
-    { value: 'kosdaq', label: '코스닥', tax: '0.18%' },
-    { value: 'overseas', label: '해외주식', tax: '없음' },
+    { value: 'kospi', label: '코스피', tax: '0.20%' },
+    { value: 'kosdaq', label: '코스닥', tax: '0.20%' },
+    { value: 'overseas', label: '해외주식', tax: '양도세 22%' },
   ];
 
   return (
@@ -332,11 +332,12 @@ export default function StockCalculator() {
               <div className="flex gap-3">
                 <span className="text-xl">💡</span>
                 <div className="text-sm text-blue-800">
-                  <p className="font-semibold mb-1">알아두세요</p>
+                  <p className="font-semibold mb-1">2026년 세율 기준</p>
                   <ul className="space-y-1 text-blue-700 text-xs">
-                    <li>• 증권거래세: 매도 시 코스피/코스닥 0.18%</li>
-                    <li>• 대주주/해외주식은 양도소득세 별도 (22%~27.5%)</li>
-                    <li>• 실제 수수료는 증권사/이벤트에 따라 다를 수 있음</li>
+                    <li>• 코스피: 증권거래세 0.05% + 농어촌특별세 0.15% = 0.20%</li>
+                    <li>• 코스닥/K-OTC: 증권거래세 0.20%</li>
+                    <li>• 해외주식 양도소득세: 22% (250만원 공제 후)</li>
+                    <li>• 대주주 양도세: 22~27.5% (종목별 10억 이상 보유)</li>
                   </ul>
                 </div>
               </div>

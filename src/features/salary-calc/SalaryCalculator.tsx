@@ -81,7 +81,7 @@ export function SalaryCalculator() {
     <>
       <SEO
         title="연봉 실수령액 계산기"
-        description="2025년 최신 세율 적용! 연봉에서 4대보험과 세금을 제외한 실수령액을 정확하게 계산해보세요. 국민연금, 건강보험, 고용보험, 소득세 공제액 자동 계산."
+        description="2026년 최신 세율 적용! 연봉에서 4대보험과 세금을 제외한 실수령액을 정확하게 계산해보세요. 국민연금 4.75%, 건강보험 3.595% 반영."
         keywords="연봉계산기,실수령액,세후연봉,4대보험,소득세계산,2025연봉계산,월급계산기"
         structuredData={{
           '@context': 'https://schema.org',
@@ -249,8 +249,8 @@ export function SalaryCalculator() {
 
               <div className="space-y-2 mt-4">
                 {[
-                  { label: '국민연금 (4.5%)', value: result.deductions.nationalPension, color: 'bg-emerald-500' },
-                  { label: '건강보험 (3.545%)', value: result.deductions.healthInsurance, color: 'bg-amber-500' },
+                  { label: '국민연금 (4.75%)', value: result.deductions.nationalPension, color: 'bg-emerald-500' },
+                  { label: '건강보험 (3.595%)', value: result.deductions.healthInsurance, color: 'bg-amber-500' },
                   { label: '장기요양 (12.95%)', value: result.deductions.longTermCare, color: 'bg-violet-500' },
                   { label: '고용보험 (0.9%)', value: result.deductions.employmentInsurance, color: 'bg-pink-500' },
                   { label: '소득세', value: result.deductions.incomeTax, color: 'bg-red-500' },
@@ -278,7 +278,7 @@ export function SalaryCalculator() {
                 <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
                   <span className="text-4xl">💰</span>
                 </div>
-                <p className="text-white/70 text-sm mb-1">2025 연봉 실수령액</p>
+                <p className="text-white/70 text-sm mb-1">2026 연봉 실수령액</p>
                 <h2 className="text-2xl font-extrabold mb-1">연봉 {formatCurrency(parseInt(salary.replace(/,/g, '')))}원</h2>
                 <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
                   <p className="text-white/80 text-sm mb-2">월 실수령액</p>

@@ -25,11 +25,12 @@ interface SalaryResult {
   deductions: DeductionBreakdown;
 }
 
-const NATIONAL_PENSION_RATE = 0.045;
-const NATIONAL_PENSION_CAP = 5900000;
-const HEALTH_INSURANCE_RATE = 0.03545;
-const LONG_TERM_CARE_RATE = 0.1295;
-const EMPLOYMENT_INSURANCE_RATE = 0.009;
+// 2026년 기준 4대보험 요율
+const NATIONAL_PENSION_RATE = 0.0475; // 9.5% 중 근로자 부담 4.75%
+const NATIONAL_PENSION_CAP = 6370000; // 기준소득월액 상한 637만원
+const HEALTH_INSURANCE_RATE = 0.03595; // 7.19% 중 근로자 부담 3.595%
+const LONG_TERM_CARE_RATE = 0.1295; // 건강보험료의 12.95%
+const EMPLOYMENT_INSURANCE_RATE = 0.009; // 1.8% 중 근로자 부담 0.9%
 
 const SIMPLIFIED_TAX_TABLE: { minSalary: number; maxSalary: number; getTax: (salary: number, dependents: number) => number }[] = [
   {

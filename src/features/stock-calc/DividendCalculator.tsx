@@ -299,11 +299,12 @@ export default function DividendCalculator() {
               <div className="flex gap-3">
                 <span className="text-xl">💡</span>
                 <div className="text-sm text-blue-800">
-                  <p className="font-semibold mb-1">알아두세요</p>
+                  <p className="font-semibold mb-1">2026년 배당소득세 기준</p>
                   <ul className="space-y-1 text-blue-700 text-xs">
-                    <li>• 배당소득세: 15.4% (소득세 14% + 지방소득세 1.4%)</li>
-                    <li>• 금융소득 2천만원 초과 시 종합소득 합산과세</li>
-                    <li>• 해외주식은 현지 원천징수 + 국내 과세 차액 정산</li>
+                    <li>• 기본 세율: 15.4% (소득세 14% + 지방소득세 1.4%)</li>
+                    <li>• 2천만원 초과 분리과세: 22%~33% 누진세율 적용</li>
+                    <li>• 금융소득 2천만원 초과 시 종합소득 합산 가능</li>
+                    <li>• 해외주식: 현지 원천징수 후 국내 차액 정산</li>
                   </ul>
                 </div>
               </div>
