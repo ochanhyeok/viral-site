@@ -2,6 +2,18 @@ import { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ, MascotWithTyping, mascotComments, getRandomComment, Percentile } from '../../components';
 import { useSalaryCalc, formatCurrency } from './useSalaryCalc';
+
+// 만원 단위로 포맷
+const formatWon = (num: number) => {
+  if (num >= 100000000) {
+    const uk = Math.floor(num / 100000000);
+    const man = Math.floor((num % 100000000) / 10000);
+    return man > 0 ? `${uk}억 ${man.toLocaleString()}만원` : `${uk}억원`;
+  } else if (num >= 10000) {
+    return `${Math.floor(num / 10000).toLocaleString()}만원`;
+  }
+  return `${num.toLocaleString()}원`;
+};
 import type { MascotMood } from '../../components';
 
 export function SalaryCalculator() {
@@ -106,7 +118,7 @@ export function SalaryCalculator() {
             <span className="text-4xl">💰</span>
           </div>
           <h1 className="text-2xl font-extrabold text-gray-900 mb-1">연봉 실수령액 계산기</h1>
-          <p className="text-gray-500 text-sm">2025년 최신 세율 적용</p>
+          <p className="text-gray-500 text-sm">2026년 최신 세율 적용</p>
         </div>
 
         {/* 입력 폼 */}
@@ -182,22 +194,22 @@ export function SalaryCalculator() {
             <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/30">
               <div className="text-center">
                 <p className="text-blue-100 text-sm mb-1">예상 월 실수령액</p>
-                <p className="text-4xl font-extrabold mb-4">
-                  {formatCurrency(result.monthlyNetSalary)}
-                  <span className="text-2xl font-normal">원</span>
+                <p className="text-4xl font-extrabold mb-1">
+                  {formatWon(result.monthlyNetSalary)}
+                </p>
+                <p className="text-blue-200 text-sm mb-4">
+                  {formatCurrency(result.monthlyNetSalary)}원
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-white/15 backdrop-blur rounded-2xl p-3">
                     <p className="text-blue-100 text-xs">연 실수령액</p>
-                    <p className="text-lg font-bold">
-                      {formatCurrency(result.annualNetSalary)}원
-                    </p>
+                    <p className="text-lg font-bold">{formatWon(result.annualNetSalary)}</p>
+                    <p className="text-blue-200 text-xs">{formatCurrency(result.annualNetSalary)}원</p>
                   </div>
                   <div className="bg-white/15 backdrop-blur rounded-2xl p-3">
                     <p className="text-blue-100 text-xs">월 공제액</p>
-                    <p className="text-lg font-bold">
-                      {formatCurrency(result.totalDeduction)}원
-                    </p>
+                    <p className="text-lg font-bold">{formatWon(result.totalDeduction)}</p>
+                    <p className="text-blue-200 text-xs">{formatCurrency(result.totalDeduction)}원</p>
                   </div>
                 </div>
               </div>
@@ -261,9 +273,10 @@ export function SalaryCalculator() {
                       <span className={`w-2 h-2 rounded-full ${item.color}`} />
                       <span className="text-sm text-gray-600">{item.label}</span>
                     </div>
-                    <span className="font-medium text-gray-900">
-                      {formatCurrency(item.value)}원
-                    </span>
+                    <div className="text-right">
+                      <span className="font-medium text-gray-900">{formatWon(item.value)}</span>
+                      <p className="text-xs text-gray-400">{formatCurrency(item.value)}원</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -279,18 +292,19 @@ export function SalaryCalculator() {
                   <span className="text-4xl">💰</span>
                 </div>
                 <p className="text-white/70 text-sm mb-1">2026 연봉 실수령액</p>
-                <h2 className="text-2xl font-extrabold mb-1">연봉 {formatCurrency(parseInt(salary.replace(/,/g, '')))}원</h2>
+                <h2 className="text-2xl font-extrabold mb-1">연봉 {formatWon(parseInt(salary.replace(/,/g, '')))}</h2>
                 <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
-                  <p className="text-white/80 text-sm mb-2">월 실수령액</p>
-                  <p className="text-3xl font-bold">{formatCurrency(result.monthlyNetSalary)}원</p>
+                  <p className="text-white/80 text-sm mb-1">월 실수령액</p>
+                  <p className="text-3xl font-bold">{formatWon(result.monthlyNetSalary)}</p>
+                  <p className="text-white/60 text-xs mb-2">{formatCurrency(result.monthlyNetSalary)}원</p>
                   <div className="mt-3 pt-3 border-t border-white/20 grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <p className="text-white/60">연 실수령액</p>
-                      <p className="font-bold">{formatCurrency(result.annualNetSalary)}원</p>
+                      <p className="font-bold">{formatWon(result.annualNetSalary)}</p>
                     </div>
                     <div>
                       <p className="text-white/60">총 공제액</p>
-                      <p className="font-bold">{formatCurrency(result.totalDeduction)}원</p>
+                      <p className="font-bold">{formatWon(result.totalDeduction)}</p>
                     </div>
                   </div>
                 </div>
