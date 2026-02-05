@@ -190,7 +190,7 @@ export function RetirementCalculator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  퇴사일
+                  퇴사일 {!startDate && <span className="text-gray-400 text-xs">(입사일 먼저 선택)</span>}
                 </label>
                 <DatePicker
                   selected={endDate}
@@ -200,14 +200,16 @@ export function RetirementCalculator() {
                   }}
                   dateFormat="yyyy.MM.dd"
                   locale={ko}
-                  placeholderText="날짜 선택"
+                  placeholderText={startDate ? "날짜 선택" : "입사일 먼저 선택"}
                   minDate={startDate || undefined}
-                  maxDate={new Date()}
+                  disabled={!startDate}
                   renderCustomHeader={CustomHeader}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer text-center font-medium"
+                  className={`w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 text-center font-medium ${!startDate ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                   calendarClassName="custom-calendar"
                   wrapperClassName="w-full"
                   showPopperArrow={false}
+                  popperClassName="datepicker-popper"
+                  popperPlacement="bottom-start"
                 />
               </div>
             </div>
@@ -549,6 +551,14 @@ export function RetirementCalculator() {
         }
         .react-datepicker__day--disabled {
           color: #e5e7eb;
+        }
+
+        /* 팝업 z-index */
+        .datepicker-popper {
+          z-index: 9999 !important;
+        }
+        .react-datepicker-popper {
+          z-index: 9999 !important;
         }
 
         /* 모바일 최적화 */
