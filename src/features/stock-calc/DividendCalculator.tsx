@@ -128,6 +128,64 @@ const OVERSEAS_PRESETS = [
   },
 ];
 
+// 커버드콜 ETF 프리셋 (2026년 기준, 환율 1,450원)
+const COVERED_CALL_PRESETS = [
+  {
+    name: 'JEPI',
+    price: 84000,  // $58 × 1,450
+    dividend: 480,  // 월 $0.33 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '8.1%',
+    tag: '안정형',
+    note: 'S&P500 월배당'
+  },
+  {
+    name: 'JEPQ',
+    price: 85000,  // $59 × 1,450
+    dividend: 650,  // 월 $0.45 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '10.4%',
+    tag: '인기',
+    note: '나스닥 월배당'
+  },
+  {
+    name: 'QYLD',
+    price: 25000,  // $17 × 1,450
+    dividend: 230,  // 월 $0.16 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '11%',
+    tag: '고배당',
+    note: '나스닥100 월배당'
+  },
+  {
+    name: 'TSLY',
+    price: 20000,  // $14 × 1,450
+    dividend: 470,  // 주간 $0.32 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '50%+',
+    tag: '초고배당',
+    note: '테슬라 주간배당'
+  },
+  {
+    name: 'NVDY',
+    price: 21000,  // $14.6 × 1,450
+    dividend: 1400,  // 월 $0.98 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '80%+',
+    tag: '초고배당',
+    note: '엔비디아 주간배당'
+  },
+  {
+    name: 'CONY',
+    price: 16000,  // $11 × 1,450
+    dividend: 1200,  // 월 ~$0.83 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '100%+',
+    tag: '초고배당',
+    note: '코인베이스 주간배당'
+  },
+];
+
 type PresetType = typeof KOREA_PRESETS[0];
 
 export default function DividendCalculator() {
@@ -137,11 +195,15 @@ export default function DividendCalculator() {
   const [dividendFrequency, setDividendFrequency] = useState<'annual' | 'quarterly'>('quarterly');
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
-  const [presetTab, setPresetTab] = useState<'korea' | 'overseas'>('korea');
+  const [presetTab, setPresetTab] = useState<'korea' | 'overseas' | 'covered'>('korea');
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
-  const currentPresets = presetTab === 'korea' ? KOREA_PRESETS : OVERSEAS_PRESETS;
+  const currentPresets = presetTab === 'korea'
+    ? KOREA_PRESETS
+    : presetTab === 'overseas'
+    ? OVERSEAS_PRESETS
+    : COVERED_CALL_PRESETS;
 
   const handlePresetSelect = (preset: PresetType) => {
     setStockPrice(preset.price.toString());
@@ -252,27 +314,37 @@ export default function DividendCalculator() {
             인기 배당주로 계산해보기
           </h3>
 
-          {/* 국내/해외 탭 */}
-          <div className="flex gap-2 mb-4">
+          {/* 국내/해외/커버드콜 탭 */}
+          <div className="flex gap-1.5 mb-4">
             <button
               onClick={() => setPresetTab('korea')}
-              className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
+              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
                 presetTab === 'korea'
                   ? 'bg-amber-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              🇰🇷 국내 배당주
+              🇰🇷 국내
             </button>
             <button
               onClick={() => setPresetTab('overseas')}
-              className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
+              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
                 presetTab === 'overseas'
                   ? 'bg-blue-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              🇺🇸 해외 배당주
+              🇺🇸 해외
+            </button>
+            <button
+              onClick={() => setPresetTab('covered')}
+              className={`flex-1 py-2.5 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all ${
+                presetTab === 'covered'
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              📈 커버드콜
             </button>
           </div>
 
@@ -285,7 +357,9 @@ export default function DividendCalculator() {
                   selectedPreset === preset.name
                     ? presetTab === 'korea'
                       ? 'bg-amber-100 border-2 border-amber-400 shadow-md'
-                      : 'bg-blue-100 border-2 border-blue-400 shadow-md'
+                      : presetTab === 'overseas'
+                      ? 'bg-blue-100 border-2 border-blue-400 shadow-md'
+                      : 'bg-purple-100 border-2 border-purple-400 shadow-md'
                     : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
                 }`}
               >
@@ -304,6 +378,12 @@ export default function DividendCalculator() {
                       ? 'bg-indigo-100 text-indigo-600'
                       : preset.tag === '월배당'
                       ? 'bg-green-100 text-green-600'
+                      : preset.tag === '초고배당'
+                      ? 'bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600'
+                      : preset.tag === '안정형'
+                      ? 'bg-teal-100 text-teal-600'
+                      : preset.tag === '인기'
+                      ? 'bg-orange-100 text-orange-600'
                       : 'bg-gray-200 text-gray-600'
                   }`}>
                     {preset.tag}
@@ -314,7 +394,13 @@ export default function DividendCalculator() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-gray-400">{preset.note}</span>
-                  <span className={`text-xs font-bold ${presetTab === 'korea' ? 'text-amber-600' : 'text-blue-600'}`}>
+                  <span className={`text-xs font-bold ${
+                    presetTab === 'korea'
+                      ? 'text-amber-600'
+                      : presetTab === 'overseas'
+                      ? 'text-blue-600'
+                      : 'text-purple-600'
+                  }`}>
                     {preset.yield}
                   </span>
                 </div>
@@ -324,8 +410,23 @@ export default function DividendCalculator() {
           <p className="text-xs text-gray-400 mt-3 text-center">
             {presetTab === 'korea'
               ? '* 2026년 2월 기준 예상 배당. 실제 주가/배당과 다를 수 있음'
-              : '* 2026년 2월 기준, 환율 1,450원 적용. 실제와 다를 수 있음'}
+              : presetTab === 'overseas'
+              ? '* 2026년 2월 기준, 환율 1,450원 적용. 실제와 다를 수 있음'
+              : '* 커버드콜 ETF는 원금 손실 위험이 있음. 배당수익률은 변동 가능'}
           </p>
+
+          {/* 커버드콜 경고 */}
+          {presetTab === 'covered' && (
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-3 border border-pink-200 mt-3">
+              <p className="text-xs text-pink-700 flex items-start gap-2">
+                <span>⚠️</span>
+                <span>
+                  <strong>주의:</strong> 커버드콜 ETF는 초고배당이지만 주가 하락 시 원금 손실이 클 수 있습니다.
+                  TSLY, NVDY, CONY 등은 주간 배당으로 변동성이 매우 큽니다.
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 입력 폼 */}
