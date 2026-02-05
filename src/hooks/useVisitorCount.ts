@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 
-// 시작 날짜와 기본 카운트
-const BASE_DATE = new Date('2025-01-01').getTime();
-const BASE_COUNT = 100000;
-const DAILY_GROWTH = 500; // 하루 평균 증가량
+const FIREBASE_DB_URL = 'https://viral-site-3275f-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 interface CounterState {
   count: number;
@@ -17,22 +14,44 @@ export function useVisitorCount(): CounterState {
   });
 
   useEffect(() => {
-    // 현재 날짜 기준으로 카운트 계산
-    const now = Date.now();
-    const daysPassed = Math.floor((now - BASE_DATE) / (1000 * 60 * 60 * 24));
+    const hasVisited = sessionStorage.getItem('hasVisited');
 
-    // 기본 카운트 + 일별 증가량 + 랜덤 변동
-    const baseGrowth = daysPassed * DAILY_GROWTH;
-    const randomVariation = Math.floor(Math.random() * 1000);
-    const totalCount = BASE_COUNT + baseGrowth + randomVariation;
+    const updateCount = async () => {
+      try {
+        if (!hasVisited) {
+          // 첫 방문: 카운트 증가
+          const response = await fetch(`${FIREBASE_DB_URL}/visitors.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ '.sv': { 'increment': 1 } }),
+          });
 
-    // 약간의 로딩 딜레이 (자연스러움)
-    setTimeout(() => {
-      setState({
-        count: totalCount,
-        isLoading: false,
-      });
-    }, 300);
+          // increment가 안되면 직접 증가
+          if (!response.ok) {
+            const getRes = await fetch(`${FIREBASE_DB_URL}/visitors.json`);
+            const current = await getRes.json() || 0;
+            await fetch(`${FIREBASE_DB_URL}/visitors.json`, {
+              method: 'PUT',
+              body: JSON.stringify(current + 1),
+            });
+          }
+
+          sessionStorage.setItem('hasVisited', 'true');
+        }
+
+        // 현재 카운트 조회
+        const response = await fetch(`${FIREBASE_DB_URL}/visitors.json`);
+        const count = await response.json() || 0;
+
+        setState({ count, isLoading: false });
+      } catch (error) {
+        console.error('Counter error:', error);
+        // 에러 시 기본값 표시
+        setState({ count: 100000, isLoading: false });
+      }
+    };
+
+    updateCount();
   }, []);
 
   return state;
