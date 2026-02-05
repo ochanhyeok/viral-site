@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { SEO } from '../../components';
 import { useBattleship } from './useBattleship';
 import { useUserData } from '../../hooks/useLocalStorage';
-import { Grid, MiniGrid } from './Grid';
+import { Grid } from './Grid';
 import { ShipPlacer } from './ShipPlacer';
 import type { Cell, PlacedShip } from './battleshipData';
 import { createEmptyGrid, SHIPS, coordToString } from './battleshipData';
@@ -342,21 +342,29 @@ export function BattleshipGame() {
 
         {/* 배치 완료 대기 */}
         {room && room.status === 'setup' && currentPlayer?.isReady && (
-          <div className="text-center space-y-6 animate-fadeIn">
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-8 text-white">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="space-y-4 animate-fadeIn">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white text-center">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3 animate-pulse">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-2">배치 완료!</h2>
-              <p className="text-white/70">상대방이 배치를 완료할 때까지 대기 중...</p>
+              <h2 className="text-xl font-bold mb-1">배치 완료!</h2>
+              <p className="text-white/70 text-sm">상대방이 배치를 완료할 때까지 대기 중...</p>
             </div>
 
-            {currentPlayer?.grid && (
+            {currentPlayer?.grid && currentPlayer?.ships && (
               <div>
-                <p className="text-sm text-gray-500 mb-2">내 함대 배치</p>
-                <MiniGrid grid={currentPlayer.grid} showShips />
+                <p className="text-sm text-gray-500 mb-2 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  내 함대 배치 현황
+                </p>
+                <Grid
+                  grid={currentPlayer.grid}
+                  ships={currentPlayer.ships}
+                  disabled
+                  showShips
+                />
               </div>
             )}
           </div>
