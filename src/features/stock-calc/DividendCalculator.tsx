@@ -12,119 +12,119 @@ interface Result {
   yearsToDouble: number;
 }
 
-// 국내 배당주 프리셋 (2026년 기준)
+// 국내 배당주 프리셋 (2026년 2월 5일 기준)
 const KOREA_PRESETS = [
   {
     name: '삼성전자',
-    price: 55000,
-    dividend: 365,
+    price: 159000,  // 2026.02.05 기준
+    dividend: 365,  // 분기 배당
     frequency: 'quarterly' as const,
-    yield: '2.6%',
+    yield: '0.9%',
     tag: '대표주',
     note: '분기배당'
   },
   {
     name: '하나금융지주',
-    price: 41000,
-    dividend: 3000,
+    price: 112000,  // 2026.02.05 기준
+    dividend: 3600,  // 연간 배당
     frequency: 'annual' as const,
-    yield: '7.3%',
-    tag: '고배당',
-    note: '금융주 TOP'
+    yield: '3.2%',
+    tag: '금융',
+    note: '금융주'
   },
   {
     name: 'KT&G',
-    price: 95000,
-    dividend: 5800,
+    price: 162000,  // 2026.02.05 기준
+    dividend: 6000,  // 연간 배당
     frequency: 'annual' as const,
-    yield: '6.1%',
+    yield: '3.7%',
     tag: '고배당',
-    note: '배당성향 61%'
+    note: '배당성향 50%+'
   },
   {
     name: 'POSCO홀딩스',
-    price: 195000,
+    price: 360000,  // 2026.02.04 기준
     dividend: 17000,
     frequency: 'annual' as const,
-    yield: '8.7%',
+    yield: '4.7%',
     tag: '고배당',
-    note: '수익률 TOP'
+    note: '철강 대장주'
   },
   {
     name: 'SK텔레콤',
-    price: 70000,
+    price: 71000,  // 2026.02 기준
     dividend: 3000,
     frequency: 'annual' as const,
-    yield: '4.3%',
+    yield: '4.2%',
     tag: '통신',
     note: '안정적'
   },
   {
     name: '삼성화재우',
-    price: 338000,
+    price: 497000,  // 2026.01 기준
     dividend: 19005,
     frequency: 'annual' as const,
-    yield: '5.6%',
+    yield: '3.8%',
     tag: '우선주',
-    note: '고배당 우선주'
+    note: '보험 우선주'
   },
 ];
 
-// 해외 배당주 프리셋 (2026년 기준, 환율 1,450원)
+// 해외 배당주 프리셋 (2026년 2월 5일 기준, 환율 1,450원)
 const OVERSEAS_PRESETS = [
   {
     name: '코카콜라 (KO)',
-    price: 91000,  // $63 × 1,450
-    dividend: 735,  // 분기 $0.51 × 1,450
+    price: 113000,  // $78 × 1,450
+    dividend: 740,  // 분기 $0.51 × 1,450
     frequency: 'quarterly' as const,
-    yield: '3.2%',
-    tag: '배당왕',
-    note: '63년 연속 인상'
-  },
-  {
-    name: '애플 (AAPL)',
-    price: 348000,  // $240 × 1,450
-    dividend: 370,  // 분기 $0.255 × 1,450
-    frequency: 'quarterly' as const,
-    yield: '0.4%',
-    tag: '빅테크',
-    note: '시총 1위'
-  },
-  {
-    name: 'MS (MSFT)',
-    price: 609000,  // $420 × 1,450
-    dividend: 1200,  // 분기 $0.83 × 1,450
-    frequency: 'quarterly' as const,
-    yield: '0.8%',
-    tag: '빅테크',
-    note: 'AI 리더'
-  },
-  {
-    name: 'J&J (JNJ)',
-    price: 232000,  // $160 × 1,450
-    dividend: 1900,  // 분기 $1.31 × 1,450
-    frequency: 'quarterly' as const,
-    yield: '3.3%',
+    yield: '2.7%',
     tag: '배당왕',
     note: '62년 연속 인상'
   },
   {
+    name: 'J&J (JNJ)',
+    price: 232000,  // $160 × 1,450
+    dividend: 1885,  // 분기 $1.30 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '3.3%',
+    tag: '배당왕',
+    note: '54년 연속 인상'
+  },
+  {
     name: 'P&G (PG)',
     price: 232000,  // $160 × 1,450
-    dividend: 1450,  // 분기 $1.00 × 1,450
+    dividend: 1537,  // 분기 $1.06 × 1,450
     frequency: 'quarterly' as const,
-    yield: '2.5%',
+    yield: '2.7%',
     tag: '배당왕',
     note: '68년 연속 인상'
   },
   {
     name: '리얼티인컴 (O)',
-    price: 80000,  // $55 × 1,450
-    dividend: 380,  // 월 $0.26 × 1,450
+    price: 89000,  // $61 × 1,450
+    dividend: 392,  // 월 $0.27 × 1,450
     frequency: 'quarterly' as const,  // 실제는 월배당이지만 분기로 환산
-    yield: '5.7%',
+    yield: '5.3%',
     tag: '월배당',
-    note: 'REIT 대장주'
+    note: 'REIT 월배당'
+  },
+  {
+    name: '버라이즌 (VZ)',
+    price: 62000,  // $43 × 1,450
+    dividend: 957,  // 분기 $0.66 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '6.2%',
+    tag: '고배당',
+    note: '통신주'
+  },
+  {
+    name: 'AT&T (T)',
+    price: 37000,  // $26 × 1,450
+    dividend: 403,  // 분기 $0.28 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '4.3%',
+    tag: '고배당',
+    note: '통신주'
   },
 ];
 
@@ -186,29 +186,29 @@ const COVERED_CALL_PRESETS = [
   },
 ];
 
-// 테크주 프리셋 (2026년 2월 기준, 환율 1,450원)
+// 테크주 프리셋 (2026년 2월 5일 기준, 환율 1,450원)
 const TECH_PRESETS = [
   {
     name: '애플 (AAPL)',
-    price: 401000,  // $276 × 1,450
+    price: 401000,  // $277 × 1,450
     dividend: 370,  // 분기 $0.255 × 1,450
     frequency: 'quarterly' as const,
-    yield: '0.4%',
+    yield: '0.37%',
     tag: '시총1위',
     note: '아이폰·서비스'
   },
   {
     name: 'MS (MSFT)',
-    price: 601000,  // $414 × 1,450
+    price: 613000,  // $423 × 1,450
     dividend: 1200,  // 분기 $0.83 × 1,450
     frequency: 'quarterly' as const,
-    yield: '0.8%',
+    yield: '0.79%',
     tag: 'AI리더',
     note: '클라우드·AI'
   },
   {
     name: '엔비디아 (NVDA)',
-    price: 252000,  // $174 × 1,450
+    price: 254000,  // $175 × 1,450
     dividend: 15,  // 분기 $0.01 × 1,450
     frequency: 'quarterly' as const,
     yield: '0.02%',
@@ -217,7 +217,7 @@ const TECH_PRESETS = [
   },
   {
     name: '구글 (GOOGL)',
-    price: 268000,  // $185 × 1,450
+    price: 481000,  // $332 × 1,450
     dividend: 305,  // 분기 $0.21 × 1,450
     frequency: 'quarterly' as const,
     yield: '0.25%',
@@ -226,7 +226,7 @@ const TECH_PRESETS = [
   },
   {
     name: '메타 (META)',
-    price: 970000,  // $669 × 1,450
+    price: 969000,  // $668 × 1,450
     dividend: 770,  // 분기 $0.53 × 1,450
     frequency: 'quarterly' as const,
     yield: '0.31%',
@@ -235,10 +235,10 @@ const TECH_PRESETS = [
   },
   {
     name: '브로드컴 (AVGO)',
-    price: 319000,  // $220 × 1,450
-    dividend: 870,  // 분기 $0.60 × 1,450
+    price: 439000,  // $303 × 1,450
+    dividend: 942,  // 분기 $0.65 × 1,450
     frequency: 'quarterly' as const,
-    yield: '1.1%',
+    yield: '0.86%',
     tag: 'AI반도체',
     note: '14년 연속 인상'
   },
