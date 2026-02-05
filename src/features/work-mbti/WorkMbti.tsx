@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, mbtiFAQ } from '../../components';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, mbtiFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
+import type { MascotMood } from '../../components';
 import { mbtiQuestions, calculateMbti, getMbtiResult } from './mbtiData';
 import type { WorkMbtiType } from './mbtiData';
 import { saveTestResult, useTestStats, calculatePercentage, useTotalParticipants } from '../../hooks/useTestStats';
@@ -99,6 +100,14 @@ export function WorkMbti() {
     : ageGroup
     ? getFirstParticipantInfo(ageGroupLabels[ageGroup])
     : null;
+
+  // 마스코트 코멘트
+  const mascotComment = useMemo(() => {
+    if (state === 'result' && result) {
+      return getRandomComment(mascotComments.quiz.end);
+    }
+    return null;
+  }, [state, result]);
 
   return (
     <>
@@ -301,6 +310,17 @@ export function WorkMbti() {
             <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl`}>
               <p className="text-lg leading-relaxed">{result.description}</p>
             </div>
+
+            {/* 마스코트 코멘트 */}
+            {mascotComment && (
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                <MascotWithTyping
+                  mood={mascotComment.mood as MascotMood}
+                  message={mascotComment.message}
+                  size="md"
+                />
+              </div>
+            )}
 
             {/* 강점 & 성장 포인트 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">

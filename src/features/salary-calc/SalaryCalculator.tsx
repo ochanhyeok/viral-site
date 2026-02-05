@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ } from '../../components';
+import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
 import { useSalaryCalc, formatCurrency } from './useSalaryCalc';
+import type { MascotMood } from '../../components';
 
 export function SalaryCalculator() {
   const [salary, setSalary] = useState('');
@@ -46,6 +47,25 @@ export function SalaryCalculator() {
         { name: '지방소득세', value: result.deductions.localIncomeTax, color: '#06B6D4' },
       ]
     : [];
+
+  // 마스코트 코멘트 계산
+  const mascotComment = useMemo(() => {
+    if (!calculated || !result) return null;
+
+    const annualSalary = parseInt(salary.replace(/,/g, '')) || 0;
+
+    // 연봉 수준에 따른 코멘트 선택
+    let level: 'high' | 'medium' | 'low';
+    if (annualSalary >= 80000000) {
+      level = 'high';
+    } else if (annualSalary >= 40000000) {
+      level = 'medium';
+    } else {
+      level = 'low';
+    }
+
+    return getRandomComment(mascotComments.salary[level]);
+  }, [calculated, result, salary]);
 
   const dependentOptions = Array.from({ length: 11 }, (_, i) => ({
     value: i + 1,
@@ -182,6 +202,17 @@ export function SalaryCalculator() {
                 </div>
               </div>
             </div>
+
+            {/* 마스코트 코멘트 */}
+            {mascotComment && (
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                <MascotWithTyping
+                  mood={mascotComment.mood as MascotMood}
+                  message={mascotComment.message}
+                  size="md"
+                />
+              </div>
+            )}
 
             {/* 차트 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">

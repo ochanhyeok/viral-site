@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
 import { getMonth, getYear } from 'date-fns';
-import { SEO, Button, Input, ShareButtons, Recommendations, FAQ, retirementFAQ } from '../../components';
+import { SEO, Button, Input, ShareButtons, Recommendations, FAQ, retirementFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
+import type { MascotMood } from '../../components';
 import { useRetirementCalc, formatCurrency } from './useRetirementCalc';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -53,6 +54,23 @@ export function RetirementCalculator() {
       setCalculated(true);
     }
   };
+
+  // 마스코트 코멘트 계산
+  const mascotComment = useMemo(() => {
+    if (!calculated || !result) return null;
+
+    // 퇴직금 수준에 따른 코멘트 선택
+    let level: 'high' | 'medium' | 'low';
+    if (result.retirementPay >= 30000000) {
+      level = 'high';
+    } else if (result.retirementPay >= 10000000) {
+      level = 'medium';
+    } else {
+      level = 'low';
+    }
+
+    return getRandomComment(mascotComments.retirement[level]);
+  }, [calculated, result]);
 
   // 커스텀 헤더 컴포넌트
   const CustomHeader = ({
@@ -318,6 +336,17 @@ export function RetirementCalculator() {
                 </div>
               </div>
             </div>
+
+            {/* 마스코트 코멘트 */}
+            {mascotComment && (
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                <MascotWithTyping
+                  mood={mascotComment.mood as MascotMood}
+                  message={mascotComment.message}
+                  size="md"
+                />
+              </div>
+            )}
 
             {/* 계산 과정 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">

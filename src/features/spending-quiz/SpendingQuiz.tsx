@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, spendingFAQ } from '../../components';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, spendingFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
+import type { MascotMood } from '../../components';
 import { quizQuestions, calculateResult } from './quizData';
 import type { SpendingType } from './quizData';
 import { saveTestResult, useTestStats, calculatePercentage, useTotalParticipants } from '../../hooks/useTestStats';
@@ -95,6 +96,14 @@ export function SpendingQuiz() {
     : ageGroup
     ? getFirstParticipantInfo(ageGroupLabels[ageGroup])
     : null;
+
+  // 마스코트 코멘트
+  const mascotComment = useMemo(() => {
+    if (state === 'result' && result) {
+      return getRandomComment(mascotComments.quiz.end);
+    }
+    return null;
+  }, [state, result]);
 
   return (
     <>
@@ -294,6 +303,17 @@ export function SpendingQuiz() {
             <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl`}>
               <p className="text-lg leading-relaxed">{result.description}</p>
             </div>
+
+            {/* 마스코트 코멘트 */}
+            {mascotComment && (
+              <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100">
+                <MascotWithTyping
+                  mood={mascotComment.mood as MascotMood}
+                  message={mascotComment.message}
+                  size="md"
+                />
+              </div>
+            )}
 
             {/* 특징 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">

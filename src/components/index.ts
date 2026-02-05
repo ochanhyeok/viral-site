@@ -12,3 +12,5 @@ export { Recommendations } from './Recommendations';
 export { FAQ, salaryFAQ, retirementFAQ, spendingFAQ, mbtiFAQ, stressFAQ, kkondaeFAQ } from './FAQ';
 export { BadgeNotification } from './BadgeNotification';
 export { BadgeIcon } from './BadgeIcon';
+export { Mascot, MascotWithTyping, MascotGreeting, mascotComments, getRandomComment } from './Mascot';
+export type { MascotMood } from './Mascot';

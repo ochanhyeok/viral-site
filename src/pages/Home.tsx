@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SEO, VisitorCounter } from '../components';
+import { SEO, VisitorCounter, MascotGreeting } from '../components';
 
 interface Tool {
   path: string;
@@ -214,6 +214,11 @@ export function Home() {
             직장인 필수 도구를 한 곳에서!
           </p>
           <VisitorCounter />
+
+          {/* 마스코트 인사 */}
+          <div className="mt-6 flex justify-center">
+            <MascotGreeting />
+          </div>
         </div>
 
         {/* 계산기 섹션 */}
