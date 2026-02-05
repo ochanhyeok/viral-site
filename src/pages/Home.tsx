@@ -229,39 +229,41 @@ function ToolCard({ tool, index }: { tool: Tool; index: number }) {
   return (
     <Link
       to={tool.path}
-      className={`group relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1 active:scale-[0.98]`}
+      className={`group relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98] min-h-[140px]`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <BadgeComponent badge={tool.badge} />
 
       {/* 배경 장식 */}
-      <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
 
-      <div className="relative flex items-center gap-3">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-          <span className="text-2xl sm:text-3xl filter drop-shadow-lg">
+      {/* 화살표 - 우상단 */}
+      <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 group-hover:translate-x-1 transition-all z-10">
+        <svg
+          className="w-4 h-4 opacity-70 group-hover:opacity-100"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+
+      {/* 세로 배치: 이모지 + 텍스트 */}
+      <div className="relative flex flex-col h-full">
+        <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 mb-3">
+          <span className="text-3xl filter drop-shadow-lg">
             {tool.emoji}
           </span>
         </div>
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <h2 className="text-sm sm:text-base font-extrabold mb-0.5 group-hover:translate-x-1 transition-transform line-clamp-1">
+        <div className="flex-1">
+          <h2 className="text-base font-extrabold mb-1 group-hover:translate-x-1 transition-transform leading-tight">
             {tool.title}
           </h2>
-          <p className="text-white/80 text-xs sm:text-sm line-clamp-1">
+          <p className="text-white/80 text-sm leading-snug">
             {tool.description}
           </p>
-        </div>
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 group-hover:translate-x-1 transition-all">
-          <svg
-            className="w-4 h-4 sm:w-5 sm:h-5 opacity-70 group-hover:opacity-100"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
         </div>
       </div>
     </Link>
