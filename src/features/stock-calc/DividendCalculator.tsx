@@ -12,8 +12,8 @@ interface Result {
   yearsToDouble: number;
 }
 
-// 인기 배당주 프리셋 (2026년 기준, 2025년 하반기 데이터 반영)
-const STOCK_PRESETS = [
+// 국내 배당주 프리셋 (2026년 기준)
+const KOREA_PRESETS = [
   {
     name: '삼성전자',
     price: 55000,
@@ -70,17 +70,80 @@ const STOCK_PRESETS = [
   },
 ];
 
+// 해외 배당주 프리셋 (2026년 기준, 환율 1,450원)
+const OVERSEAS_PRESETS = [
+  {
+    name: '코카콜라 (KO)',
+    price: 91000,  // $63 × 1,450
+    dividend: 735,  // 분기 $0.51 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '3.2%',
+    tag: '배당왕',
+    note: '63년 연속 인상'
+  },
+  {
+    name: '애플 (AAPL)',
+    price: 348000,  // $240 × 1,450
+    dividend: 370,  // 분기 $0.255 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.4%',
+    tag: '빅테크',
+    note: '시총 1위'
+  },
+  {
+    name: 'MS (MSFT)',
+    price: 609000,  // $420 × 1,450
+    dividend: 1200,  // 분기 $0.83 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '0.8%',
+    tag: '빅테크',
+    note: 'AI 리더'
+  },
+  {
+    name: 'J&J (JNJ)',
+    price: 232000,  // $160 × 1,450
+    dividend: 1900,  // 분기 $1.31 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '3.3%',
+    tag: '배당왕',
+    note: '62년 연속 인상'
+  },
+  {
+    name: 'P&G (PG)',
+    price: 232000,  // $160 × 1,450
+    dividend: 1450,  // 분기 $1.00 × 1,450
+    frequency: 'quarterly' as const,
+    yield: '2.5%',
+    tag: '배당왕',
+    note: '68년 연속 인상'
+  },
+  {
+    name: '리얼티인컴 (O)',
+    price: 80000,  // $55 × 1,450
+    dividend: 380,  // 월 $0.26 × 1,450
+    frequency: 'quarterly' as const,  // 실제는 월배당이지만 분기로 환산
+    yield: '5.7%',
+    tag: '월배당',
+    note: 'REIT 대장주'
+  },
+];
+
+type PresetType = typeof KOREA_PRESETS[0];
+
 export default function DividendCalculator() {
   const [investAmount, setInvestAmount] = useState<string>('1000'); // 만원
   const [stockPrice, setStockPrice] = useState<string>('55000'); // 원 (삼성전자 기준)
-  const [dividendPerShare, setDividendPerShare] = useState<string>('367'); // 원 (삼성전자 분기배당)
+  const [dividendPerShare, setDividendPerShare] = useState<string>('365'); // 원 (삼성전자 분기배당)
   const [dividendFrequency, setDividendFrequency] = useState<'annual' | 'quarterly'>('quarterly');
   const [showResult, setShowResult] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
+  const [presetTab, setPresetTab] = useState<'korea' | 'overseas'>('korea');
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
 
-  const handlePresetSelect = (preset: typeof STOCK_PRESETS[0]) => {
+  const currentPresets = presetTab === 'korea' ? KOREA_PRESETS : OVERSEAS_PRESETS;
+
+  const handlePresetSelect = (preset: PresetType) => {
     setStockPrice(preset.price.toString());
     setDividendPerShare(preset.dividend.toString());
     setDividendFrequency(preset.frequency);
@@ -188,14 +251,41 @@ export default function DividendCalculator() {
             <span className="text-lg">🔥</span>
             인기 배당주로 계산해보기
           </h3>
+
+          {/* 국내/해외 탭 */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setPresetTab('korea')}
+              className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
+                presetTab === 'korea'
+                  ? 'bg-amber-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              🇰🇷 국내 배당주
+            </button>
+            <button
+              onClick={() => setPresetTab('overseas')}
+              className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
+                presetTab === 'overseas'
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              🇺🇸 해외 배당주
+            </button>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {STOCK_PRESETS.map((preset) => (
+            {currentPresets.map((preset) => (
               <button
                 key={preset.name}
                 onClick={() => handlePresetSelect(preset)}
                 className={`p-3 rounded-xl text-left transition-all ${
                   selectedPreset === preset.name
-                    ? 'bg-amber-100 border-2 border-amber-400 shadow-md'
+                    ? presetTab === 'korea'
+                      ? 'bg-amber-100 border-2 border-amber-400 shadow-md'
+                      : 'bg-blue-100 border-2 border-blue-400 shadow-md'
                     : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
                 }`}
               >
@@ -208,6 +298,12 @@ export default function DividendCalculator() {
                       ? 'bg-blue-100 text-blue-600'
                       : preset.tag === '우선주'
                       ? 'bg-purple-100 text-purple-600'
+                      : preset.tag === '배당왕'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : preset.tag === '빅테크'
+                      ? 'bg-indigo-100 text-indigo-600'
+                      : preset.tag === '월배당'
+                      ? 'bg-green-100 text-green-600'
                       : 'bg-gray-200 text-gray-600'
                   }`}>
                     {preset.tag}
@@ -218,7 +314,7 @@ export default function DividendCalculator() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-gray-400">{preset.note}</span>
-                  <span className="text-xs font-bold text-amber-600">
+                  <span className={`text-xs font-bold ${presetTab === 'korea' ? 'text-amber-600' : 'text-blue-600'}`}>
                     {preset.yield}
                   </span>
                 </div>
@@ -226,7 +322,9 @@ export default function DividendCalculator() {
             ))}
           </div>
           <p className="text-xs text-gray-400 mt-3 text-center">
-            * 2026년 2월 기준 예상 배당. 실제 주가/배당과 다를 수 있음
+            {presetTab === 'korea'
+              ? '* 2026년 2월 기준 예상 배당. 실제 주가/배당과 다를 수 있음'
+              : '* 2026년 2월 기준, 환율 1,450원 적용. 실제와 다를 수 있음'}
           </p>
         </div>
 
