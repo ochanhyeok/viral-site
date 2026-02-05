@@ -35,10 +35,11 @@ export default function CompoundCalculator() {
 
   const result = useMemo<Result | null>(() => {
     const initial = parseFloat(initialAmount) * 10000;
-    const monthly = parseFloat(monthlyContribution) * 10000;
+    const monthlyRaw = parseFloat(monthlyContribution);
+    const monthly = (isNaN(monthlyRaw) || monthlyContribution === '') ? 0 : monthlyRaw * 10000;
     const inputRate = parseFloat(annualRate) / 100;
 
-    if (isNaN(initial) || isNaN(monthly) || isNaN(inputRate) || totalMonths <= 0 ||
+    if (isNaN(initial) || isNaN(inputRate) || totalMonths <= 0 ||
         initial < 0 || monthly < 0 || inputRate <= 0) {
       return null;
     }
