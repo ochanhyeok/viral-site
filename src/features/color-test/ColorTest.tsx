@@ -6,6 +6,7 @@ import { TOTAL_ROUNDS, funFacts, colorTestFAQ, difficultyLevels } from './colorT
 import { useColorTestStats, useTotalParticipants } from '../../hooks/useTestStats';
 import { useUserData } from '../../hooks/useLocalStorage';
 import { useBadges } from '../../hooks/useBadges';
+import { submitRanking } from '../../hooks/useRanking';
 
 // 색감 테스트용 간단한 희소성 정보
 function getColorRarityInfo(percentage: number) {
@@ -50,8 +51,9 @@ export function ColorTest() {
 
   const { submitResult, getStats, stats, loading: statsLoading } = useColorTestStats();
   const { totalCount, isLoading: totalLoading } = useTotalParticipants('color-test');
-  const { saveRecord } = useUserData();
+  const { userData, saveRecord } = useUserData();
   const { checkBadges, newBadge, dismissNewBadge } = useBadges();
+  const [_myRank, setMyRank] = useState<number | null>(null);
 
   // 결과 제출 및 로컬 저장
   useEffect(() => {
@@ -69,6 +71,14 @@ export function ColorTest() {
         maxScore: results.maxScore,
         percentage: results.percent,
       });
+
+      // 랭킹 등록 (닉네임이 있는 경우)
+      if (userData.profile?.nickname) {
+        submitRanking('color-test', userData.profile.nickname, results.score, results.grade.title)
+          .then(res => {
+            if (res.rank) setMyRank(res.rank);
+          });
+      }
 
       // 뱃지 체크
       setTimeout(() => checkBadges(), 500);

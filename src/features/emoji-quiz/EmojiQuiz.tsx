@@ -12,6 +12,7 @@ import {
 } from './emojiQuizData';
 import { useUserData } from '../../hooks/useLocalStorage';
 import { useBadges } from '../../hooks/useBadges';
+import { submitRanking } from '../../hooks/useRanking';
 
 type GamePhase = 'intro' | 'playing' | 'result' | 'final';
 
@@ -37,8 +38,9 @@ export function EmojiQuiz() {
   const startTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { saveRecord } = useUserData();
+  const { userData, saveRecord } = useUserData();
   const { checkBadges, newBadge, dismissNewBadge } = useBadges();
+  const [_myRank, setMyRank] = useState<number | null>(null);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -152,6 +154,14 @@ export function EmojiQuiz() {
         maxScore: finalResults.maxScore,
         percentage: finalResults.percent,
       });
+
+      // 랭킹 등록 (닉네임이 있는 경우)
+      if (userData.profile?.nickname) {
+        submitRanking('emoji-quiz', userData.profile.nickname, finalResults.totalScore, finalResults.grade.title)
+          .then(res => {
+            if (res.rank) setMyRank(res.rank);
+          });
+      }
 
       // 뱃지 체크
       setTimeout(() => checkBadges(), 500);

@@ -13,6 +13,7 @@ import {
 import { useTotalParticipants } from '../../hooks/useTestStats';
 import { useUserData } from '../../hooks/useLocalStorage';
 import { useBadges } from '../../hooks/useBadges';
+import { submitRanking } from '../../hooks/useRanking';
 
 type GamePhase = 'intro' | 'waiting' | 'ready' | 'result' | 'tooEarly' | 'final';
 
@@ -96,8 +97,9 @@ export function ReactionTest() {
 
   const { stats, loading: statsLoading, submitResult, getStats } = useReactionTestStats();
   const { totalCount, isLoading: totalLoading } = useTotalParticipants('reaction-test' as any);
-  const { saveRecord } = useUserData();
+  const { userData, saveRecord } = useUserData();
   const { checkBadges, newBadge, dismissNewBadge } = useBadges();
+  const [_myRank, setMyRank] = useState<number | null>(null);
 
   // 타이머 정리
   const clearTimer = useCallback(() => {
@@ -200,6 +202,14 @@ export function ReactionTest() {
           score: finalResults.avgTime,
           details: { avgTime: finalResults.avgTime, bestTime: finalResults.bestTime },
         });
+
+        // 랭킹 등록 (닉네임이 있는 경우)
+        if (userData.profile?.nickname) {
+          submitRanking('reaction-test', userData.profile.nickname, finalResults.avgTime, finalResults.grade.title)
+            .then(res => {
+              if (res.rank) setMyRank(res.rank);
+            });
+        }
 
         // 뱃지 체크
         setTimeout(() => checkBadges(), 500);

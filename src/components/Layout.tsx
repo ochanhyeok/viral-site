@@ -35,6 +35,13 @@ export function Layout({ children }: LayoutProps) {
               </Link>
             )}
             <Link
+              to="/ranking"
+              className="flex items-center gap-1 px-3 py-2 text-sm text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all active:scale-95"
+            >
+              <span className="text-base">🏆</span>
+              <span className="hidden sm:inline">랭킹</span>
+            </Link>
+            <Link
               to="/my"
               className="flex items-center gap-1 px-3 py-2 text-sm text-gray-500 hover:text-violet-600 hover:bg-violet-50 rounded-xl transition-all active:scale-95"
             >

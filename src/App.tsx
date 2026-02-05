@@ -12,6 +12,7 @@ import { ColorTest } from './features/color-test/ColorTest';
 import { ReactionTest } from './features/reaction-test/ReactionTest';
 import { EmojiQuiz } from './features/emoji-quiz/EmojiQuiz';
 import { MyPage } from './pages/MyPage';
+import { RankingPage } from './pages/RankingPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/reaction-test" element={<ReactionTest />} />
             <Route path="/emoji-quiz" element={<EmojiQuiz />} />
             <Route path="/my" element={<MyPage />} />
+            <Route path="/ranking" element={<RankingPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
