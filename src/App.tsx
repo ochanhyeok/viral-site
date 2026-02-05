@@ -10,6 +10,7 @@ import { StressTest } from './components/StressTest/StressTest';
 import { KkondaeTest } from './features/kkondae-test/KkondaeTest';
 import { ColorTest } from './features/color-test/ColorTest';
 import { ReactionTest } from './features/reaction-test/ReactionTest';
+import { EmojiQuiz } from './features/emoji-quiz/EmojiQuiz';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/kkondae-test" element={<KkondaeTest />} />
             <Route path="/color-test" element={<ColorTest />} />
             <Route path="/reaction-test" element={<ReactionTest />} />
+            <Route path="/emoji-quiz" element={<EmojiQuiz />} />
           </Routes>
         </Layout>
       </BrowserRouter>

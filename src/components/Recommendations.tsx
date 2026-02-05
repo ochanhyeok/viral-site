@@ -90,7 +90,17 @@ const allTools: Tool[] = [
     description: '프로게이머급 반사신경?',
     gradient: 'from-yellow-400 to-orange-500',
     category: 'test',
-    relatedTo: ['/color-test', '/stress-test', '/work-mbti'],
+    relatedTo: ['/color-test', '/emoji-quiz', '/work-mbti'],
+  },
+  {
+    path: '/emoji-quiz',
+    emoji: '🎯',
+    title: '이모지 퀴즈',
+    shortTitle: '이모지퀴즈',
+    description: '🦁👑 이게 뭘까?',
+    gradient: 'from-pink-500 to-yellow-500',
+    category: 'test',
+    relatedTo: ['/color-test', '/reaction-test', '/kkondae-test'],
   },
 ];
 
