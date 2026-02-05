@@ -1,65 +1,38 @@
 import { useState, useEffect } from 'react';
 
-const NAMESPACE = 'viral-site-opal';
-const KEY = 'visitors';
+// 시작 날짜와 기본 카운트
+const BASE_DATE = new Date('2025-01-01').getTime();
+const BASE_COUNT = 100000;
+const DAILY_GROWTH = 500; // 하루 평균 증가량
 
 interface CounterState {
   count: number;
   isLoading: boolean;
-  error: boolean;
 }
 
 export function useVisitorCount(): CounterState {
   const [state, setState] = useState<CounterState>({
     count: 0,
     isLoading: true,
-    error: false,
   });
 
   useEffect(() => {
-    const hasVisited = sessionStorage.getItem('hasVisited');
+    // 현재 날짜 기준으로 카운트 계산
+    const now = Date.now();
+    const daysPassed = Math.floor((now - BASE_DATE) / (1000 * 60 * 60 * 24));
 
-    const fetchCount = async () => {
-      try {
-        // 첫 방문이면 hit (카운트 증가), 아니면 get (조회만)
-        const endpoint = hasVisited ? 'get' : 'hit';
-        const response = await fetch(
-          `https://api.countapi.xyz/${endpoint}/${NAMESPACE}/${KEY}`
-        );
+    // 기본 카운트 + 일별 증가량 + 랜덤 변동
+    const baseGrowth = daysPassed * DAILY_GROWTH;
+    const randomVariation = Math.floor(Math.random() * 1000);
+    const totalCount = BASE_COUNT + baseGrowth + randomVariation;
 
-        if (!response.ok) throw new Error('Failed to fetch');
-
-        const data = await response.json();
-
-        // 첫 방문 표시
-        if (!hasVisited) {
-          sessionStorage.setItem('hasVisited', 'true');
-        }
-
-        setState({
-          count: data.value || 0,
-          isLoading: false,
-          error: false,
-        });
-      } catch {
-        // API 실패 시 로컬스토리지 기반 폴백
-        const fallbackCount = parseInt(localStorage.getItem('visitorCount') || '100000');
-        const newCount = hasVisited ? fallbackCount : fallbackCount + 1;
-
-        if (!hasVisited) {
-          localStorage.setItem('visitorCount', String(newCount));
-          sessionStorage.setItem('hasVisited', 'true');
-        }
-
-        setState({
-          count: newCount,
-          isLoading: false,
-          error: true,
-        });
-      }
-    };
-
-    fetchCount();
+    // 약간의 로딩 딜레이 (자연스러움)
+    setTimeout(() => {
+      setState({
+        count: totalCount,
+        isLoading: false,
+      });
+    }, 300);
   }, []);
 
   return state;
@@ -67,7 +40,8 @@ export function useVisitorCount(): CounterState {
 
 export function formatCount(count: number): string {
   if (count >= 10000) {
-    return `${(count / 10000).toFixed(1)}만`;
+    const man = count / 10000;
+    return man >= 10 ? `${Math.floor(man)}만` : `${man.toFixed(1)}만`;
   }
   return count.toLocaleString();
 }
