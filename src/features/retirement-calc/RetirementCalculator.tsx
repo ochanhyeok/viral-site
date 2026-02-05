@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
 import { getMonth, getYear } from 'date-fns';
-import { SEO, Button, Input, ShareButtons } from '../../components';
+import { SEO, Button, Input, ShareButtons, Recommendations, FAQ, retirementFAQ } from '../../components';
 import { useRetirementCalc, formatCurrency } from './useRetirementCalc';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -370,14 +370,53 @@ export function RetirementCalculator() {
               </div>
             </div>
 
+            {/* 이미지 저장용 캡처 카드 */}
+            <div
+              id="retirement-result-capture"
+              className="rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600"
+            >
+              <div className="p-6 text-white text-center">
+                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">🏦</span>
+                </div>
+                <p className="text-white/70 text-sm mb-1">예상 퇴직금</p>
+                <h2 className="text-3xl font-extrabold mb-3">{formatCurrency(result.retirementPay)}원</h2>
+                <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-white/60">근속기간</p>
+                      <p className="font-bold text-lg">{result.years}년 {result.months}개월</p>
+                    </div>
+                    <div>
+                      <p className="text-white/60">총 근무일수</p>
+                      <p className="font-bold text-lg">{result.totalDays}일</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-white/20">
+                    <p className="text-white/60 text-sm">평균임금</p>
+                    <p className="font-bold">{formatCurrency(result.averageDailyWage)}원/일</p>
+                  </div>
+                </div>
+                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+              </div>
+            </div>
+
             {/* 공유 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
               <ShareButtons
                 title="퇴직금 계산기"
                 description={`${result.years}년 ${result.months}개월 근무 시 예상 퇴직금: ${formatCurrency(result.retirementPay)}원`}
+                captureElementId="retirement-result-capture"
+                captureFileName="retirement-result"
               />
             </div>
+
+            {/* 다른 도구 추천 */}
+            <Recommendations currentPath="/retirement" />
+
+            {/* FAQ */}
+            <FAQ items={retirementFAQ} />
           </>
         )}
       </div>

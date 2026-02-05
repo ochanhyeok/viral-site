@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { stressQuestions, answerOptions, categoryAnalysis } from '../../data/stressQuestions';
 import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
-import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../index';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, stressFAQ } from '../index';
 import { stressTips, stressMusic } from '../../data/stressQuestions';
 import { STRESS_LEVELS } from '../../types/stressTest';
-import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
+import { saveTestResult, useTestStats, calculatePercentage, useTotalParticipants } from '../../hooks/useTestStats';
 import { fireConfetti } from '../../hooks/useConfetti';
+import { getRarityInfo, getFirstParticipantInfo } from '../../utils/rarityMessage';
 
 type TestPhase = 'intro' | 'ageSelect' | 'questions' | 'result';
 type MusicGenre = 'korean' | 'pop';
@@ -38,6 +39,7 @@ export function StressTest() {
   const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('stress', ageGroup);
+  const { totalCount: totalParticipants } = useTotalParticipants('stress');
 
   // 결과 나올 때 폭죽 발사
   useEffect(() => {
@@ -137,6 +139,13 @@ export function StressTest() {
   // 나이대 비교 데이터
   const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.level) : 0;
 
+  // 희소성 정보
+  const rarityInfo = ageGroup && ageGroupCount > 1
+    ? getRarityInfo(myPercentage, ageGroupLabels[ageGroup], ageGroupCount)
+    : ageGroup
+    ? getFirstParticipantInfo(ageGroupLabels[ageGroup])
+    : null;
+
   // 주의 필요 카테고리 (점수 4 이상)
   const dangerCategories = result
     ? result.categoryScores.filter(c => c.score >= 4)
@@ -182,7 +191,7 @@ export function StressTest() {
               솔직하게 답하면 맞춤 처방을 드려요!
             </p>
 
-            <div className="bg-white rounded-2xl p-5 mb-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-2xl p-5 mb-6 shadow-sm border border-gray-100">
               <div className="flex items-center justify-around text-sm">
                 <div className="text-center">
                   <div className="text-2xl mb-1">📝</div>
@@ -200,6 +209,19 @@ export function StressTest() {
                 </div>
               </div>
             </div>
+
+            {/* 참여자 수 */}
+            {totalParticipants > 0 && (
+              <div className="flex items-center justify-center gap-2 mb-6 text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                </span>
+                <span className="text-gray-500">
+                  <span className="font-bold text-rose-600">{totalParticipants.toLocaleString()}</span>명이 테스트 완료
+                </span>
+              </div>
+            )}
 
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600">
               테스트 시작하기
@@ -282,6 +304,14 @@ export function StressTest() {
                   {result.level === 'veryHigh' && '😫'}
                 </span>
               </div>
+              {/* 희소성 뱃지 */}
+              {rarityInfo && (
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r ${rarityInfo.badgeColor} text-white text-sm font-bold mb-3 shadow-lg`}>
+                  <span>{rarityInfo.badge}</span>
+                  <span className="text-white/80">|</span>
+                  <span>{rarityInfo.message}</span>
+                </div>
+              )}
               <p className="text-gray-400 text-sm mb-1">당신의 스트레스 지수는</p>
               <h1 className="text-4xl font-extrabold mb-2" style={{ color: levelInfo.color }}>
                 {result.totalScore}점
@@ -309,7 +339,7 @@ export function StressTest() {
             </div>
 
             {/* 나이대 비교 */}
-            {ageGroup && (
+            {ageGroup && rarityInfo && (
               <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
                 <h3 className="font-bold mb-3 flex items-center gap-2">
                   <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
@@ -317,26 +347,27 @@ export function StressTest() {
                 {ageGroupCount > 1 ? (
                   <>
                     <p className="text-indigo-100 text-sm mb-3">
-                      {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
+                      {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount.toLocaleString()}명 중
                     </p>
                     <div className="bg-white/20 rounded-2xl p-4">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className={`px-2 py-0.5 rounded-full bg-gradient-to-r ${rarityInfo.badgeColor} text-xs font-bold`}>
+                          {rarityInfo.badge}
+                        </span>
+                      </div>
                       <p className="text-2xl font-bold">
                         {myPercentage}%가 같은 결과
                       </p>
-                      <p className="text-indigo-100 text-sm mt-1">
-                        {myPercentage >= 30
-                          ? `${ageGroupLabels[ageGroup]}에서 흔한 스트레스 수준이에요`
-                          : myPercentage >= 10
-                          ? `${ageGroupLabels[ageGroup]} 평균과 비슷한 수준이에요`
-                          : `${ageGroupLabels[ageGroup]}에서는 드문 케이스예요`}
+                      <p className="text-indigo-100 text-sm mt-2">
+                        {rarityInfo.subMessage}
                       </p>
                     </div>
                   </>
                 ) : (
                   <div className="bg-white/20 rounded-2xl p-4">
-                    <p className="text-xl font-bold mb-1">🎉 첫 번째 참여자!</p>
+                    <p className="text-xl font-bold mb-1">{rarityInfo.badge}</p>
                     <p className="text-indigo-100 text-sm">
-                      {ageGroupLabels[ageGroup]}에서 처음으로 테스트했어요.<br />
+                      {rarityInfo.subMessage}<br />
                       공유해서 친구들과 비교해보세요!
                     </p>
                   </div>
@@ -598,6 +629,12 @@ export function StressTest() {
             <Button onClick={handleRetry} variant="outline" className="w-full" size="lg">
               다시 테스트하기
             </Button>
+
+            {/* 다른 테스트 추천 */}
+            <Recommendations currentPath="/stress-test" />
+
+            {/* FAQ */}
+            <FAQ items={stressFAQ} />
           </div>
         )}
       </div>

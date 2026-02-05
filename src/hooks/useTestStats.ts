@@ -138,3 +138,44 @@ export function calculatePercentage(
 
   return Math.round((stats[resultType] || 0) / total * 100);
 }
+
+// 테스트별 총 참여자 수 조회 (인트로 화면용)
+export function useTotalParticipants(
+  testType: 'spending' | 'mbti' | 'stress' | 'kkondae'
+): { totalCount: number; isLoading: boolean } {
+  const [state, setState] = useState<{ totalCount: number; isLoading: boolean }>({
+    totalCount: 0,
+    isLoading: true,
+  });
+
+  useEffect(() => {
+    const fetchTotalCount = async () => {
+      try {
+        const response = await fetch(
+          `${FIREBASE_DB_URL}/stats/${testType}.json`
+        );
+        const data = await response.json();
+
+        let totalCount = 0;
+        if (data) {
+          Object.values(data).forEach((ageData: unknown) => {
+            if (ageData && typeof ageData === 'object') {
+              Object.values(ageData as Record<string, number>).forEach((count) => {
+                totalCount += count;
+              });
+            }
+          });
+        }
+
+        setState({ totalCount, isLoading: false });
+      } catch (error) {
+        console.error('Failed to fetch total count:', error);
+        setState(prev => ({ ...prev, isLoading: false }));
+      }
+    };
+
+    fetchTotalCount();
+  }, [testType]);
+
+  return state;
+}

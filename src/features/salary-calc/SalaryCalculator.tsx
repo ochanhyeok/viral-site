@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import { SEO, Button, Input, Select, ShareButtons } from '../../components';
+import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ } from '../../components';
 import { useSalaryCalc, formatCurrency } from './useSalaryCalc';
 
 export function SalaryCalculator() {
@@ -235,14 +235,51 @@ export function SalaryCalculator() {
               </div>
             </div>
 
+            {/* 이미지 저장용 캡처 카드 */}
+            <div
+              id="salary-result-capture"
+              className="rounded-3xl overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600"
+            >
+              <div className="p-6 text-white text-center">
+                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">💰</span>
+                </div>
+                <p className="text-white/70 text-sm mb-1">2025 연봉 실수령액</p>
+                <h2 className="text-2xl font-extrabold mb-1">연봉 {formatCurrency(parseInt(salary.replace(/,/g, '')))}원</h2>
+                <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
+                  <p className="text-white/80 text-sm mb-2">월 실수령액</p>
+                  <p className="text-3xl font-bold">{formatCurrency(result.monthlyNetSalary)}원</p>
+                  <div className="mt-3 pt-3 border-t border-white/20 grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p className="text-white/60">연 실수령액</p>
+                      <p className="font-bold">{formatCurrency(result.annualNetSalary)}원</p>
+                    </div>
+                    <div>
+                      <p className="text-white/60">총 공제액</p>
+                      <p className="font-bold">{formatCurrency(result.totalDeduction)}원</p>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+              </div>
+            </div>
+
             {/* 공유 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-4 text-center">결과 공유하기</h3>
               <ShareButtons
                 title="연봉 실수령액 계산기"
                 description={`내 월 실수령액: ${formatCurrency(result.monthlyNetSalary)}원`}
+                captureElementId="salary-result-capture"
+                captureFileName="salary-result"
               />
             </div>
+
+            {/* 다른 도구 추천 */}
+            <Recommendations currentPath="/salary" />
+
+            {/* FAQ */}
+            <FAQ items={salaryFAQ} />
           </>
         )}
       </div>

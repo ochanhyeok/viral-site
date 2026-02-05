@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../../components';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, mbtiFAQ } from '../../components';
 import { mbtiQuestions, calculateMbti, getMbtiResult } from './mbtiData';
 import type { WorkMbtiType } from './mbtiData';
-import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
+import { saveTestResult, useTestStats, calculatePercentage, useTotalParticipants } from '../../hooks/useTestStats';
 import { fireConfetti } from '../../hooks/useConfetti';
+import { getRarityInfo, getFirstParticipantInfo } from '../../utils/rarityMessage';
 
 type QuizState = 'intro' | 'ageSelect' | 'quiz' | 'result';
 
@@ -19,6 +20,7 @@ export function WorkMbti() {
   const confettiFired = useRef(false);
 
   const { myAgeGroupStats, ageGroupCount } = useTestStats('mbti', ageGroup);
+  const { totalCount: totalParticipants } = useTotalParticipants('mbti');
 
   // 결과 나올 때 폭죽 발사
   useEffect(() => {
@@ -91,6 +93,13 @@ export function WorkMbti() {
   // 나이대 비교 데이터
   const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.type) : 0;
 
+  // 희소성 정보
+  const rarityInfo = ageGroup && ageGroupCount > 1
+    ? getRarityInfo(myPercentage, ageGroupLabels[ageGroup], ageGroupCount)
+    : ageGroup
+    ? getFirstParticipantInfo(ageGroupLabels[ageGroup])
+    : null;
+
   return (
     <>
       <SEO
@@ -125,7 +134,7 @@ export function WorkMbti() {
               업무 스타일로 알아보는 성격 유형!
             </p>
 
-            <div className="bg-white rounded-2xl p-5 mb-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-2xl p-5 mb-6 shadow-sm border border-gray-100">
               <div className="flex items-center justify-around text-sm">
                 <div className="text-center">
                   <div className="text-2xl mb-1">🏢</div>
@@ -143,6 +152,19 @@ export function WorkMbti() {
                 </div>
               </div>
             </div>
+
+            {/* 참여자 수 */}
+            {totalParticipants > 0 && (
+              <div className="flex items-center justify-center gap-2 mb-6 text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                </span>
+                <span className="text-gray-500">
+                  <span className="font-bold text-orange-600">{totalParticipants.toLocaleString()}</span>명이 테스트 완료
+                </span>
+              </div>
+            )}
 
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
@@ -220,6 +242,14 @@ export function WorkMbti() {
               <div className={`w-24 h-24 mx-auto mb-4 bg-gradient-to-br ${result.color} rounded-3xl flex items-center justify-center shadow-xl`}>
                 <span className="text-5xl">{result.emoji}</span>
               </div>
+              {/* 희소성 뱃지 */}
+              {rarityInfo && (
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r ${rarityInfo.badgeColor} text-white text-sm font-bold mb-3 shadow-lg`}>
+                  <span>{rarityInfo.badge}</span>
+                  <span className="text-white/80">|</span>
+                  <span>{rarityInfo.message}</span>
+                </div>
+              )}
               <p className="text-gray-400 text-sm mb-1">당신의 직장인 MBTI는</p>
               <h1 className="text-4xl font-extrabold text-gray-900 mb-1">
                 {result.type}
@@ -231,7 +261,7 @@ export function WorkMbti() {
             </div>
 
             {/* 나이대 비교 */}
-            {ageGroup && (
+            {ageGroup && rarityInfo && (
               <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl p-6 text-white shadow-xl">
                 <h3 className="font-bold mb-3 flex items-center gap-2">
                   <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
@@ -239,26 +269,27 @@ export function WorkMbti() {
                 {ageGroupCount > 1 ? (
                   <>
                     <p className="text-orange-100 text-sm mb-3">
-                      {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
+                      {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount.toLocaleString()}명 중
                     </p>
                     <div className="bg-white/20 rounded-2xl p-4">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className={`px-2 py-0.5 rounded-full bg-gradient-to-r ${rarityInfo.badgeColor} text-xs font-bold`}>
+                          {rarityInfo.badge}
+                        </span>
+                      </div>
                       <p className="text-2xl font-bold">
                         {myPercentage}%가 같은 유형
                       </p>
-                      <p className="text-orange-100 text-sm mt-1">
-                        {myPercentage >= 15
-                          ? `${ageGroupLabels[ageGroup]}에서 흔한 MBTI예요!`
-                          : myPercentage >= 5
-                          ? `${ageGroupLabels[ageGroup]} 평균 수준이에요`
-                          : `${ageGroupLabels[ageGroup]}에서는 희귀한 유형이에요!`}
+                      <p className="text-orange-100 text-sm mt-2">
+                        {rarityInfo.subMessage}
                       </p>
                     </div>
                   </>
                 ) : (
                   <div className="bg-white/20 rounded-2xl p-4">
-                    <p className="text-xl font-bold mb-1">🎉 첫 번째 참여자!</p>
+                    <p className="text-xl font-bold mb-1">{rarityInfo.badge}</p>
                     <p className="text-orange-100 text-sm">
-                      {ageGroupLabels[ageGroup]}에서 처음으로 테스트했어요.<br />
+                      {rarityInfo.subMessage}<br />
                       공유해서 친구들과 비교해보세요!
                     </p>
                   </div>
@@ -342,6 +373,12 @@ export function WorkMbti() {
             <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
               다시 테스트하기
             </Button>
+
+            {/* 다른 테스트 추천 */}
+            <Recommendations currentPath="/work-mbti" />
+
+            {/* FAQ */}
+            <FAQ items={mbtiFAQ} />
           </div>
         )}
       </div>
