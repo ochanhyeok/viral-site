@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
 import { getMonth, getYear } from 'date-fns';
-import { SEO, Button, Input, ShareButtons, Recommendations, FAQ, retirementFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
+import { SEO, Button, Input, ShareButtons, Recommendations, FAQ, retirementFAQ, MascotWithTyping, mascotComments, getRandomComment, Percentile } from '../../components';
 import type { MascotMood } from '../../components';
 import { useRetirementCalc, formatCurrency } from './useRetirementCalc';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -336,6 +336,9 @@ export function RetirementCalculator() {
                 </div>
               </div>
             </div>
+
+            {/* 상위 몇% */}
+            <Percentile value={result.retirementPay} type="retirement" />
 
             {/* 마스코트 코멘트 */}
             {mascotComment && (

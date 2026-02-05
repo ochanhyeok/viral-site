@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ, MascotWithTyping, mascotComments, getRandomComment } from '../../components';
+import { SEO, Button, Input, Select, ShareButtons, Recommendations, FAQ, salaryFAQ, MascotWithTyping, mascotComments, getRandomComment, Percentile } from '../../components';
 import { useSalaryCalc, formatCurrency } from './useSalaryCalc';
 import type { MascotMood } from '../../components';
 
@@ -202,6 +202,9 @@ export function SalaryCalculator() {
                 </div>
               </div>
             </div>
+
+            {/* 상위 몇% */}
+            <Percentile value={parseInt(salary.replace(/,/g, '')) || 0} type="salary" />
 
             {/* 마스코트 코멘트 */}
             {mascotComment && (

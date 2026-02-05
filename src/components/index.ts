@@ -14,3 +14,5 @@ export { BadgeNotification } from './BadgeNotification';
 export { BadgeIcon } from './BadgeIcon';
 export { Mascot, MascotWithTyping, MascotGreeting, mascotComments, getRandomComment } from './Mascot';
 export type { MascotMood } from './Mascot';
+export { LiveFeed, LiveToast } from './LiveFeed';
+export { Percentile } from './Percentile';

@@ -1,5 +1,5 @@
 // 월급루팡 마스코트 - 퇴사 꿈꾸는 햄스터
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export type MascotMood = 'normal' | 'happy' | 'sad' | 'shocked' | 'thinking' | 'tired' | 'excited' | 'dead';
 
@@ -8,6 +8,7 @@ interface MascotProps {
   message?: string;
   size?: 'sm' | 'md' | 'lg';
   animate?: boolean;
+  onClick?: () => void;
 }
 
 const sizeClasses = {
@@ -16,7 +17,7 @@ const sizeClasses = {
   lg: 'text-5xl',
 };
 
-// 표정별 이모지 (햄스터/동물 느낌)
+// 표정별 이모지
 const moodEmojis: Record<MascotMood, string> = {
   normal: '🐹',
   happy: '🐹✨',
@@ -28,21 +29,25 @@ const moodEmojis: Record<MascotMood, string> = {
   dead: '💀',
 };
 
-export function Mascot({ mood = 'normal', message, size = 'md', animate = true }: MascotProps) {
+export function Mascot({ mood = 'normal', message, size = 'md', animate = true, onClick }: MascotProps) {
   return (
     <div className="flex items-start gap-3">
       {/* 캐릭터 */}
-      <div className={`relative flex-shrink-0 ${animate ? 'animate-wiggle' : ''}`}>
+      <button
+        onClick={onClick}
+        className={`relative flex-shrink-0 ${animate ? 'animate-wiggle' : ''} ${onClick ? 'cursor-pointer hover:scale-110 active:scale-95 transition-transform' : ''}`}
+        disabled={!onClick}
+      >
         <div className="relative">
-          {/* 메인 이모지 */}
           <span className={`${sizeClasses[size]} filter drop-shadow-md`}>
             {moodEmojis[mood]}
           </span>
-
-          {/* 넥타이 (직장인 느낌) */}
           <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-xs">👔</span>
         </div>
-      </div>
+        {onClick && (
+          <span className="absolute -top-1 -right-1 text-xs animate-bounce">👆</span>
+        )}
+      </button>
 
       {/* 말풍선 */}
       {message && (
@@ -50,7 +55,6 @@ export function Mascot({ mood = 'normal', message, size = 'md', animate = true }
           <p className="text-gray-800 text-sm leading-relaxed font-medium">
             {message}
           </p>
-          {/* 말풍선 꼬리 */}
           <div className="absolute left-0 top-3 -translate-x-1/2 w-3 h-3 bg-yellow-50 border-l border-b border-yellow-200 rotate-45" />
         </div>
       )}
@@ -69,7 +73,7 @@ export function Mascot({ mood = 'normal', message, size = 'md', animate = true }
 }
 
 // 타이핑 효과가 있는 마스코트
-export function MascotWithTyping({ mood = 'normal', message, size = 'md' }: MascotProps) {
+export function MascotWithTyping({ mood = 'normal', message, size = 'md', onClick }: MascotProps) {
   const [displayedMessage, setDisplayedMessage] = useState('');
   const [isTyping, setIsTyping] = useState(true);
 
@@ -99,11 +103,34 @@ export function MascotWithTyping({ mood = 'normal', message, size = 'md' }: Masc
       message={displayedMessage + (isTyping ? '|' : '')}
       size={size}
       animate={!isTyping}
+      onClick={onClick}
     />
   );
 }
 
-// 랜덤 인사말 - 어이없는 버전
+// 랜덤 잡담 (클릭 시 이스터에그)
+const randomChats = [
+  { mood: 'thinking' as MascotMood, message: '아 오늘 점심 뭐 먹지... 아 맨날 고민이야' },
+  { mood: 'dead' as MascotMood, message: '퇴근까지 3시간... 아니 여긴 퇴근 개념이 없지 ㅋ' },
+  { mood: 'excited' as MascotMood, message: '저 클릭한 거예요?! 심심했는데 ㅋㅋㅋ' },
+  { mood: 'happy' as MascotMood, message: '오 나 만져줬네 ㅎㅎ 고마워요~' },
+  { mood: 'tired' as MascotMood, message: '하... 오늘도 야근이려나... (먼산)' },
+  { mood: 'shocked' as MascotMood, message: '헉 깜짝이야!! 일하는 척 하고 있었는데!' },
+  { mood: 'normal' as MascotMood, message: '사실 저 지금 유튜브 보고 있었어요 쉿 🤫' },
+  { mood: 'sad' as MascotMood, message: '월요일은 왜 이렇게 안 가는 걸까요...' },
+  { mood: 'excited' as MascotMood, message: '아 맞다 오늘 금요일이다!! 아 아니네 ㅋㅋ' },
+  { mood: 'thinking' as MascotMood, message: '로또 1등 되면 뭐 할지 맨날 생각해요 ㅎ' },
+  { mood: 'dead' as MascotMood, message: '커피 4잔째... 심장이 두근두근' },
+  { mood: 'happy' as MascotMood, message: '오늘 칼퇴 가능할 것 같은 느낌적인 느낌!' },
+  { mood: 'shocked' as MascotMood, message: '방금 부장님 뒤에 있었어요?! 괜찮아요?' },
+  { mood: 'tired' as MascotMood, message: '점심 먹고 나면 왜 이렇게 졸린 걸까...' },
+  { mood: 'normal' as MascotMood, message: '저 사실 퇴사 후 치킨집 차리고 싶어요 🍗' },
+  { mood: 'excited' as MascotMood, message: '다음 달에 연차 쓸 거예요!! 벌써 설렘 ㅋㅋ' },
+  { mood: 'thinking' as MascotMood, message: '코인 투자할까... 아 위험하지 ㅋㅋ' },
+  { mood: 'dead' as MascotMood, message: '메일함에 읽지 않은 메일 142개... 모른 척 해야지' },
+];
+
+// 랜덤 인사말
 const greetings = [
   { mood: 'tired' as MascotMood, message: '아 또 월요일이야...? 아 아니구나 ㅋㅋ' },
   { mood: 'dead' as MascotMood, message: '출근하셨군요... 저도요... (먼산)' },
@@ -114,13 +141,31 @@ const greetings = [
   { mood: 'happy' as MascotMood, message: '오 손님이다! 오늘 첫 손님...은 아니고 ㅎ' },
 ];
 
+// 클릭 가능한 인사 마스코트
 export function MascotGreeting() {
-  const [greeting] = useState(() => greetings[Math.floor(Math.random() * greetings.length)]);
+  const [current, setCurrent] = useState(() => greetings[Math.floor(Math.random() * greetings.length)]);
+  const [clickCount, setClickCount] = useState(0);
 
-  return <MascotWithTyping mood={greeting.mood} message={greeting.message} size="md" />;
+  const handleClick = useCallback(() => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+
+    // 10번 클릭 시 특별 메시지
+    if (newCount === 10) {
+      setCurrent({ mood: 'excited', message: '헐 10번이나 클릭했어요?! 저 좋아하시는 거예요? 😳' });
+    } else if (newCount === 20) {
+      setCurrent({ mood: 'shocked', message: '20번?! 일 안 하시고 뭐 하세요 ㅋㅋㅋㅋ' });
+    } else if (newCount === 50) {
+      setCurrent({ mood: 'dead', message: '50번... 저보다 더 할 일 없으시네요 (존경)' });
+    } else {
+      setCurrent(randomChats[Math.floor(Math.random() * randomChats.length)]);
+    }
+  }, [clickCount]);
+
+  return <MascotWithTyping mood={current.mood} message={current.message} size="md" onClick={handleClick} />;
 }
 
-// 결과에 따른 코멘트 - 어이없는 현실 공감 버전
+// 결과에 따른 코멘트
 export const mascotComments = {
   salary: {
     high: [
