@@ -598,28 +598,71 @@ export function StressTest() {
               </ul>
             </div>
 
-            {/* 이미지 저장용 카드 */}
+            {/* 이미지 저장용 카드 - 프리미엄 디자인 */}
             <div
               id="stress-result-capture"
-              className="rounded-3xl overflow-hidden"
+              className="rounded-3xl overflow-hidden relative"
               style={{ background: `linear-gradient(135deg, ${levelInfo.color}, ${levelInfo.color}cc)` }}
             >
-              <div className="p-6 text-white text-center">
-                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">
-                    {result.level === 'low' && '😊'}
-                    {result.level === 'moderate' && '😐'}
-                    {result.level === 'high' && '😰'}
-                    {result.level === 'veryHigh' && '😫'}
-                  </span>
+              {/* 배경 장식 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+              </div>
+
+              <div className="relative p-8 text-white">
+                {/* 상단 뱃지 */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium">스트레스 지수 테스트</span>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold">{levelInfo.label}</span>
+                  </div>
                 </div>
-                <p className="text-white/70 text-sm mb-1">나의 스트레스 지수</p>
-                <h2 className="text-4xl font-extrabold mb-1">{result.totalScore}점</h2>
-                <p className="text-xl font-bold mb-3">{levelInfo.label}</p>
-                <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
-                  <p className="text-white/90 text-sm leading-relaxed">{levelInfo.description}</p>
+
+                {/* 메인 콘텐츠 */}
+                <div className="text-center">
+                  {/* 이모지 */}
+                  <div className="w-24 h-24 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/30">
+                    <span className="text-5xl">
+                      {result.level === 'low' && '😊'}
+                      {result.level === 'moderate' && '😐'}
+                      {result.level === 'high' && '😰'}
+                      {result.level === 'veryHigh' && '😫'}
+                    </span>
+                  </div>
+
+                  {/* 점수 */}
+                  <p className="text-white/60 text-sm font-medium tracking-wider uppercase mb-2">Stress Level</p>
+                  <h2 className="text-5xl font-black mb-2 drop-shadow-lg">{result.totalScore}점</h2>
+                  <p className="text-xl font-bold text-white/90 mb-4">{levelInfo.label}</p>
+
+                  {/* 구분선 */}
+                  <div className="w-16 h-1 bg-white/30 rounded-full mx-auto mb-4" />
+
+                  {/* 게이지 바 */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-full h-3 mb-4 border border-white/20">
+                    <div
+                      className="h-full rounded-full bg-white/50"
+                      style={{ width: `${(result.totalScore / 50) * 100}%` }}
+                    />
+                  </div>
+
+                  {/* 설명 */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-white/20">
+                    <p className="text-white/90 text-sm leading-relaxed">{levelInfo.description}</p>
+                  </div>
                 </div>
-                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+
+                {/* 하단 브랜딩 */}
+                <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-white/20">
+                  <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xs">✨</span>
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">viral-site-opal.vercel.app</span>
+                </div>
               </div>
             </div>
 

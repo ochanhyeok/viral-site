@@ -339,23 +339,56 @@ export function KkondaeTest() {
               </ul>
             </div>
 
-            {/* 이미지 저장용 카드 */}
+            {/* 이미지 저장용 카드 - 프리미엄 디자인 */}
             <div
               id="kkondae-result-capture"
-              className={`rounded-3xl overflow-hidden bg-gradient-to-br ${result.color}`}
+              className={`rounded-3xl overflow-hidden bg-gradient-to-br ${result.color} relative`}
             >
-              <div className="p-6 text-white text-center">
-                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">{result.emoji}</span>
+              {/* 배경 장식 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+              </div>
+
+              <div className="relative p-8 text-white">
+                {/* 상단 뱃지 */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium">꼰대력 테스트</span>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold">{result.percentage}</span>
+                  </div>
                 </div>
-                <p className="text-white/70 text-sm mb-1">나의 꼰대력</p>
-                <h2 className="text-3xl font-extrabold mb-1">{result.level}</h2>
-                <p className="text-xl font-bold mb-1">{result.title}</p>
-                <p className="text-white/70 text-sm mb-3">꼰대 지수 {result.percentage}</p>
-                <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
-                  <p className="text-white/90 text-sm leading-relaxed">{result.description}</p>
+
+                {/* 메인 콘텐츠 */}
+                <div className="text-center">
+                  {/* 이모지 */}
+                  <div className="w-24 h-24 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/30">
+                    <span className="text-5xl">{result.emoji}</span>
+                  </div>
+
+                  {/* 레벨 */}
+                  <p className="text-white/60 text-sm font-medium tracking-wider uppercase mb-2">꼰대 레벨</p>
+                  <h2 className="text-4xl font-black mb-2 drop-shadow-lg">{result.level}</h2>
+                  <p className="text-xl font-bold text-white/90 mb-4">{result.title}</p>
+
+                  {/* 구분선 */}
+                  <div className="w-16 h-1 bg-white/30 rounded-full mx-auto mb-4" />
+
+                  {/* 설명 */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                    <p className="text-white/90 text-sm leading-relaxed">{result.description}</p>
+                  </div>
                 </div>
-                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+
+                {/* 하단 브랜딩 */}
+                <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-white/20">
+                  <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xs">✨</span>
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">viral-site-opal.vercel.app</span>
+                </div>
               </div>
             </div>
 
