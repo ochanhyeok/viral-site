@@ -17,7 +17,7 @@ export function Layout({ children }: LayoutProps) {
             to="/"
             className="flex items-center gap-2 text-lg sm:text-xl font-bold text-gray-800 hover:text-violet-600 transition-colors active:scale-95"
           >
-            <span className="text-xl sm:text-2xl">✦</span>
+            <span className="text-xl sm:text-2xl">✨</span>
             <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
               연봉계산기 & 심리테스트
             </span>
