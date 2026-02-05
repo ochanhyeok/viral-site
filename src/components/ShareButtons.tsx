@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import html2canvas from 'html2canvas';
-import { captureAndDownload } from '../hooks/useResultCapture';
+import { captureToBlob, captureToDataUrl, downloadDataUrl } from '../hooks/useResultCapture';
 
 interface ShareButtonsProps {
   title: string;
@@ -48,7 +47,8 @@ export function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [capturing, setCapturing] = useState(false);
-  const [sharing, setSharing] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [capturedImageUrl, setCapturedImageUrl] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
@@ -57,8 +57,11 @@ export function ShareButtons({
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
+
   const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
-  const shareText = `${title}\n${description}`;
+
+  // 모바일 감지
+  const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const handleCopyLink = async () => {
     try {
@@ -73,53 +76,45 @@ export function ShareButtons({
   // 이미지 캡처 후 공유 (Web Share API Level 2)
   const handleShareWithImage = async () => {
     if (!captureElementId) {
-      // 캡처 대상이 없으면 일반 공유
       handleNativeShare();
       return;
     }
 
-    const element = document.getElementById(captureElementId);
-    if (!element) {
-      handleNativeShare();
-      return;
-    }
-
-    setSharing(true);
+    setCapturing(true);
     try {
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-      });
-
-      const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob((blob) => resolve(blob!), 'image/png');
-      });
-
-      const file = new File([blob], `${captureFileName}.png`, { type: 'image/png' });
+      const blob = await captureToBlob(captureElementId);
+      if (!blob) {
+        showNotification('이미지 캡처에 실패했습니다.');
+        return;
+      }
 
       // Web Share API with files 지원 확인
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title,
-          text: `${description}\n\n${shareUrl}`,
-          files: [file],
-        });
-      } else {
-        // 파일 공유 미지원 시 이미지 다운로드 후 안내
-        await captureAndDownload(captureElementId, captureFileName);
-        showNotification('이미지가 저장되었습니다! 카카오톡에서 직접 이미지를 첨부해서 공유해주세요.');
+      if (navigator.share && navigator.canShare) {
+        const file = new File([blob], `${captureFileName}.png`, { type: 'image/png' });
+
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title,
+              text: `${description}\n\n${shareUrl}`,
+              files: [file],
+            });
+            return;
+          } catch (err) {
+            if ((err as Error).name === 'AbortError') return;
+          }
+        }
       }
+
+      // 파일 공유 미지원 시 이미지 모달로 표시
+      const dataUrl = URL.createObjectURL(blob);
+      setCapturedImageUrl(dataUrl);
+      setShowImageModal(true);
     } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
-        console.error('Share failed:', err);
-        // 실패 시 일반 공유로 폴백
-        handleNativeShare();
-      }
+      console.error('Share failed:', err);
+      showNotification('공유에 실패했습니다. 다시 시도해주세요.');
     } finally {
-      setSharing(false);
+      setCapturing(false);
     }
   };
 
@@ -142,7 +137,7 @@ export function ShareButtons({
   };
 
   const handleTwitterShare = () => {
-    const text = encodeURIComponent(shareText);
+    const text = encodeURIComponent(`${title}\n${description}`);
     const encodedUrl = encodeURIComponent(shareUrl);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`, '_blank');
   };
@@ -176,22 +171,56 @@ export function ShareButtons({
     }
   };
 
+  // 이미지 저장 버튼 클릭
   const handleSaveImage = async () => {
     if (!captureElementId) return;
+
     setCapturing(true);
     try {
-      const success = await captureAndDownload(captureElementId, captureFileName);
-      if (success) {
-        // iOS/Safari가 아닌 경우에만 토스트 표시 (새 탭이 열리면 안내 문구가 거기에 있음)
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        if (!isIOS && !isSafari) {
+      const dataUrl = await captureToDataUrl(captureElementId);
+      if (!dataUrl) {
+        showNotification('이미지 캡처에 실패했습니다.');
+        return;
+      }
+
+      // 모바일에서는 모달로 표시
+      if (isMobile) {
+        setCapturedImageUrl(dataUrl);
+        setShowImageModal(true);
+      } else {
+        // 데스크톱에서는 다운로드 시도
+        const success = downloadDataUrl(dataUrl, captureFileName);
+        if (success) {
           showNotification('이미지가 저장되었습니다!');
+        } else {
+          // 실패 시 모달로 표시
+          setCapturedImageUrl(dataUrl);
+          setShowImageModal(true);
         }
       }
     } finally {
       setCapturing(false);
     }
+  };
+
+  // 모달에서 다운로드 버튼 클릭
+  const handleModalDownload = () => {
+    if (!capturedImageUrl) return;
+
+    const success = downloadDataUrl(capturedImageUrl, captureFileName);
+    if (success) {
+      showNotification('이미지가 저장되었습니다!');
+      setShowImageModal(false);
+    }
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setShowImageModal(false);
+    if (capturedImageUrl && capturedImageUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(capturedImageUrl);
+    }
+    setCapturedImageUrl(null);
   };
 
   return (
@@ -200,21 +229,21 @@ export function ShareButtons({
       {captureElementId && (
         <button
           onClick={handleShareWithImage}
-          disabled={sharing}
+          disabled={capturing}
           className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 text-white rounded-2xl font-bold text-lg hover:from-violet-600 hover:via-purple-600 hover:to-fuchsia-600 transition-all shadow-lg hover:shadow-xl active:scale-[0.98] disabled:opacity-50"
         >
-          {sharing ? (
+          {capturing ? (
             <>
               <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span>공유 준비 중...</span>
+              <span>이미지 생성 중...</span>
             </>
           ) : (
             <>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <span>내 결과 이미지로 공유하기</span>
             </>
@@ -225,7 +254,7 @@ export function ShareButtons({
       {/* 안내 문구 */}
       {captureElementId && (
         <p className="text-center text-xs text-gray-400">
-          모바일에서 카톡/인스타 등으로 바로 공유돼요!
+          {isMobile ? '카톡/인스타 등으로 바로 공유하거나 저장할 수 있어요!' : '결과를 이미지로 저장하거나 공유해보세요!'}
         </p>
       )}
 
@@ -301,14 +330,6 @@ export function ShareButtons({
         </button>
       </div>
 
-      {/* 카카오톡 이미지 공유 팁 */}
-      {captureElementId && (
-        <p className="text-center text-xs text-gray-400 pt-1">
-          카카오톡에 내 결과 이미지를 보내려면<br />
-          <span className="text-violet-500 font-medium">"내 결과 이미지로 공유하기"</span> 버튼을 눌러주세요!
-        </p>
-      )}
-
       {/* Toast Notification */}
       <div
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
@@ -324,6 +345,70 @@ export function ShareButtons({
           <span>{toastMessage}</span>
         </div>
       </div>
+
+      {/* 이미지 미리보기 모달 */}
+      {showImageModal && capturedImageUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-sm w-full max-h-[90vh] overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 헤더 */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-bold text-gray-800">결과 이미지</h3>
+              <button
+                onClick={closeModal}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* 이미지 */}
+            <div className="p-4 overflow-auto max-h-[60vh]">
+              <img
+                src={capturedImageUrl}
+                alt="결과 이미지"
+                className="w-full rounded-xl shadow-lg"
+              />
+            </div>
+
+            {/* 안내 및 버튼 */}
+            <div className="p-4 border-t bg-gray-50 space-y-3">
+              {isMobile ? (
+                <>
+                  <p className="text-center text-sm text-gray-600">
+                    <span className="font-bold text-violet-600">이미지를 길게 눌러</span> 저장하세요!
+                  </p>
+                  <button
+                    onClick={closeModal}
+                    className="w-full py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-colors"
+                  >
+                    닫기
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleModalDownload}
+                    className="w-full py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-bold hover:from-violet-600 hover:to-purple-700 transition-all"
+                  >
+                    이미지 다운로드
+                  </button>
+                  <p className="text-center text-xs text-gray-400">
+                    또는 이미지를 우클릭하여 저장하세요
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
