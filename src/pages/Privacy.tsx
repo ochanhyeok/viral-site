@@ -107,8 +107,17 @@ export function Privacy() {
                 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한
                 정보주체의 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.
               </p>
-              <div className="mt-2 p-4 bg-gray-50 rounded-xl">
+              <div className="mt-2 p-4 bg-gray-50 rounded-xl flex items-center gap-2">
                 <p><strong>이메일:</strong> pon07084@gmail.com</p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText('pon07084@gmail.com');
+                    alert('이메일이 복사되었습니다!');
+                  }}
+                  className="px-2 py-1 text-xs bg-violet-100 text-violet-600 rounded-lg hover:bg-violet-200 transition-colors"
+                >
+                  복사
+                </button>
               </div>
             </section>
 

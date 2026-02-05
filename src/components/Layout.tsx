@@ -67,9 +67,15 @@ export function Layout({ children }: LayoutProps) {
               개인정보처리방침
             </Link>
             <span>|</span>
-            <a href="mailto:pon07084@gmail.com" className="hover:text-gray-600 transition-colors">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText('pon07084@gmail.com');
+                alert('이메일이 복사되었습니다!');
+              }}
+              className="hover:text-gray-600 transition-colors"
+            >
               문의하기
-            </a>
+            </button>
           </div>
           <p>© 2025 연봉계산기 & 심리테스트 모음</p>
         </div>
