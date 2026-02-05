@@ -224,8 +224,16 @@ export default function InvestTest() {
     <>
       <SEO
         title="투자 성향 테스트"
-        description="나의 투자 성향은? 공격형, 균형형, 안정형, 보수형 중 나에게 맞는 투자 스타일을 알아보세요."
-        keywords="투자 성향 테스트, 투자 스타일, 투자 성격, 포트폴리오, 주식 투자 성향"
+        description="나의 투자 성향은? 8개 질문으로 알아보는 공격형, 균형형, 안정형, 보수형 투자 스타일. 맞춤 포트폴리오 추천!"
+        keywords="투자성향테스트,투자스타일,투자성격,포트폴리오,주식투자성향,재테크성향,투자심리테스트"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Quiz',
+          name: '투자 성향 테스트',
+          description: '나에게 맞는 투자 스타일을 알아보는 심리테스트',
+          url: 'https://viral-site-opal.vercel.app/invest-test',
+          educationalAlignment: { '@type': 'AlignmentObject', alignmentType: 'educationalSubject', targetName: 'Finance' }
+        }}
       />
 
       <div className="space-y-6">

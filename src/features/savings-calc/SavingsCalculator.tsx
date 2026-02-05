@@ -107,7 +107,17 @@ export default function SavingsCalculator() {
       <SEO
         title="적금 이자 계산기"
         description="정기적금, 정기예금 이자 계산기. 단리/복리, 세전/세후 이자를 한번에 계산해보세요. 2026년 이자소득세 15.4% (2천만원 초과 시 종합과세) 반영"
-        keywords="적금 이자 계산기, 예금 이자 계산기, 복리 계산, 단리 계산, 이자소득세, 정기적금, 정기예금"
+        keywords="적금이자계산기,예금이자계산기,복리계산,단리계산,이자소득세,정기적금,정기예금,이자계산"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '적금/예금 이자 계산기',
+          description: '정기적금, 정기예금 이자 계산기. 단리/복리, 세전/세후 이자 계산',
+          url: 'https://viral-site-opal.vercel.app/savings',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' }
+        }}
       />
 
       <div className="space-y-6">

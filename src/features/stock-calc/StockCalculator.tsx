@@ -103,8 +103,18 @@ export default function StockCalculator() {
     <>
       <SEO
         title="주식 수익률 계산기"
-        description="주식 매매 수익률 계산기. 수수료, 증권거래세 포함 실제 순수익과 손익분기점을 계산해보세요."
-        keywords="주식 수익률 계산기, 주식 수익 계산, 증권거래세, 매매 수수료, 손익분기점, 주식 투자"
+        description="주식 매매 수익률 계산기. 2026년 증권거래세 0.20%, 수수료 포함 실제 순수익과 손익분기점을 계산해보세요."
+        keywords="주식수익률계산기,주식수익계산,증권거래세,매매수수료,손익분기점,주식투자,코스피,코스닥"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '주식 수익률 계산기',
+          description: '수수료, 증권거래세 포함 주식 매매 순수익 계산',
+          url: 'https://viral-site-opal.vercel.app/stock',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' }
+        }}
       />
 
       <div className="space-y-6">

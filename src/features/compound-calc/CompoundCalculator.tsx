@@ -92,9 +92,19 @@ export default function CompoundCalculator() {
   return (
     <>
       <SEO
-        title="복리 계산기"
+        title="복리 계산기 - 72법칙"
         description="복리의 마법을 체험해보세요. 초기 투자금과 월 적립금으로 미래 자산을 시뮬레이션하고, 72법칙으로 자산 2배 시점을 확인하세요."
-        keywords="복리 계산기, 72법칙, 복리 효과, 투자 시뮬레이션, 자산 증식, 장기 투자"
+        keywords="복리계산기,72법칙,복리효과,투자시뮬레이션,자산증식,장기투자,적립식투자,연복리"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '복리 계산기',
+          description: '복리 효과 시뮬레이션, 72법칙으로 자산 2배 시점 확인',
+          url: 'https://viral-site-opal.vercel.app/compound',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' }
+        }}
       />
 
       <div className="space-y-6">

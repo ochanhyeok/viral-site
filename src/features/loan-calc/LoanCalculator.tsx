@@ -141,8 +141,18 @@ export default function LoanCalculator() {
     <>
       <SEO
         title="대출 이자 계산기"
-        description="대출 이자 계산기. 원리금균등, 원금균등, 만기일시 상환 방식별 월 상환액과 이자를 계산해보세요."
-        keywords="대출 이자 계산기, 원리금균등상환, 원금균등상환, 만기일시상환, 대출 상환, 월 상환액"
+        description="대출 이자 계산기. 원리금균등, 원금균등, 만기일시 상환 방식별 월 상환액과 이자를 계산해보세요. 상환 스케줄 제공"
+        keywords="대출이자계산기,원리금균등상환,원금균등상환,만기일시상환,대출상환,월상환액,주담대계산기"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '대출 이자 계산기',
+          description: '원리금균등, 원금균등, 만기일시 상환 방식별 대출 이자 계산',
+          url: 'https://viral-site-opal.vercel.app/loan',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' }
+        }}
       />
 
       <div className="space-y-6">

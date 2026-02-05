@@ -87,8 +87,18 @@ export default function DividendCalculator() {
     <>
       <SEO
         title="배당금 계산기"
-        description="주식 배당금 계산기. 배당 수익률, 세후 배당금, 월별 배당금을 계산해보세요."
-        keywords="배당금 계산기, 배당 수익률, 배당소득세, 월 배당금, 배당주 투자"
+        description="주식 배당금 계산기. 배당 수익률, 세후 배당금(15.4%), 월별 배당금을 계산해보세요. 투자금 회수 기간도 확인!"
+        keywords="배당금계산기,배당수익률,배당소득세,월배당금,배당주투자,배당주,고배당주"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: '배당금 계산기',
+          description: '배당 수익률, 세후 배당금, 월별 배당금 계산',
+          url: 'https://viral-site-opal.vercel.app/dividend',
+          applicationCategory: 'FinanceApplication',
+          operatingSystem: 'Any',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' }
+        }}
       />
 
       <div className="space-y-6">
