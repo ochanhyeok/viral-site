@@ -286,7 +286,7 @@ function SectionHeader({ icon, title, subtitle, gradient }: { icon: string; titl
       </div>
       <div>
         <h2 className="text-xl font-extrabold text-gray-900">{title}</h2>
-        <p className="text-sm text-gray-500">{subtitle}</p>
+        <p className="text-sm text-gray-600">{subtitle}</p>
       </div>
     </div>
   );
@@ -355,7 +355,7 @@ function CollapsibleSection({
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-gray-900">{title}</h2>
-            <p className="text-sm text-gray-500">{subtitle}</p>
+            <p className="text-sm text-gray-600">{subtitle}</p>
           </div>
         </div>
         {items.length > 4 && (
@@ -426,7 +426,7 @@ export function Home() {
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-5 tracking-tight leading-tight">
             <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">연봉 계산기</span>
             <br className="sm:hidden" />
-            <span className="text-gray-400 mx-2">&</span>
+            <span className="text-gray-500 mx-2">&</span>
             <br className="sm:hidden" />
             <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">심리테스트</span>
           </h1>
@@ -457,7 +457,7 @@ export function Home() {
             </div>
             <div>
               <h2 className="text-xl font-extrabold text-gray-900">인기 TOP 3</h2>
-              <p className="text-sm text-gray-500">가장 많이 사용하는 콘텐츠</p>
+              <p className="text-sm text-gray-600">가장 많이 사용하는 콘텐츠</p>
             </div>
           </div>
           <div className="grid gap-4">
@@ -557,7 +557,7 @@ export function Home() {
 
         {/* 푸터 안내 */}
         <div className="text-center py-8">
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-500 text-sm">
             모든 계산 결과는 참고용이며, 실제 금액과 다를 수 있습니다.
           </p>
         </div>
