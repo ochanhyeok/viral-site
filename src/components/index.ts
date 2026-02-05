@@ -11,3 +11,4 @@ export { AgeGroupSelect, ageGroupLabels } from './AgeGroupSelect';
 export { Recommendations } from './Recommendations';
 export { FAQ, salaryFAQ, retirementFAQ, spendingFAQ, mbtiFAQ, stressFAQ, kkondaeFAQ } from './FAQ';
 export { BadgeNotification } from './BadgeNotification';
+export { BadgeIcon } from './BadgeIcon';

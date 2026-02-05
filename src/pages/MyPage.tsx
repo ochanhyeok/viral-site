@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SEO } from '../components';
+import { BadgeIcon } from '../components/BadgeIcon';
 import { useUserData } from '../hooks/useLocalStorage';
 import { useBadges } from '../hooks/useBadges';
 import { rarityColors, rarityNames } from '../data/badges';
@@ -57,8 +58,12 @@ export function MyPage() {
         <div className="bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-3xl p-6 text-white shadow-xl">
           {userData.profile ? (
             <div className="text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-3 font-bold">
-                {earnedBadges.length > 0 ? earnedBadges[earnedBadges.length - 1].emoji : userData.profile?.nickname?.charAt(0) || '?'}
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                {earnedBadges.length > 0 ? (
+                  <BadgeIcon type={earnedBadges[earnedBadges.length - 1].id} size="lg" />
+                ) : (
+                  <span className="text-4xl font-bold text-white/80">{userData.profile?.nickname?.charAt(0) || '?'}</span>
+                )}
               </div>
               <h1 className="text-2xl font-bold mb-1">{userData.profile.nickname}</h1>
               <p className="text-white/70 text-sm">
@@ -77,8 +82,8 @@ export function MyPage() {
             </div>
           ) : (
             <div className="text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-3 font-bold">
-                ?
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-4xl mx-auto mb-3">
+                👋
               </div>
               <h2 className="text-lg font-bold mb-3">닉네임을 설정하세요</h2>
               <div className="flex gap-2">
@@ -127,7 +132,7 @@ export function MyPage() {
           <div className="space-y-3">
             {userData.records.length === 0 ? (
               <div className="bg-white rounded-2xl p-8 text-center shadow-lg border border-gray-100">
-                <div className="w-12 h-12 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-gray-400 text-xl">—</div>
+                <p className="text-4xl mb-3">📝</p>
                 <p className="text-gray-500 mb-4">아직 기록이 없어요</p>
                 <Link
                   to="/"
@@ -188,11 +193,13 @@ export function MyPage() {
                   {earnedBadges.map((badge) => (
                     <div
                       key={badge.id}
-                      className={`relative bg-gradient-to-br ${rarityColors[badge.rarity].gradient} rounded-2xl p-4 text-center text-white shadow-lg`}
+                      className="relative bg-white rounded-2xl p-4 text-center shadow-lg border border-gray-100"
                     >
-                      <span className="text-3xl">{badge.emoji}</span>
-                      <p className="text-xs font-bold mt-1 truncate">{badge.name}</p>
-                      <span className="absolute top-2 right-2 text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">
+                      <div className="flex justify-center mb-2">
+                        <BadgeIcon type={badge.id} size="lg" />
+                      </div>
+                      <p className="text-xs font-bold text-gray-800 truncate">{badge.name}</p>
+                      <span className={`absolute top-2 right-2 text-[10px] ${rarityColors[badge.rarity].text} ${rarityColors[badge.rarity].bg} px-1.5 py-0.5 rounded-full`}>
                         {rarityNames[badge.rarity]}
                       </span>
                     </div>
@@ -208,11 +215,13 @@ export function MyPage() {
                 {lockedBadges.map((badge) => (
                   <div
                     key={badge.id}
-                    className="bg-gray-100 rounded-2xl p-4 text-center relative opacity-60"
+                    className="bg-gray-50 rounded-2xl p-4 text-center relative"
                   >
-                    <span className="text-2xl text-gray-400">?</span>
-                    <p className="text-xs font-bold mt-1 text-gray-500 truncate">{badge.name}</p>
-                    <span className={`absolute top-2 right-2 text-[10px] ${rarityColors[badge.rarity].text} ${rarityColors[badge.rarity].bg} px-1.5 py-0.5 rounded-full`}>
+                    <div className="flex justify-center mb-2 opacity-40">
+                      <BadgeIcon type="locked" size="lg" />
+                    </div>
+                    <p className="text-xs font-bold text-gray-400 truncate">{badge.name}</p>
+                    <span className={`absolute top-2 right-2 text-[10px] ${rarityColors[badge.rarity].text} ${rarityColors[badge.rarity].bg} px-1.5 py-0.5 rounded-full opacity-50`}>
                       {rarityNames[badge.rarity]}
                     </span>
                   </div>
@@ -227,7 +236,7 @@ export function MyPage() {
           <div className="space-y-4">
             {Object.keys(userData.stats).length === 0 ? (
               <div className="bg-white rounded-2xl p-8 text-center shadow-lg border border-gray-100">
-                <div className="w-12 h-12 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-gray-400 text-xl">—</div>
+                <p className="text-4xl mb-3">📊</p>
                 <p className="text-gray-500 mb-4">아직 통계가 없어요</p>
                 <Link
                   to="/"

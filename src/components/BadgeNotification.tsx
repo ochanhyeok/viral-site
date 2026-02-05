@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { BadgeDefinition } from '../data/badges';
 import { rarityColors, rarityNames } from '../data/badges';
+import { BadgeIcon } from './BadgeIcon';
 
 interface BadgeNotificationProps {
   badge: BadgeDefinition | null;
@@ -54,8 +55,12 @@ export function BadgeNotification({ badge, onDismiss }: BadgeNotificationProps) 
             NEW!
           </div>
 
-          {/* 이모지 */}
-          <div className="text-7xl my-4 animate-bounce">{badge.emoji}</div>
+          {/* 아이콘 */}
+          <div className="my-4 flex justify-center">
+            <div className="w-20 h-20 animate-bounce">
+              <BadgeIcon type={badge.id} size="lg" className="w-full h-full [&>div]:w-full [&>div]:h-full" />
+            </div>
+          </div>
 
           {/* 타이틀 */}
           <h2 className="text-2xl font-black mb-2">뱃지 획득!</h2>

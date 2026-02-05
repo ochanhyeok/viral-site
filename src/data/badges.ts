@@ -25,7 +25,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'first-test',
     name: '첫 발걸음',
-    emoji: '🌱',
+    emoji: '🐣',
     description: '첫 번째 테스트 완료!',
     condition: '아무 테스트 1회 완료',
     rarity: 'common',
@@ -35,7 +35,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'test-5',
     name: '성장중',
-    emoji: '🌿',
+    emoji: '🌸',
     description: '테스트 5회 완료',
     condition: '아무 테스트 5회 완료',
     rarity: 'common',
@@ -45,7 +45,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'test-10',
     name: '열정가',
-    emoji: '🔷',
+    emoji: '🔥',
     description: '테스트 10회 완료',
     condition: '아무 테스트 10회 완료',
     rarity: 'rare',
@@ -55,7 +55,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'test-30',
     name: '마스터',
-    emoji: '💠',
+    emoji: '🦋',
     description: '테스트 30회 완료',
     condition: '아무 테스트 30회 완료',
     rarity: 'epic',
@@ -75,7 +75,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'all-rounder',
     name: '올라운더',
-    emoji: '🎯',
+    emoji: '🌈',
     description: '모든 종류의 테스트를 해봄',
     condition: '6가지 이상 테스트 완료',
     rarity: 'epic',
@@ -107,7 +107,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'color-perfect',
     name: '퍼펙트 비전',
-    emoji: '💎',
+    emoji: '🦚',
     description: '색감 테스트 만점!',
     condition: '색감 테스트 100% 달성',
     rarity: 'legendary',
@@ -119,7 +119,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'reaction-first',
     name: '도전자',
-    emoji: '⏱️',
+    emoji: '🎯',
     description: '반응속도 테스트 첫 도전',
     condition: '반응속도 테스트 1회 완료',
     rarity: 'common',
@@ -129,7 +129,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'reaction-fast',
     name: '퀵 핸드',
-    emoji: '🏃',
+    emoji: '🦅',
     description: '평균 250ms 이하 달성',
     condition: '반응속도 250ms 이하',
     rarity: 'rare',
@@ -161,7 +161,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'emoji-first',
     name: '퀴즈 입문',
-    emoji: '❓',
+    emoji: '🧩',
     description: '이모지 퀴즈 첫 도전',
     condition: '이모지 퀴즈 1회 완료',
     rarity: 'common',
@@ -171,7 +171,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'emoji-good',
     name: '해독가',
-    emoji: '🔍',
+    emoji: '🔮',
     description: '이모지 퀴즈 70% 이상',
     condition: '이모지 퀴즈 7개 이상 정답',
     rarity: 'rare',
@@ -203,7 +203,7 @@ export const badges: BadgeDefinition[] = [
   {
     id: 'personality-explorer',
     name: '탐험가',
-    emoji: '🧭',
+    emoji: '🗺️',
     description: '성격 테스트 3종 완료',
     condition: 'MBTI, 소비성향, 스트레스 테스트 완료',
     rarity: 'rare',
