@@ -9,7 +9,7 @@ interface Tool {
   gradient: string;
   shadowColor: string;
   badge?: 'hot' | 'new' | 'popular';
-  category: 'calculator' | 'test';
+  category: 'calculator' | 'test' | 'game';
 }
 
 const tools: Tool[] = [
@@ -99,10 +99,21 @@ const tools: Tool[] = [
     badge: 'new',
     category: 'test',
   },
+  {
+    path: '/battleship',
+    emoji: '🚢',
+    title: '배틀쉽',
+    description: '친구와 전략적 해전 대결',
+    gradient: 'from-indigo-500 via-purple-500 to-pink-500',
+    shadowColor: 'shadow-indigo-500/30',
+    badge: 'new',
+    category: 'game',
+  },
 ];
 
 const calculators = tools.filter(t => t.category === 'calculator');
 const tests = tools.filter(t => t.category === 'test');
+const games = tools.filter(t => t.category === 'game');
 
 function BadgeComponent({ badge }: { badge?: 'hot' | 'new' | 'popular' }) {
   if (!badge) return null;
@@ -232,6 +243,68 @@ export function Home() {
             ))}
           </div>
         </div>
+
+        {/* 멀티플레이어 게임 섹션 */}
+        {games.length > 0 && (
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-pink-500" />
+              <h2 className="text-xl font-bold text-gray-900">멀티플레이어 게임</h2>
+              <span className="text-sm text-gray-400">친구와 함께</span>
+            </div>
+            <div className="space-y-4">
+              {games.map((tool, index) => (
+                <Link
+                  key={tool.path}
+                  to={tool.path}
+                  className={`group relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] block`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <BadgeComponent badge={tool.badge} />
+
+                  {/* 배경 장식 */}
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+                  <div className="absolute top-1/2 right-8 -translate-y-1/2 opacity-10">
+                    <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+
+                  <div className="relative flex items-center gap-6">
+                    <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
+                      <span className="text-5xl filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        {tool.emoji}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-2xl font-black mb-2 group-hover:translate-x-1 transition-transform">
+                        {tool.title}
+                      </h2>
+                      <p className="text-white/80 text-base">
+                        {tool.description}
+                      </p>
+                      <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-sm">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                        </svg>
+                        <span>2인 대전</span>
+                      </div>
+                    </div>
+                    <svg
+                      className="w-8 h-8 opacity-50 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 푸터 안내 */}
         <div className="text-center py-6">

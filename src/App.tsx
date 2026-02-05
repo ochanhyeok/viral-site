@@ -14,6 +14,7 @@ import { EmojiQuiz } from './features/emoji-quiz/EmojiQuiz';
 import { MyPage } from './pages/MyPage';
 import { RankingPage } from './pages/RankingPage';
 import { MultiplayerReaction } from './pages/MultiplayerReaction';
+import { BattleshipGame } from './features/battleship/BattleshipGame';
 import { Privacy } from './pages/Privacy';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
             <Route path="/my" element={<MyPage />} />
             <Route path="/ranking" element={<RankingPage />} />
             <Route path="/play/reaction" element={<MultiplayerReaction />} />
+            <Route path="/battleship" element={<BattleshipGame />} />
             <Route path="/privacy" element={<Privacy />} />
           </Routes>
         </Layout>
