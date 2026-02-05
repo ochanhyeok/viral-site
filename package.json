@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "canvas-confetti": "^1.9.4",
     "date-fns": "^4.1.0",
+    "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "react": "^19.2.0",
     "react-datepicker": "^9.1.0",

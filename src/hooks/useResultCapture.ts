@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas';
+import { toPng, toBlob } from 'html-to-image';
 
 // 이미지 캡처 후 Blob 반환
 export async function captureToBlob(elementId: string): Promise<Blob | null> {
@@ -17,21 +17,25 @@ export async function captureToBlob(elementId: string): Promise<Blob | null> {
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    const canvas = await html2canvas(element, {
+    const blob = await toBlob(element, {
+      quality: 1,
+      pixelRatio: 2,
       backgroundColor: '#ffffff',
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      imageTimeout: 15000,
+      // oklch 색상 무시하고 캡처
+      filter: (node) => {
+        // script, style 태그 제외
+        if (node instanceof HTMLElement) {
+          const tagName = node.tagName?.toLowerCase();
+          if (tagName === 'script' || tagName === 'noscript') {
+            return false;
+          }
+        }
+        return true;
+      },
     });
 
     // 스크롤 복원
     window.scrollTo(0, scrollY);
-
-    const blob = await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((blob) => resolve(blob), 'image/png');
-    });
 
     return blob;
   } catch (error) {
@@ -54,18 +58,24 @@ export async function captureToDataUrl(elementId: string): Promise<string | null
 
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    const canvas = await html2canvas(element, {
+    const dataUrl = await toPng(element, {
+      quality: 1,
+      pixelRatio: 2,
       backgroundColor: '#ffffff',
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      imageTimeout: 15000,
+      filter: (node) => {
+        if (node instanceof HTMLElement) {
+          const tagName = node.tagName?.toLowerCase();
+          if (tagName === 'script' || tagName === 'noscript') {
+            return false;
+          }
+        }
+        return true;
+      },
     });
 
     window.scrollTo(0, scrollY);
 
-    return canvas.toDataURL('image/png');
+    return dataUrl;
   } catch (error) {
     console.error('Failed to capture:', error);
     return null;
