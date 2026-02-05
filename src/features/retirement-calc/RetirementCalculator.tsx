@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
+import { getMonth, getYear } from 'date-fns';
 import { SEO, Button, Input, ShareButtons } from '../../components';
 import { useRetirementCalc, formatCurrency } from './useRetirementCalc';
 import 'react-datepicker/dist/react-datepicker.css';
+
+const months = [
+  '1월', '2월', '3월', '4월', '5월', '6월',
+  '7월', '8월', '9월', '10월', '11월', '12월'
+];
 
 export function RetirementCalculator() {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -47,6 +53,82 @@ export function RetirementCalculator() {
       setCalculated(true);
     }
   };
+
+  // 커스텀 헤더 컴포넌트
+  const CustomHeader = ({
+    date,
+    changeYear,
+    changeMonth,
+    decreaseMonth,
+    increaseMonth,
+    prevMonthButtonDisabled,
+    nextMonthButtonDisabled,
+  }: {
+    date: Date;
+    changeYear: (year: number) => void;
+    changeMonth: (month: number) => void;
+    decreaseMonth: () => void;
+    increaseMonth: () => void;
+    prevMonthButtonDisabled: boolean;
+    nextMonthButtonDisabled: boolean;
+  }) => (
+    <div className="custom-header">
+      {/* 년도 선택 */}
+      <div className="year-selector">
+        <button
+          type="button"
+          onClick={() => changeYear(getYear(date) - 1)}
+          className="year-nav-btn"
+        >
+          ‹‹
+        </button>
+        <span className="year-text">{getYear(date)}년</span>
+        <button
+          type="button"
+          onClick={() => changeYear(getYear(date) + 1)}
+          className="year-nav-btn"
+          disabled={getYear(date) >= getYear(new Date())}
+        >
+          ››
+        </button>
+      </div>
+
+      {/* 월 선택 */}
+      <div className="month-selector">
+        <button
+          type="button"
+          onClick={decreaseMonth}
+          disabled={prevMonthButtonDisabled}
+          className="month-nav-btn"
+        >
+          ‹
+        </button>
+        <span className="month-text">{months[getMonth(date)]}</span>
+        <button
+          type="button"
+          onClick={increaseMonth}
+          disabled={nextMonthButtonDisabled}
+          className="month-nav-btn"
+        >
+          ›
+        </button>
+      </div>
+
+      {/* 빠른 월 선택 그리드 */}
+      <div className="month-grid">
+        {months.map((month, index) => (
+          <button
+            key={month}
+            type="button"
+            onClick={() => changeMonth(index)}
+            className={`month-btn ${getMonth(date) === index ? 'active' : ''}`}
+          >
+            {index + 1}월
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -95,18 +177,15 @@ export function RetirementCalculator() {
                     setStartDate(date);
                     setCalculated(false);
                   }}
-                  dateFormat="yyyy년 MM월 dd일"
+                  dateFormat="yyyy.MM.dd"
                   locale={ko}
                   placeholderText="날짜 선택"
                   maxDate={new Date()}
-                  showYearDropdown
-                  showMonthDropdown
-                  dropdownMode="select"
-                  yearDropdownItemNumber={30}
-                  scrollableYearDropdown
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer"
+                  renderCustomHeader={CustomHeader}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer text-center font-medium"
                   calendarClassName="custom-calendar"
                   wrapperClassName="w-full"
+                  showPopperArrow={false}
                 />
               </div>
               <div>
@@ -119,19 +198,16 @@ export function RetirementCalculator() {
                     setEndDate(date);
                     setCalculated(false);
                   }}
-                  dateFormat="yyyy년 MM월 dd일"
+                  dateFormat="yyyy.MM.dd"
                   locale={ko}
                   placeholderText="날짜 선택"
                   minDate={startDate || undefined}
                   maxDate={new Date()}
-                  showYearDropdown
-                  showMonthDropdown
-                  dropdownMode="select"
-                  yearDropdownItemNumber={30}
-                  scrollableYearDropdown
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer"
+                  renderCustomHeader={CustomHeader}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white text-gray-900 cursor-pointer text-center font-medium"
                   calendarClassName="custom-calendar"
                   wrapperClassName="w-full"
+                  showPopperArrow={false}
                 />
               </div>
             </div>
@@ -310,70 +386,187 @@ export function RetirementCalculator() {
         }
         .react-datepicker {
           font-family: inherit;
-          border: 1px solid #e5e7eb;
-          border-radius: 1rem;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          border: none;
+          border-radius: 1.5rem;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+          overflow: hidden;
         }
         .react-datepicker__header {
-          background: linear-gradient(135deg, #10b981, #14b8a6);
+          background: white;
           border-bottom: none;
-          border-radius: 1rem 1rem 0 0;
-          padding-top: 12px;
+          padding: 0;
         }
-        .react-datepicker__current-month {
-          color: white;
-          font-weight: 600;
-          font-size: 1rem;
+
+        /* 커스텀 헤더 스타일 */
+        .custom-header {
+          padding: 16px;
+          background: linear-gradient(135deg, #10b981, #14b8a6);
+        }
+        .year-selector {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
           margin-bottom: 8px;
         }
-        .react-datepicker__day-name {
+        .year-text {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: white;
+          min-width: 80px;
+          text-align: center;
+        }
+        .year-nav-btn {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: rgba(255,255,255,0.2);
+          color: white;
+          font-size: 1rem;
+          font-weight: bold;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .year-nav-btn:hover:not(:disabled) {
+          background: rgba(255,255,255,0.3);
+        }
+        .year-nav-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .month-selector {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+        .month-text {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: white;
+          min-width: 50px;
+          text-align: center;
+        }
+        .month-nav-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.2);
+          color: white;
+          font-size: 1.25rem;
+          font-weight: bold;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .month-nav-btn:hover:not(:disabled) {
+          background: rgba(255,255,255,0.3);
+          transform: scale(1.1);
+        }
+        .month-nav-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .month-grid {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 4px;
+        }
+        .month-btn {
+          padding: 6px 4px;
+          border-radius: 8px;
+          background: rgba(255,255,255,0.15);
           color: rgba(255,255,255,0.9);
+          font-size: 0.75rem;
           font-weight: 500;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .month-btn:hover {
+          background: rgba(255,255,255,0.3);
+        }
+        .month-btn.active {
+          background: white;
+          color: #10b981;
+          font-weight: 700;
+        }
+
+        /* 요일 헤더 */
+        .react-datepicker__day-names {
+          background: #f0fdf4;
+          padding: 8px 0;
+          margin: 0;
+        }
+        .react-datepicker__day-name {
+          color: #059669;
+          font-weight: 600;
+          font-size: 0.8rem;
+          width: 2.5rem;
+          margin: 0;
+        }
+
+        /* 날짜 */
+        .react-datepicker__month {
+          margin: 0;
+          padding: 8px;
+        }
+        .react-datepicker__week {
+          display: flex;
         }
         .react-datepicker__day {
-          border-radius: 0.5rem;
+          width: 2.5rem;
+          height: 2.5rem;
+          line-height: 2.5rem;
+          margin: 2px;
+          border-radius: 50%;
+          font-weight: 500;
           transition: all 0.15s;
         }
         .react-datepicker__day:hover {
-          background-color: #d1fae5;
-          border-radius: 0.5rem;
+          background: #d1fae5;
+          border-radius: 50%;
         }
         .react-datepicker__day--selected {
           background: linear-gradient(135deg, #10b981, #14b8a6) !important;
-          border-radius: 0.5rem;
-          font-weight: 600;
+          color: white !important;
+          font-weight: 700;
         }
         .react-datepicker__day--keyboard-selected {
           background: #d1fae5;
-          border-radius: 0.5rem;
         }
         .react-datepicker__day--today {
           font-weight: 700;
           color: #10b981;
+          border: 2px solid #10b981;
         }
-        .react-datepicker__navigation {
-          top: 12px;
+        .react-datepicker__day--outside-month {
+          color: #d1d5db;
         }
-        .react-datepicker__navigation-icon::before {
-          border-color: white;
+        .react-datepicker__day--disabled {
+          color: #e5e7eb;
         }
-        .react-datepicker__year-dropdown,
-        .react-datepicker__month-dropdown {
-          background-color: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.75rem;
-        }
-        .react-datepicker__year-option:hover,
-        .react-datepicker__month-option:hover {
-          background-color: #d1fae5;
-        }
-        .react-datepicker__year-option--selected,
-        .react-datepicker__month-option--selected {
-          background-color: #10b981 !important;
-          color: white;
-        }
-        .react-datepicker__triangle {
-          display: none;
+
+        /* 모바일 최적화 */
+        @media (max-width: 640px) {
+          .react-datepicker {
+            width: 100%;
+            max-width: 320px;
+          }
+          .month-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          .react-datepicker__day,
+          .react-datepicker__day-name {
+            width: 2.2rem;
+            height: 2.2rem;
+            line-height: 2.2rem;
+            font-size: 0.9rem;
+          }
         }
       `}</style>
     </>
