@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { stressQuestions, answerOptions } from '../../data/stressQuestions';
 import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
-import { SEO, Button, ShareButtons } from '../index';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../index';
 import { stressTips, stressMusic } from '../../data/stressQuestions';
 import { STRESS_LEVELS } from '../../types/stressTest';
+import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
 
-type TestPhase = 'intro' | 'questions' | 'result';
+type TestPhase = 'intro' | 'ageSelect' | 'questions' | 'result';
 
 function getStressLevel(totalScore: number): StressLevel {
   if (totalScore <= 15) return 'low';
@@ -21,11 +22,28 @@ export function StressTest() {
   const [result, setResult] = useState<StressResult | null>(null);
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [ageGroup, setAgeGroup] = useState<string | null>(null);
+  const [resultSaved, setResultSaved] = useState(false);
+
+  const { myAgeGroupStats, ageGroupCount } = useTestStats('stress', ageGroup);
 
   const currentQuestion = stressQuestions[currentIndex];
   const progress = ((currentIndex + 1) / stressQuestions.length) * 100;
 
+  // 결과 저장
+  useEffect(() => {
+    if (result && ageGroup && !resultSaved) {
+      saveTestResult('stress', result.level, ageGroup, result.totalScore);
+      setResultSaved(true);
+    }
+  }, [result, ageGroup, resultSaved]);
+
   const handleStart = () => {
+    setPhase('ageSelect');
+  };
+
+  const handleAgeSelect = (selectedAge: string) => {
+    setAgeGroup(selectedAge);
     setPhase('questions');
     setCurrentIndex(0);
     setAnswers([]);
@@ -84,11 +102,16 @@ export function StressTest() {
     setAnswers([]);
     setResult(null);
     setSelectedScore(null);
+    setAgeGroup(null);
+    setResultSaved(false);
   };
 
   const levelInfo = result ? STRESS_LEVELS[result.level] : null;
   const tips = result ? stressTips[result.level] : [];
   const musicList = result ? stressMusic[result.level] : [];
+
+  // 나이대 비교 데이터
+  const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.level) : 0;
 
   return (
     <>
@@ -138,8 +161,8 @@ export function StressTest() {
                 </div>
                 <div className="w-px h-10 bg-gray-200" />
                 <div className="text-center">
-                  <div className="text-2xl mb-1">🎵</div>
-                  <div className="text-gray-500">음악 추천</div>
+                  <div className="text-2xl mb-1">📊</div>
+                  <div className="text-gray-500">나이대 비교</div>
                 </div>
               </div>
             </div>
@@ -147,6 +170,15 @@ export function StressTest() {
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600">
               테스트 시작하기
             </Button>
+          </div>
+        )}
+
+        {/* 나이대 선택 */}
+        {phase === 'ageSelect' && (
+          <div className="animate-fadeIn">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <AgeGroupSelect onSelect={handleAgeSelect} />
+            </div>
           </div>
         )}
 
@@ -241,6 +273,30 @@ export function StressTest() {
                 <span>매우 높음</span>
               </div>
             </div>
+
+            {/* 나이대 비교 */}
+            {ageGroup && ageGroupCount > 0 && (
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
+                <h3 className="font-bold mb-3 flex items-center gap-2">
+                  <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
+                </h3>
+                <p className="text-indigo-100 text-sm mb-3">
+                  {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
+                </p>
+                <div className="bg-white/20 rounded-2xl p-4">
+                  <p className="text-2xl font-bold">
+                    {myPercentage}%가 같은 결과
+                  </p>
+                  <p className="text-indigo-100 text-sm mt-1">
+                    {myPercentage >= 30
+                      ? `${ageGroupLabels[ageGroup]}에서 흔한 스트레스 수준이에요`
+                      : myPercentage >= 10
+                      ? `${ageGroupLabels[ageGroup]} 평균과 비슷한 수준이에요`
+                      : `${ageGroupLabels[ageGroup]}에서는 드문 케이스예요`}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* 설명 카드 */}
             <div

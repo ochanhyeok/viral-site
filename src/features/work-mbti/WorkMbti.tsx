@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { SEO, Button, ShareButtons } from '../../components';
+import { useState, useEffect } from 'react';
+import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels } from '../../components';
 import { mbtiQuestions, calculateMbti, getMbtiResult } from './mbtiData';
 import type { WorkMbtiType } from './mbtiData';
+import { saveTestResult, useTestStats, calculatePercentage } from '../../hooks/useTestStats';
 
-type QuizState = 'intro' | 'quiz' | 'result';
+type QuizState = 'intro' | 'ageSelect' | 'quiz' | 'result';
 
 export function WorkMbti() {
   const [state, setState] = useState<QuizState>('intro');
@@ -12,14 +13,30 @@ export function WorkMbti() {
   const [result, setResult] = useState<WorkMbtiType | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [ageGroup, setAgeGroup] = useState<string | null>(null);
+  const [resultSaved, setResultSaved] = useState(false);
+
+  const { myAgeGroupStats, ageGroupCount } = useTestStats('mbti', ageGroup);
 
   const progress = ((currentQuestion + 1) / mbtiQuestions.length) * 100;
 
+  // 결과 저장
+  useEffect(() => {
+    if (result && ageGroup && !resultSaved) {
+      saveTestResult('mbti', result.type, ageGroup);
+      setResultSaved(true);
+    }
+  }, [result, ageGroup, resultSaved]);
+
   const handleStart = () => {
+    setState('ageSelect');
+  };
+
+  const handleAgeSelect = (selectedAge: string) => {
+    setAgeGroup(selectedAge);
     setState('quiz');
     setCurrentQuestion(0);
     setAnswers([]);
-    setResult(null);
   };
 
   const handleSelectOption = (optionIndex: number) => {
@@ -54,9 +71,14 @@ export function WorkMbti() {
     setAnswers([]);
     setResult(null);
     setSelectedOption(null);
+    setAgeGroup(null);
+    setResultSaved(false);
   };
 
   const question = mbtiQuestions[currentQuestion];
+
+  // 나이대 비교 데이터
+  const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.type) : 0;
 
   return (
     <>
@@ -105,8 +127,8 @@ export function WorkMbti() {
                 </div>
                 <div className="w-px h-10 bg-gray-200" />
                 <div className="text-center">
-                  <div className="text-2xl mb-1">🎯</div>
-                  <div className="text-gray-500">16가지 유형</div>
+                  <div className="text-2xl mb-1">📊</div>
+                  <div className="text-gray-500">나이대 비교</div>
                 </div>
               </div>
             </div>
@@ -114,6 +136,15 @@ export function WorkMbti() {
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
             </Button>
+          </div>
+        )}
+
+        {/* 나이대 선택 */}
+        {state === 'ageSelect' && (
+          <div className="animate-fadeIn">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <AgeGroupSelect onSelect={handleAgeSelect} />
+            </div>
           </div>
         )}
 
@@ -187,6 +218,30 @@ export function WorkMbti() {
               </p>
               <p className="text-gray-600">{result.title}</p>
             </div>
+
+            {/* 나이대 비교 */}
+            {ageGroup && ageGroupCount > 0 && (
+              <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl p-6 text-white shadow-xl">
+                <h3 className="font-bold mb-3 flex items-center gap-2">
+                  <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
+                </h3>
+                <p className="text-orange-100 text-sm mb-3">
+                  {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
+                </p>
+                <div className="bg-white/20 rounded-2xl p-4">
+                  <p className="text-2xl font-bold">
+                    {myPercentage}%가 같은 유형
+                  </p>
+                  <p className="text-orange-100 text-sm mt-1">
+                    {myPercentage >= 15
+                      ? `${ageGroupLabels[ageGroup]}에서 흔한 MBTI예요!`
+                      : myPercentage >= 5
+                      ? `${ageGroupLabels[ageGroup]} 평균 수준이에요`
+                      : `${ageGroupLabels[ageGroup]}에서는 희귀한 유형이에요!`}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* 설명 카드 */}
             <div className={`bg-gradient-to-br ${result.color} rounded-3xl p-6 text-white shadow-xl`}>
