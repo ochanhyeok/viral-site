@@ -275,26 +275,38 @@ export function StressTest() {
             </div>
 
             {/* 나이대 비교 */}
-            {ageGroup && ageGroupCount > 0 && (
+            {ageGroup && (
               <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
                 <h3 className="font-bold mb-3 flex items-center gap-2">
                   <span className="text-xl">📊</span> {ageGroupLabels[ageGroup]} 비교
                 </h3>
-                <p className="text-indigo-100 text-sm mb-3">
-                  {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
-                </p>
-                <div className="bg-white/20 rounded-2xl p-4">
-                  <p className="text-2xl font-bold">
-                    {myPercentage}%가 같은 결과
-                  </p>
-                  <p className="text-indigo-100 text-sm mt-1">
-                    {myPercentage >= 30
-                      ? `${ageGroupLabels[ageGroup]}에서 흔한 스트레스 수준이에요`
-                      : myPercentage >= 10
-                      ? `${ageGroupLabels[ageGroup]} 평균과 비슷한 수준이에요`
-                      : `${ageGroupLabels[ageGroup]}에서는 드문 케이스예요`}
-                  </p>
-                </div>
+                {ageGroupCount > 1 ? (
+                  <>
+                    <p className="text-indigo-100 text-sm mb-3">
+                      {ageGroupLabels[ageGroup]} 참여자 {ageGroupCount}명 중
+                    </p>
+                    <div className="bg-white/20 rounded-2xl p-4">
+                      <p className="text-2xl font-bold">
+                        {myPercentage}%가 같은 결과
+                      </p>
+                      <p className="text-indigo-100 text-sm mt-1">
+                        {myPercentage >= 30
+                          ? `${ageGroupLabels[ageGroup]}에서 흔한 스트레스 수준이에요`
+                          : myPercentage >= 10
+                          ? `${ageGroupLabels[ageGroup]} 평균과 비슷한 수준이에요`
+                          : `${ageGroupLabels[ageGroup]}에서는 드문 케이스예요`}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-white/20 rounded-2xl p-4">
+                    <p className="text-xl font-bold mb-1">🎉 첫 번째 참여자!</p>
+                    <p className="text-indigo-100 text-sm">
+                      {ageGroupLabels[ageGroup]}에서 처음으로 테스트했어요.<br />
+                      공유해서 친구들과 비교해보세요!
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
