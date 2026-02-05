@@ -12,14 +12,81 @@ interface Result {
   yearsToDouble: number;
 }
 
+// 인기 배당주 프리셋 (2026년 기준, 2025년 하반기 데이터 반영)
+const STOCK_PRESETS = [
+  {
+    name: '삼성전자',
+    price: 55000,
+    dividend: 365,
+    frequency: 'quarterly' as const,
+    yield: '2.6%',
+    tag: '대표주',
+    note: '분기배당'
+  },
+  {
+    name: '하나금융지주',
+    price: 41000,
+    dividend: 3000,
+    frequency: 'annual' as const,
+    yield: '7.3%',
+    tag: '고배당',
+    note: '금융주 TOP'
+  },
+  {
+    name: 'KT&G',
+    price: 95000,
+    dividend: 5800,
+    frequency: 'annual' as const,
+    yield: '6.1%',
+    tag: '고배당',
+    note: '배당성향 61%'
+  },
+  {
+    name: 'POSCO홀딩스',
+    price: 195000,
+    dividend: 17000,
+    frequency: 'annual' as const,
+    yield: '8.7%',
+    tag: '고배당',
+    note: '수익률 TOP'
+  },
+  {
+    name: 'SK텔레콤',
+    price: 70000,
+    dividend: 3000,
+    frequency: 'annual' as const,
+    yield: '4.3%',
+    tag: '통신',
+    note: '안정적'
+  },
+  {
+    name: '삼성화재우',
+    price: 338000,
+    dividend: 19005,
+    frequency: 'annual' as const,
+    yield: '5.6%',
+    tag: '우선주',
+    note: '고배당 우선주'
+  },
+];
+
 export default function DividendCalculator() {
   const [investAmount, setInvestAmount] = useState<string>('1000'); // 만원
-  const [stockPrice, setStockPrice] = useState<string>('50000'); // 원
-  const [dividendPerShare, setDividendPerShare] = useState<string>('2000'); // 원
-  const [dividendFrequency, setDividendFrequency] = useState<'annual' | 'quarterly'>('annual');
+  const [stockPrice, setStockPrice] = useState<string>('55000'); // 원 (삼성전자 기준)
+  const [dividendPerShare, setDividendPerShare] = useState<string>('367'); // 원 (삼성전자 분기배당)
+  const [dividendFrequency, setDividendFrequency] = useState<'annual' | 'quarterly'>('quarterly');
   const [showResult, setShowResult] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState<string>('삼성전자');
 
   const TAX_RATE = 0.154; // 배당소득세 15.4%
+
+  const handlePresetSelect = (preset: typeof STOCK_PRESETS[0]) => {
+    setStockPrice(preset.price.toString());
+    setDividendPerShare(preset.dividend.toString());
+    setDividendFrequency(preset.frequency);
+    setSelectedPreset(preset.name);
+    setShowResult(false);
+  };
 
   const result = useMemo<Result | null>(() => {
     const investment = parseFloat(investAmount) * 10000;
@@ -112,6 +179,54 @@ export default function DividendCalculator() {
           </h1>
           <p className="text-gray-500">
             예상 배당 수익을 계산해보세요
+          </p>
+        </div>
+
+        {/* 인기 배당주 프리셋 */}
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+          <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <span className="text-lg">🔥</span>
+            인기 배당주로 계산해보기
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {STOCK_PRESETS.map((preset) => (
+              <button
+                key={preset.name}
+                onClick={() => handlePresetSelect(preset)}
+                className={`p-3 rounded-xl text-left transition-all ${
+                  selectedPreset === preset.name
+                    ? 'bg-amber-100 border-2 border-amber-400 shadow-md'
+                    : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-gray-900 text-sm">{preset.name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                    preset.tag === '고배당'
+                      ? 'bg-red-100 text-red-600'
+                      : preset.tag === '대표주'
+                      ? 'bg-blue-100 text-blue-600'
+                      : preset.tag === '우선주'
+                      ? 'bg-purple-100 text-purple-600'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {preset.tag}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 mb-1">
+                  {preset.price.toLocaleString()}원
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-400">{preset.note}</span>
+                  <span className="text-xs font-bold text-amber-600">
+                    {preset.yield}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-gray-400 mt-3 text-center">
+            * 2026년 2월 기준 예상 배당. 실제 주가/배당과 다를 수 있음
           </p>
         </div>
 
