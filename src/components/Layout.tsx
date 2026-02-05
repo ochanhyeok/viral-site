@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -8,6 +8,13 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const [showToast, setShowToast] = useState(false);
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText('pon07084@gmail.com');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
 
   return (
     <div className="min-h-screen min-h-[100dvh] flex flex-col bg-gradient-to-b from-gray-50 to-white">
@@ -69,18 +76,31 @@ export function Layout({ children }: LayoutProps) {
             <span>|</span>
             <button
               type="button"
-              onClick={() => {
-                navigator.clipboard.writeText('pon07084@gmail.com');
-                alert('이메일이 복사되었습니다!');
-              }}
-              className="hover:text-gray-600 transition-colors cursor-pointer px-1 py-0.5"
+              onClick={copyEmail}
+              className="hover:text-gray-600 transition-colors cursor-pointer"
             >
-              문의하기
+              pon07084@gmail.com
             </button>
           </div>
           <p>© 2025 연봉계산기 & 심리테스트 모음</p>
         </div>
       </footer>
+
+      {/* Toast Notification */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+          showToast
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 text-white text-sm rounded-xl shadow-lg">
+          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          이메일이 복사되었습니다
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,15 @@
+import { useState } from 'react';
 import { SEO } from '../components';
 
 export function Privacy() {
+  const [showToast, setShowToast] = useState(false);
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText('pon07084@gmail.com');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
   return (
     <>
       <SEO
@@ -110,11 +119,8 @@ export function Privacy() {
               <div className="mt-2 p-4 bg-gray-50 rounded-xl flex items-center gap-2">
                 <p><strong>이메일:</strong> pon07084@gmail.com</p>
                 <button
-                  onClick={() => {
-                    navigator.clipboard.writeText('pon07084@gmail.com');
-                    alert('이메일이 복사되었습니다!');
-                  }}
-                  className="px-2 py-1 text-xs bg-violet-100 text-violet-600 rounded-lg hover:bg-violet-200 transition-colors"
+                  onClick={copyEmail}
+                  className="px-2 py-1 text-xs bg-violet-100 text-violet-600 rounded-lg hover:bg-violet-200 transition-colors cursor-pointer"
                 >
                   복사
                 </button>
@@ -143,6 +149,22 @@ export function Privacy() {
               본 방침은 2025년 1월 1일부터 시행됩니다.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+          showToast
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 text-white text-sm rounded-xl shadow-lg">
+          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          이메일이 복사되었습니다
         </div>
       </div>
     </>
