@@ -110,7 +110,7 @@ export function useBattleship() {
     };
 
     fetchRoom();
-    pollingRef.current = setInterval(fetchRoom, 800); // 0.8초마다 폴링
+    pollingRef.current = setInterval(fetchRoom, 2000); // 2초마다 폴링 (성능 최적화)
   }, []);
 
   const stopPolling = useCallback(() => {

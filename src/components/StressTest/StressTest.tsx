@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { stressQuestions, answerOptions, categoryAnalysis } from '../../data/stressQuestions';
 import type { Answer, StressResult, StressLevel } from '../../types/stressTest';
 import { SEO, Button, ShareButtons, AgeGroupSelect, ageGroupLabels, Recommendations, FAQ, stressFAQ } from '../index';
@@ -60,16 +60,16 @@ export function StressTest() {
     }
   }, [result, ageGroup, resultSaved]);
 
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     setPhase('ageSelect');
-  };
+  }, []);
 
-  const handleAgeSelect = (selectedAge: string) => {
+  const handleAgeSelect = useCallback((selectedAge: string) => {
     setAgeGroup(selectedAge);
     setPhase('questions');
     setCurrentIndex(0);
     setAnswers([]);
-  };
+  }, []);
 
   const handleAnswer = (score: number) => {
     if (isAnimating) return;
@@ -118,7 +118,7 @@ export function StressTest() {
     }, 300);
   };
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     setPhase('intro');
     setCurrentIndex(0);
     setAnswers([]);
@@ -128,33 +128,43 @@ export function StressTest() {
     setResultSaved(false);
     setExpandedCategory(null);
     confettiFired.current = false;
-  };
+  }, []);
 
-  const levelInfo = result ? STRESS_LEVELS[result.level] : null;
-  const tips = result ? stressTips[result.level] : [];
-  const musicList = result
-    ? stressMusic[result.level].filter(m => m.genre === musicGenre)
-    : [];
+  const levelInfo = useMemo(() => result ? STRESS_LEVELS[result.level] : null, [result]);
+  const tips = useMemo(() => result ? stressTips[result.level] : [], [result]);
+  const musicList = useMemo(() =>
+    result ? stressMusic[result.level].filter(m => m.genre === musicGenre) : [],
+    [result, musicGenre]
+  );
 
   // 나이대 비교 데이터
-  const myPercentage = result ? calculatePercentage(myAgeGroupStats, result.level) : 0;
+  const myPercentage = useMemo(() =>
+    result ? calculatePercentage(myAgeGroupStats, result.level) : 0,
+    [myAgeGroupStats, result]
+  );
 
   // 희소성 정보
-  const rarityInfo = ageGroup && ageGroupCount > 1
-    ? getRarityInfo(myPercentage, ageGroupLabels[ageGroup], ageGroupCount)
-    : ageGroup
-    ? getFirstParticipantInfo(ageGroupLabels[ageGroup])
-    : null;
+  const rarityInfo = useMemo(() => {
+    if (ageGroup && ageGroupCount > 1) {
+      return getRarityInfo(myPercentage, ageGroupLabels[ageGroup], ageGroupCount);
+    }
+    if (ageGroup) {
+      return getFirstParticipantInfo(ageGroupLabels[ageGroup]);
+    }
+    return null;
+  }, [ageGroup, ageGroupCount, myPercentage]);
 
   // 주의 필요 카테고리 (점수 4 이상)
-  const dangerCategories = result
-    ? result.categoryScores.filter(c => c.score >= 4)
-    : [];
+  const dangerCategories = useMemo(() =>
+    result ? result.categoryScores.filter(c => c.score >= 4) : [],
+    [result]
+  );
 
   // 양호한 카테고리 (점수 2 이하)
-  const goodCategories = result
-    ? result.categoryScores.filter(c => c.score <= 2)
-    : [];
+  const goodCategories = useMemo(() =>
+    result ? result.categoryScores.filter(c => c.score <= 2) : [],
+    [result]
+  );
 
   return (
     <>

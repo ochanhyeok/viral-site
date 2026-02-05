@@ -70,7 +70,7 @@ export function useMultiplayer(testType: string) {
     };
 
     fetchRoom(); // 즉시 한 번 실행
-    pollingRef.current = setInterval(fetchRoom, 1000); // 1초마다 폴링
+    pollingRef.current = setInterval(fetchRoom, 3000); // 3초마다 폴링 (성능 최적화)
   }, []);
 
   const stopPolling = useCallback(() => {

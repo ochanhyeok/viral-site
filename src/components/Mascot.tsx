@@ -92,7 +92,7 @@ export function MascotWithTyping({ mood = 'normal', message, size = 'md', onClic
         setIsTyping(false);
         clearInterval(timer);
       }
-    }, 25);
+    }, 50); // 50ms로 최적화 (기존 25ms)
 
     return () => clearInterval(timer);
   }, [message]);

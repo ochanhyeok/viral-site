@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -8,13 +8,6 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const [showToast, setShowToast] = useState(false);
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText('pon07084@gmail.com');
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
 
   return (
     <div className="min-h-screen min-h-[100dvh] flex flex-col bg-gradient-to-b from-gray-50 to-white">
@@ -69,38 +62,27 @@ export function Layout({ children }: LayoutProps) {
 
       <footer className="bg-gray-50 border-t border-gray-100 mt-auto safe-area-bottom">
         <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 text-center text-gray-400 text-xs space-y-2">
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Link to="/about" className="hover:text-gray-600 transition-colors">
+              소개
+            </Link>
+            <span>|</span>
+            <Link to="/terms" className="hover:text-gray-600 transition-colors">
+              이용약관
+            </Link>
+            <span>|</span>
             <Link to="/privacy" className="hover:text-gray-600 transition-colors">
               개인정보처리방침
             </Link>
             <span>|</span>
-            <button
-              type="button"
-              onClick={copyEmail}
-              className="hover:text-gray-600 transition-colors cursor-pointer"
-            >
-              pon07084@gmail.com
-            </button>
+            <Link to="/contact" className="hover:text-gray-600 transition-colors">
+              문의하기
+            </Link>
           </div>
           <p>© 2025 연봉계산기 & 심리테스트 모음</p>
         </div>
       </footer>
 
-      {/* Toast Notification */}
-      <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
-          showToast
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-4 pointer-events-none'
-        }`}
-      >
-        <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 text-white text-sm rounded-xl shadow-lg">
-          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          이메일이 복사되었습니다
-        </div>
-      </div>
     </div>
   );
 }
