@@ -9,6 +9,7 @@ import { WorkMbti } from './features/work-mbti/WorkMbti';
 import { StressTest } from './components/StressTest/StressTest';
 import { KkondaeTest } from './features/kkondae-test/KkondaeTest';
 import { ColorTest } from './features/color-test/ColorTest';
+import { ReactionTest } from './features/reaction-test/ReactionTest';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/stress-test" element={<StressTest />} />
             <Route path="/kkondae-test" element={<KkondaeTest />} />
             <Route path="/color-test" element={<ColorTest />} />
+            <Route path="/reaction-test" element={<ReactionTest />} />
           </Routes>
         </Layout>
       </BrowserRouter>

@@ -80,7 +80,17 @@ const allTools: Tool[] = [
     description: '당신의 색 구분 능력은?',
     gradient: 'from-violet-500 to-fuchsia-500',
     category: 'test',
-    relatedTo: ['/work-mbti', '/stress-test', '/kkondae-test'],
+    relatedTo: ['/reaction-test', '/stress-test', '/kkondae-test'],
+  },
+  {
+    path: '/reaction-test',
+    emoji: '⚡',
+    title: '반응속도 테스트',
+    shortTitle: '반응속도',
+    description: '프로게이머급 반사신경?',
+    gradient: 'from-yellow-400 to-orange-500',
+    category: 'test',
+    relatedTo: ['/color-test', '/stress-test', '/work-mbti'],
   },
 ];
 
