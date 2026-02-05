@@ -282,33 +282,70 @@ export function SalaryCalculator() {
               </div>
             </div>
 
-            {/* 이미지 저장용 캡처 카드 */}
+            {/* 이미지 저장용 캡처 카드 - 프리미엄 디자인 */}
             <div
               id="salary-result-capture"
-              className="rounded-3xl overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600"
+              className="rounded-3xl overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 relative"
             >
-              <div className="p-6 text-white text-center">
-                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">💰</span>
+              {/* 배경 장식 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+              </div>
+
+              <div className="relative p-8 text-white">
+                {/* 상단 뱃지 */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium">2026 연봉 계산기</span>
+                  </div>
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-400 px-3 py-1 rounded-full shadow-lg">
+                    <span className="text-xs font-bold text-white">💎 PREMIUM</span>
+                  </div>
                 </div>
-                <p className="text-white/70 text-sm mb-1">2026 연봉 실수령액</p>
-                <h2 className="text-2xl font-extrabold mb-1">연봉 {formatWon(parseInt(salary.replace(/,/g, '')))}</h2>
-                <div className="bg-white/15 backdrop-blur rounded-2xl p-4 mb-3">
-                  <p className="text-white/80 text-sm mb-1">월 실수령액</p>
-                  <p className="text-3xl font-bold">{formatWon(result.monthlyNetSalary)}</p>
-                  <p className="text-white/60 text-xs mb-2">{formatCurrency(result.monthlyNetSalary)}원</p>
-                  <div className="mt-3 pt-3 border-t border-white/20 grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-white/60">연 실수령액</p>
-                      <p className="font-bold">{formatWon(result.annualNetSalary)}</p>
+
+                {/* 메인 콘텐츠 */}
+                <div className="text-center">
+                  {/* 이모지 */}
+                  <div className="w-20 h-20 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/30">
+                    <span className="text-4xl">💰</span>
+                  </div>
+
+                  {/* 연봉 */}
+                  <p className="text-white/60 text-sm font-medium mb-1">연봉</p>
+                  <h2 className="text-3xl font-black mb-4 drop-shadow-lg">{formatWon(parseInt(salary.replace(/,/g, '')))}</h2>
+
+                  {/* 구분선 */}
+                  <div className="w-16 h-1 bg-white/30 rounded-full mx-auto mb-4" />
+
+                  {/* 실수령액 카드 */}
+                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 mb-4 border border-white/20">
+                    <p className="text-white/70 text-sm mb-2">월 실수령액</p>
+                    <p className="text-4xl font-black mb-1">{formatWon(result.monthlyNetSalary)}</p>
+                    <p className="text-white/50 text-sm">{formatCurrency(result.monthlyNetSalary)}원</p>
+                  </div>
+
+                  {/* 상세 정보 */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                      <p className="text-white/60 text-xs mb-1">연 실수령액</p>
+                      <p className="font-bold text-lg">{formatWon(result.annualNetSalary)}</p>
                     </div>
-                    <div>
-                      <p className="text-white/60">총 공제액</p>
-                      <p className="font-bold">{formatWon(result.totalDeduction)}</p>
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                      <p className="text-white/60 text-xs mb-1">월 공제액</p>
+                      <p className="font-bold text-lg">{formatWon(result.totalDeduction)}</p>
                     </div>
                   </div>
                 </div>
-                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+
+                {/* 하단 브랜딩 */}
+                <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-white/20">
+                  <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xs">✨</span>
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">viral-site-opal.vercel.app</span>
+                </div>
               </div>
             </div>
 

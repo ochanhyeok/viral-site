@@ -357,23 +357,81 @@ export function WorkMbti() {
               <p className="text-indigo-700 leading-relaxed">{result.teamTip}</p>
             </div>
 
-            {/* 이미지 저장용 카드 */}
+            {/* 이미지 저장용 카드 - 프리미엄 디자인 */}
             <div
               id="mbti-result-capture"
-              className={`rounded-3xl overflow-hidden bg-gradient-to-br ${result.color}`}
+              className={`rounded-3xl overflow-hidden bg-gradient-to-br ${result.color} relative`}
             >
-              <div className="p-6 text-white text-center">
-                <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">{result.emoji}</span>
+              {/* 배경 장식 */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+              </div>
+
+              <div className="relative p-8 text-white">
+                {/* 상단 뱃지 */}
+                <div className="flex justify-between items-start mb-6">
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium">직장인 MBTI</span>
+                  </div>
+                  {rarityInfo && (
+                    <div className={`bg-gradient-to-r ${rarityInfo.badgeColor} px-3 py-1 rounded-full shadow-lg`}>
+                      <span className="text-xs font-bold">{rarityInfo.badge}</span>
+                    </div>
+                  )}
                 </div>
-                <p className="text-white/70 text-sm mb-1">나의 직장인 MBTI</p>
-                <h2 className="text-4xl font-extrabold mb-1">{result.type}</h2>
-                <p className="text-xl font-bold mb-1">{result.name}</p>
-                <p className="text-white/80 text-sm mb-3">{result.title}</p>
-                <div className="bg-white/15 backdrop-blur rounded-2xl p-3 mb-3">
-                  <p className="text-white/90 text-sm leading-relaxed">{result.description}</p>
+
+                {/* 메인 콘텐츠 */}
+                <div className="text-center">
+                  {/* 이모지 */}
+                  <div className="w-24 h-24 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/30">
+                    <span className="text-5xl">{result.emoji}</span>
+                  </div>
+
+                  {/* MBTI 타입 */}
+                  <div className="flex justify-center gap-1 mb-3">
+                    {result.type.split('').map((char, idx) => (
+                      <span key={idx} className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-xl font-black border border-white/30">
+                        {char}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* 유형명 */}
+                  <h2 className="text-3xl font-black mb-1 drop-shadow-lg">{result.name}</h2>
+                  <p className="text-lg font-semibold text-white/90 mb-4">{result.title}</p>
+
+                  {/* 구분선 */}
+                  <div className="w-16 h-1 bg-white/30 rounded-full mx-auto mb-4" />
+
+                  {/* 강점 2개 */}
+                  <div className="flex justify-center gap-2 flex-wrap mb-4">
+                    {result.strengths.slice(0, 2).map((strength, idx) => (
+                      <span key={idx} className="bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium">
+                        ✓ {strength.length > 12 ? strength.slice(0, 12) + '...' : strength}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* 통계 */}
+                  {ageGroup && ageGroupCount > 1 && myPercentage > 0 && (
+                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 mb-4 border border-white/20">
+                      <p className="text-sm">
+                        <span className="font-bold">{ageGroupLabels[ageGroup]}</span> 중{' '}
+                        <span className="text-2xl font-black">{myPercentage}%</span>가 같은 유형
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <p className="text-white/50 text-xs">연봉계산기 & 심리테스트 | viral-site-opal.vercel.app</p>
+
+                {/* 하단 브랜딩 */}
+                <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-white/20">
+                  <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xs">✨</span>
+                  </div>
+                  <span className="text-white/60 text-xs font-medium">viral-site-opal.vercel.app</span>
+                </div>
               </div>
             </div>
 
