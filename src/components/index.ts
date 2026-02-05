@@ -16,3 +16,4 @@ export { Mascot, MascotWithTyping, MascotGreeting, mascotComments, getRandomComm
 export type { MascotMood } from './Mascot';
 export { LiveFeed, LiveToast } from './LiveFeed';
 export { Percentile } from './Percentile';
+export { DailyFortune } from './DailyFortune';

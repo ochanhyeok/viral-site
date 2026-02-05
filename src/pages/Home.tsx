@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SEO, VisitorCounter, MascotGreeting } from '../components';
+import { SEO, VisitorCounter, MascotGreeting, DailyFortune } from '../components';
 
 interface Tool {
   path: string;
@@ -218,6 +218,11 @@ export function Home() {
           {/* 마스코트 인사 */}
           <div className="mt-6 flex justify-center">
             <MascotGreeting />
+          </div>
+
+          {/* 오늘의 운세 */}
+          <div className="mt-6 max-w-sm mx-auto">
+            <DailyFortune />
           </div>
         </div>
 
