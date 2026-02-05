@@ -21,34 +21,70 @@ export default function CompoundCalculator() {
   const [initialAmount, setInitialAmount] = useState<string>('1000'); // 만원
   const [monthlyContribution, setMonthlyContribution] = useState<string>('50'); // 만원
   const [annualRate, setAnnualRate] = useState<string>('7');
-  const [years, setYears] = useState<string>('20');
+  const [rateType, setRateType] = useState<'annual' | 'monthly'>('annual');
+  const [periodType, setPeriodType] = useState<'years' | 'months'>('years');
+  const [periodValue, setPeriodValue] = useState<string>('20');
   const [showResult, setShowResult] = useState(false);
+
+  // 총 개월 수 계산
+  const totalMonths = useMemo(() => {
+    const val = parseInt(periodValue);
+    if (isNaN(val) || val <= 0) return 0;
+    return periodType === 'years' ? val * 12 : val;
+  }, [periodValue, periodType]);
 
   const result = useMemo<Result | null>(() => {
     const initial = parseFloat(initialAmount) * 10000;
     const monthly = parseFloat(monthlyContribution) * 10000;
-    const rate = parseFloat(annualRate) / 100;
-    const period = parseInt(years);
+    const inputRate = parseFloat(annualRate) / 100;
 
-    if (isNaN(initial) || isNaN(monthly) || isNaN(rate) || isNaN(period) ||
-        initial < 0 || monthly < 0 || rate <= 0 || period <= 0) {
+    if (isNaN(initial) || isNaN(monthly) || isNaN(inputRate) || totalMonths <= 0 ||
+        initial < 0 || monthly < 0 || inputRate <= 0) {
       return null;
     }
 
-    const monthlyRate = rate / 12;
+    // 월 수익률로 변환
+    const monthlyRate = rateType === 'monthly' ? inputRate : inputRate / 12;
+    // 연 수익률 (72법칙용)
+    const annualRateForCalc = rateType === 'monthly' ? inputRate * 12 : inputRate;
+
     const yearlyData: YearlyData[] = [];
     let currentAmount = initial;
     let totalContributions = initial;
 
-    for (let year = 1; year <= period; year++) {
-      // 12개월 동안 매월 복리 계산
-      for (let month = 1; month <= 12; month++) {
-        currentAmount = currentAmount * (1 + monthlyRate) + monthly;
-        totalContributions += monthly;
-      }
+    // 개월 단위로 계산
+    for (let m = 1; m <= totalMonths; m++) {
+      currentAmount = currentAmount * (1 + monthlyRate) + monthly;
+      totalContributions += monthly;
 
+      // 1년 단위 또는 마지막 달에 기록
+      const isYearEnd = m % 12 === 0;
+
+      if (periodType === 'years') {
+        // 연 단위면 매년 기록
+        if (isYearEnd) {
+          yearlyData.push({
+            year: m / 12,
+            principal: Math.round(totalContributions),
+            interest: Math.round(currentAmount - totalContributions),
+            total: Math.round(currentAmount),
+          });
+        }
+      } else {
+        // 월 단위면 매월 기록
+        yearlyData.push({
+          year: m, // 여기서는 month로 사용
+          principal: Math.round(totalContributions),
+          interest: Math.round(currentAmount - totalContributions),
+          total: Math.round(currentAmount),
+        });
+      }
+    }
+
+    // 연 단위인데 마지막이 12의 배수가 아닌 경우 추가
+    if (periodType === 'years' && totalMonths % 12 !== 0) {
       yearlyData.push({
-        year,
+        year: Math.ceil(totalMonths / 12),
         principal: Math.round(totalContributions),
         interest: Math.round(currentAmount - totalContributions),
         total: Math.round(currentAmount),
@@ -56,7 +92,7 @@ export default function CompoundCalculator() {
     }
 
     // 72법칙: 원금이 2배가 되는 데 걸리는 시간
-    const doublingYears = Math.round(72 / (rate * 100));
+    const doublingYears = Math.round(72 / (annualRateForCalc * 100));
 
     return {
       finalAmount: Math.round(currentAmount),
@@ -65,7 +101,7 @@ export default function CompoundCalculator() {
       yearlyData,
       doublingYears,
     };
-  }, [initialAmount, monthlyContribution, annualRate, years]);
+  }, [initialAmount, monthlyContribution, annualRate, rateType, totalMonths, periodType]);
 
   const handleCalculate = () => {
     if (result) {
@@ -182,13 +218,37 @@ export default function CompoundCalculator() {
             </p>
           </div>
 
-          {/* 연 수익률 */}
+          {/* 수익률 */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              예상 연 수익률
+              예상 수익률
             </label>
+            {/* 연/월 토글 */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                onClick={() => { setRateType('annual'); setAnnualRate('7'); setShowResult(false); }}
+                className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  rateType === 'annual'
+                    ? 'bg-indigo-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                📅 연 수익률
+              </button>
+              <button
+                onClick={() => { setRateType('monthly'); setAnnualRate('0.5'); setShowResult(false); }}
+                className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  rateType === 'monthly'
+                    ? 'bg-purple-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                🗓️ 월 수익률
+              </button>
+            </div>
+            {/* 빠른 선택 */}
             <div className="grid grid-cols-4 gap-2 mb-2">
-              {[5, 7, 10, 15].map((r) => (
+              {(rateType === 'annual' ? [5, 7, 10, 15] : [0.3, 0.5, 1, 1.5]).map((r) => (
                 <button
                   key={r}
                   onClick={() => { setAnnualRate(r.toString()); setShowResult(false); }}
@@ -205,16 +265,21 @@ export default function CompoundCalculator() {
             <div className="relative">
               <input
                 type="number"
-                step="0.5"
+                step="0.1"
                 value={annualRate}
                 onChange={(e) => { setAnnualRate(e.target.value); setShowResult(false); }}
                 placeholder="직접 입력"
                 className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:bg-white transition-all"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg text-sm">
-                %
+                %/{rateType === 'annual' ? '년' : '월'}
               </span>
             </div>
+            {rateType === 'monthly' && (
+              <p className="mt-1.5 text-xs text-purple-500">
+                💡 월 {annualRate}% = 연 {(parseFloat(annualRate || '0') * 12).toFixed(1)}% (단리 환산)
+              </p>
+            )}
           </div>
 
           {/* 투자 기간 */}
@@ -222,31 +287,55 @@ export default function CompoundCalculator() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               투자 기간
             </label>
+            {/* 년/월 토글 */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                onClick={() => { setPeriodType('years'); setPeriodValue('20'); setShowResult(false); }}
+                className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  periodType === 'years'
+                    ? 'bg-indigo-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                📅 년 단위
+              </button>
+              <button
+                onClick={() => { setPeriodType('months'); setPeriodValue('6'); setShowResult(false); }}
+                className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  periodType === 'months'
+                    ? 'bg-purple-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                🗓️ 개월 단위
+              </button>
+            </div>
+            {/* 빠른 선택 */}
             <div className="grid grid-cols-4 gap-2 mb-2">
-              {[10, 20, 30, 40].map((y) => (
+              {(periodType === 'years' ? [10, 20, 30, 40] : [3, 6, 9, 12]).map((p) => (
                 <button
-                  key={y}
-                  onClick={() => { setYears(y.toString()); setShowResult(false); }}
+                  key={p}
+                  onClick={() => { setPeriodValue(p.toString()); setShowResult(false); }}
                   className={`py-2 rounded-xl text-sm font-medium transition-all ${
-                    years === y.toString()
+                    periodValue === p.toString()
                       ? 'bg-indigo-100 text-indigo-700 border-2 border-indigo-300'
                       : 'bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gray-200'
                   }`}
                 >
-                  {y}년
+                  {p}{periodType === 'years' ? '년' : '개월'}
                 </button>
               ))}
             </div>
             <div className="relative">
               <input
                 type="number"
-                value={years}
-                onChange={(e) => { setYears(e.target.value); setShowResult(false); }}
+                value={periodValue}
+                onChange={(e) => { setPeriodValue(e.target.value); setShowResult(false); }}
                 placeholder="직접 입력"
                 className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:bg-white transition-all"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg text-sm">
-                년
+                {periodType === 'years' ? '년' : '개월'}
               </span>
             </div>
           </div>
@@ -267,7 +356,9 @@ export default function CompoundCalculator() {
             {/* 최종 금액 */}
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
               <div className="text-center">
-                <p className="text-indigo-100 text-sm mb-1">{years}년 후 예상 자산</p>
+                <p className="text-indigo-100 text-sm mb-1">
+                  {periodType === 'years' ? `${periodValue}년` : `${periodValue}개월`} 후 예상 자산
+                </p>
                 <p className="text-4xl font-bold mb-2">
                   {formatWon(result.finalAmount)}
                 </p>
@@ -294,13 +385,13 @@ export default function CompoundCalculator() {
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
                 <div className="text-center">
                   <p className="text-amber-700 text-sm mb-1">
-                    연 {annualRate}% 수익률로 원금이 2배가 되는 시간
+                    연 {rateType === 'monthly' ? (parseFloat(annualRate) * 12).toFixed(1) : annualRate}% 수익률로 원금이 2배가 되는 시간
                   </p>
                   <p className="text-3xl font-bold text-amber-600">
                     약 {result.doublingYears}년
                   </p>
                   <p className="text-xs text-amber-500 mt-2">
-                    72 ÷ {annualRate} = {(72 / parseFloat(annualRate)).toFixed(1)}년
+                    72 ÷ {rateType === 'monthly' ? (parseFloat(annualRate) * 12).toFixed(1) : annualRate} = {result.doublingYears}년
                   </p>
                 </div>
               </div>
@@ -315,45 +406,48 @@ export default function CompoundCalculator() {
 
               <div className="relative h-48 flex items-end gap-1 pt-6">
                 {result.yearlyData.map((data, index) => {
-                  const height = (data.total / maxAmount) * 100;
-                  const principalHeight = (data.principal / maxAmount) * 100;
+                  const height = maxAmount > 0 ? (data.total / maxAmount) * 100 : 0;
+                  const principalHeight = maxAmount > 0 ? (data.principal / maxAmount) * 100 : 0;
+                  const dataLength = result.yearlyData.length;
                   const showLabel = index === 0 ||
-                    index === result.yearlyData.length - 1 ||
-                    (result.yearlyData.length > 10 && index % 5 === 0) ||
-                    (result.yearlyData.length <= 10);
+                    index === dataLength - 1 ||
+                    (dataLength > 12 && index % Math.ceil(dataLength / 6) === 0) ||
+                    (dataLength <= 12);
 
                   return (
                     <div
                       key={data.year}
-                      className="flex-1 flex flex-col items-center group relative"
+                      className="flex-1 flex flex-col items-center group relative min-w-[8px]"
                     >
                       {/* 툴팁 */}
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
                         <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                          {data.year}년: {formatWon(data.total)}
+                          {data.year}{periodType === 'years' ? '년' : '개월'}: {formatWon(data.total)}
                         </div>
                       </div>
 
                       {/* 바 */}
                       <div
                         className="w-full rounded-t-sm relative overflow-hidden transition-all hover:opacity-80"
-                        style={{ height: `${height}%` }}
+                        style={{ height: `${Math.max(height, 2)}%` }}
                       >
                         {/* 이자 부분 */}
                         <div
-                          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-indigo-400 to-purple-400"
-                          style={{ height: `${100 - (principalHeight / height * 100)}%` }}
+                          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-400 to-purple-300"
+                          style={{ height: height > 0 ? `${Math.max(100 - (principalHeight / height * 100), 0)}%` : '0%' }}
                         />
                         {/* 원금 부분 */}
                         <div
                           className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-indigo-600 to-indigo-500"
-                          style={{ height: `${principalHeight / height * 100}%` }}
+                          style={{ height: height > 0 ? `${Math.min(principalHeight / height * 100, 100)}%` : '100%' }}
                         />
                       </div>
 
-                      {/* 연도 라벨 */}
+                      {/* 기간 라벨 */}
                       {showLabel && (
-                        <span className="text-[10px] text-gray-400 mt-1">{data.year}년</span>
+                        <span className="text-[10px] text-gray-400 mt-1 whitespace-nowrap">
+                          {data.year}{periodType === 'years' ? '년' : 'M'}
+                        </span>
                       )}
                     </div>
                   );
@@ -373,29 +467,34 @@ export default function CompoundCalculator() {
               </div>
             </div>
 
-            {/* 연도별 상세 */}
+            {/* 기간별 상세 */}
             <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
               <h3 className="font-bold text-gray-900 mb-4 px-2 flex items-center gap-2">
                 <span className="text-lg">📋</span>
-                연도별 상세
+                {periodType === 'years' ? '연도별' : '월별'} 상세
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="py-2 px-3 text-left font-semibold text-gray-600">연도</th>
+                      <th className="py-2 px-3 text-left font-semibold text-gray-600">
+                        {periodType === 'years' ? '연도' : '개월'}
+                      </th>
                       <th className="py-2 px-3 text-right font-semibold text-gray-600">원금</th>
                       <th className="py-2 px-3 text-right font-semibold text-gray-600">수익</th>
                       <th className="py-2 px-3 text-right font-semibold text-gray-600">총 자산</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {result.yearlyData.filter((_, i) =>
-                      i === 0 || i === result.yearlyData.length - 1 ||
-                      (i + 1) % 5 === 0
-                    ).map((data) => (
+                    {result.yearlyData.filter((_, i) => {
+                      const len = result.yearlyData.length;
+                      if (len <= 12) return true;
+                      return i === 0 || i === len - 1 || (i + 1) % Math.ceil(len / 6) === 0;
+                    }).map((data) => (
                       <tr key={data.year} className="border-t border-gray-100 hover:bg-gray-50">
-                        <td className="py-2 px-3 text-gray-600">{data.year}년</td>
+                        <td className="py-2 px-3 text-gray-600">
+                          {data.year}{periodType === 'years' ? '년' : '개월'}
+                        </td>
                         <td className="py-2 px-3 text-right">{formatWon(data.principal)}</td>
                         <td className="py-2 px-3 text-right text-purple-600">+{formatWon(data.interest)}</td>
                         <td className="py-2 px-3 text-right font-semibold text-indigo-600">{formatWon(data.total)}</td>
