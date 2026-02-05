@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SEO, VisitorCounter, MascotGreeting, DailyFortune, HiddenTests } from '../components';
 
@@ -203,6 +204,13 @@ const calculators = tools.filter(t => t.category === 'calculator');
 const tests = tools.filter(t => t.category === 'test');
 const games = tools.filter(t => t.category === 'game');
 
+// 인기 TOP PICK (가장 중요한 콘텐츠)
+const topPicks = [
+  tools.find(t => t.path === '/salary')!,      // 연봉 계산기
+  tools.find(t => t.path === '/spending-quiz')!, // 소비성향 테스트
+  tools.find(t => t.path === '/work-mbti')!,     // 직장인 MBTI
+];
+
 function BadgeComponent({ badge }: { badge?: 'hot' | 'new' | 'popular' }) {
   if (!badge) return null;
 
@@ -284,6 +292,98 @@ function SectionHeader({ icon, title, subtitle, gradient }: { icon: string; titl
   );
 }
 
+// 큰 카드 (TOP PICK용)
+function TopPickCard({ tool }: { tool: Tool }) {
+  return (
+    <Link
+      to={tool.path}
+      className={`group relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br ${tool.gradient} text-white shadow-xl ${tool.shadowColor} hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 active:scale-[0.98]`}
+    >
+      {/* 배경 장식 */}
+      <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+
+      <div className="relative">
+        {/* 이모지 */}
+        <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+          <span className="text-4xl filter drop-shadow-lg">{tool.emoji}</span>
+        </div>
+
+        {/* 제목 */}
+        <h3 className="text-xl font-black mb-2 group-hover:translate-x-1 transition-transform">
+          {tool.title}
+        </h3>
+        <p className="text-white/80 text-sm mb-4">{tool.description}</p>
+
+        {/* CTA 버튼 */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold group-hover:bg-white/30 transition-colors">
+          <span>시작하기</span>
+          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// 접기/펼치기 섹션
+function CollapsibleSection({
+  title,
+  subtitle,
+  icon,
+  gradient,
+  items,
+  defaultExpanded = false
+}: {
+  title: string;
+  subtitle: string;
+  icon: string;
+  gradient: string;
+  items: Tool[];
+  defaultExpanded?: boolean;
+}) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  const displayItems = expanded ? items : items.slice(0, 4);
+
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg`}>
+            <span className="text-2xl">{icon}</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-extrabold text-gray-900">{title}</h2>
+            <p className="text-sm text-gray-500">{subtitle}</p>
+          </div>
+        </div>
+        {items.length > 4 && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <span>{expanded ? '접기' : `+${items.length - 4}개 더보기`}</span>
+            <svg
+              className={`w-4 h-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        {displayItems.map((tool, index) => (
+          <ToolCard key={tool.path} tool={tool} index={index} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function Home() {
   return (
     <>
@@ -349,35 +449,43 @@ export function Home() {
           </div>
         </div>
 
-        {/* 계산기 섹션 */}
+        {/* 🔥 TOP PICKS - 가장 인기있는 콘텐츠 */}
         <section>
-          <SectionHeader
-            icon="🧮"
-            title="계산기"
-            subtitle="정확한 계산이 필요할 때"
-            gradient="from-blue-500 to-indigo-600"
-          />
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
-            {calculators.map((tool, index) => (
-              <ToolCard key={tool.path} tool={tool} index={index} />
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+              <span className="text-2xl">🔥</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold text-gray-900">인기 TOP 3</h2>
+              <p className="text-sm text-gray-500">가장 많이 사용하는 콘텐츠</p>
+            </div>
+          </div>
+          <div className="grid gap-4">
+            {topPicks.map((tool) => (
+              <TopPickCard key={tool.path} tool={tool} />
             ))}
           </div>
         </section>
 
-        {/* 심리테스트 섹션 */}
-        <section>
-          <SectionHeader
-            icon="🧪"
-            title="심리테스트"
-            subtitle="나를 알아가는 시간"
-            gradient="from-violet-500 to-purple-600"
-          />
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            {tests.map((tool, index) => (
-              <ToolCard key={tool.path} tool={tool} index={index} />
-            ))}
-          </div>
-        </section>
+        {/* 계산기 섹션 (접기 가능) */}
+        <CollapsibleSection
+          title="계산기"
+          subtitle="정확한 계산이 필요할 때"
+          icon="🧮"
+          gradient="from-blue-500 to-indigo-600"
+          items={calculators.filter(c => !topPicks.some(t => t.path === c.path))}
+          defaultExpanded={false}
+        />
+
+        {/* 심리테스트 섹션 (접기 가능) */}
+        <CollapsibleSection
+          title="심리테스트"
+          subtitle="나를 알아가는 시간"
+          icon="🧪"
+          gradient="from-violet-500 to-purple-600"
+          items={tests.filter(t => !topPicks.some(p => p.path === t.path))}
+          defaultExpanded={false}
+        />
 
         {/* 멀티플레이어 게임 섹션 */}
         {games.length > 0 && (
