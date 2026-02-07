@@ -552,6 +552,66 @@ export function Home() {
           </section>
         )}
 
+        {/* 가이드 섹션 */}
+        <section>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+              <span className="text-2xl">📚</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold text-gray-900">직장인 가이드</h2>
+              <p className="text-sm text-gray-600">알아두면 유용한 정보</p>
+            </div>
+          </div>
+          <div className="grid gap-3">
+            <Link
+              to="/guide/salary"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">💰</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900">연봉 협상 & 계산 가이드</h3>
+                <p className="text-sm text-gray-500">2026년 세율, 협상 전략 총정리</p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link
+              to="/guide/retirement"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">🏦</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900">퇴직금 완벽 가이드</h3>
+                <p className="text-sm text-gray-500">계산법, 퇴직연금, 세금까지</p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link
+              to="/guide/tax"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-green-200 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">💸</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900">연말정산 환급 꿀팁</h3>
+                <p className="text-sm text-gray-500">13월의 월급 최대로 받는 법</p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-green-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </section>
+
         {/* 히든 테스트 */}
         <HiddenTests />
 
