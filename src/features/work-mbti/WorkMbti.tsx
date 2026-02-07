@@ -175,6 +175,22 @@ export function WorkMbti() {
               </div>
             )}
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left mb-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 12개의 직장 상황 질문</li>
+                <li>• 소요 시간: 약 2분</li>
+                <li>• 평소 업무 스타일대로 답변하세요</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 테스트는 직장 생활에서의 업무 처리 방식, 동료와의 소통 스타일, 의사결정 패턴을 분석합니다.
+                회의, 팀 프로젝트, 마감 상황 등 실제 업무 환경에서의 행동 성향을 기반으로 16가지 MBTI 유형 중
+                당신의 직장인 성격 유형을 도출합니다. 같은 나이대의 직장인들과 비교하여
+                팀워크 팁과 성장 포인트도 함께 확인해보세요.
+              </p>
+            </div>
+
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
             </Button>

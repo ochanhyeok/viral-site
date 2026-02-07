@@ -264,6 +264,22 @@ export function EmojiQuiz() {
               <p className="text-gray-700 font-medium">= 라이온킹</p>
             </div>
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 {QUESTIONS_PER_ROUND}문제 출제</li>
+                <li>• 문제당 {TIME_PER_QUESTION / 1000}초 시간 제한</li>
+                <li>• 빠르게 맞출수록 높은 점수!</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 퀴즈는 이모지 조합을 보고 영화, 드라마, 노래, 음식 등을 맞추는 게임입니다.
+                창의력과 연상력, 문화 콘텐츠에 대한 지식을 테스트할 수 있습니다.
+                힌트를 사용하면 정답을 맞추기 쉬워지지만 점수가 절반으로 줄어듭니다.
+                카테고리를 선택하여 관심 분야만 집중적으로 도전해보세요!
+              </p>
+            </div>
+
             {/* 시작 버튼 */}
             <button
               onClick={startGame}

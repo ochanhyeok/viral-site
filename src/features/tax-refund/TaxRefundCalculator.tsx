@@ -209,6 +209,24 @@ export function TaxRefundCalculator() {
 
         {step === 'input' ? (
           <div className="space-y-6">
+            {/* 정보 섹션 */}
+            <div className="bg-green-50 rounded-2xl p-5 border border-green-100">
+              <h2 className="font-bold text-green-900 mb-3 flex items-center gap-2">
+                <span>💡</span> 2025년 귀속 연말정산 안내
+              </h2>
+              <div className="text-green-800 text-sm space-y-2">
+                <p>
+                  연말정산은 1년간 납부한 근로소득세를 정산하는 절차입니다. 2025년 귀속 연말정산(2026년 초 진행)에서는
+                  신용카드 공제 한도가 총급여의 25% 초과분에 대해 최대 300만원까지 적용됩니다.
+                  체크카드/현금영수증은 30%, 전통시장/대중교통은 40%의 높은 공제율이 적용됩니다.
+                </p>
+                <p>
+                  의료비는 총급여의 3% 초과분부터 공제되며, 교육비는 본인 전액, 자녀 1인당 연 300만원(대학생 900만원)까지
+                  공제됩니다. 연금저축과 IRP 합산 최대 700만원까지 세액공제를 받을 수 있어 절세 효과가 큽니다.
+                </p>
+              </div>
+            </div>
+
             {/* 기본 정보 */}
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">

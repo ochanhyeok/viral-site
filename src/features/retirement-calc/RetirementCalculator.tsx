@@ -180,6 +180,25 @@ export function RetirementCalculator() {
           <p className="text-gray-500 text-sm">1년 이상 근무 시 퇴직금 지급</p>
         </div>
 
+        {/* 정보 섹션 */}
+        <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+          <h2 className="font-bold text-emerald-900 mb-3 flex items-center gap-2">
+            <span>💡</span> 퇴직금 계산 시 알아두세요
+          </h2>
+          <div className="text-emerald-800 text-sm space-y-2">
+            <p>
+              퇴직금은 근로기준법에 따라 1년 이상 계속 근로한 근로자에게 지급됩니다.
+              퇴직금 = 1일 평균임금 x 30일 x (총 재직일수 / 365일)로 계산되며,
+              평균임금은 퇴직 전 3개월간 지급받은 임금 총액을 그 기간의 총 일수로 나눈 금액입니다.
+            </p>
+            <p>
+              2026년 기준 퇴직금에는 퇴직소득세가 부과되며, 근속연수에 따른 공제가 적용됩니다.
+              상여금은 연간 총액의 3/12을 가산하고, 미사용 연차수당도 평균임금에 포함됩니다.
+              퇴직연금(DC/DB형) 가입자는 별도의 계산 방식이 적용될 수 있습니다.
+            </p>
+          </div>
+        </div>
+
         {/* 입력 폼 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="space-y-5">

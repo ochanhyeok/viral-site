@@ -305,6 +305,22 @@ export function ReactionTest() {
               <p className="text-sm text-amber-800 text-left">{funFact}</p>
             </div>
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 {TOTAL_ROUNDS}회 측정 후 평균 계산</li>
+                <li>• 소요 시간: 약 1-2분</li>
+                <li>• 집중할 수 있는 환경에서 테스트하세요</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 테스트는 시각 자극에 대한 반응 속도를 밀리초(ms) 단위로 정밀하게 측정합니다.
+                평균 성인의 반응속도는 약 250ms이며, 프로 게이머는 150ms 이하를 기록하기도 합니다.
+                {TOTAL_ROUNDS}회의 측정을 통해 평균값을 산출하여 정확한 결과를 제공합니다.
+                반응속도는 수면, 집중력, 컨디션에 따라 달라질 수 있습니다.
+              </p>
+            </div>
+
             {/* 시작 버튼 */}
             <button
               onClick={startGame}

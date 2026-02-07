@@ -36,6 +36,11 @@ const DividendCalculator = lazy(() => import('./features/stock-calc/DividendCalc
 const InvestTest = lazy(() => import('./features/invest-test/InvestTest'));
 const NotFound = lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
 
+// 가이드 페이지
+const SalaryGuide = lazy(() => import('./pages/guides/SalaryGuide'));
+const RetirementGuide = lazy(() => import('./pages/guides/RetirementGuide'));
+const TaxGuide = lazy(() => import('./pages/guides/TaxGuide'));
+
 // 로딩 컴포넌트 - AdSense 정책 준수를 위해 콘텐츠 포함
 function PageLoader() {
   return (
@@ -88,6 +93,10 @@ function App() {
               <Route path="/stock" element={<StockCalculator />} />
               <Route path="/dividend" element={<DividendCalculator />} />
               <Route path="/invest-test" element={<InvestTest />} />
+              {/* 가이드 페이지 */}
+              <Route path="/guide/salary" element={<SalaryGuide />} />
+              <Route path="/guide/retirement" element={<RetirementGuide />} />
+              <Route path="/guide/tax" element={<TaxGuide />} />
               {/* 히든 테스트 */}
               <Route path="/resignation-test" element={<ResignationTest />} />
               {/* 404 페이지 */}

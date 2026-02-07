@@ -168,6 +168,22 @@ export function ColorTest() {
               <p className="text-sm text-amber-800 text-left">{funFact}</p>
             </div>
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 {TOTAL_ROUNDS}라운드 진행</li>
+                <li>• 소요 시간: 약 2-3분</li>
+                <li>• 밝은 화면에서 테스트하면 더 정확해요</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 테스트는 색상 인지 능력과 시각적 민감도를 측정합니다.
+                라운드가 진행될수록 색상 차이가 미세해지며, 격자 크기도 증가하여 난이도가 높아집니다.
+                디자이너, 아티스트 등 색채 감각이 중요한 직업에서 자신의 능력을 확인해볼 수 있으며,
+                빠르고 정확하게 맞출수록 높은 점수를 받습니다.
+              </p>
+            </div>
+
             {/* 시작 버튼 */}
             <button
               onClick={startGame}

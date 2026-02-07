@@ -233,6 +233,22 @@ export function StressTest() {
               </div>
             )}
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left mb-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 10개의 질문이 있습니다</li>
+                <li>• 소요 시간: 약 2분</li>
+                <li>• 최근 2주간의 상태를 기준으로 답변하세요</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 테스트는 수면, 업무, 대인관계, 신체 건강 등 10가지 영역에서 스트레스 수준을 측정합니다.
+                각 영역별 상세 분석과 함께 주의가 필요한 부분을 파악할 수 있으며,
+                스트레스 관리를 위한 맞춤 음악 추천과 실천 가능한 관리 팁을 제공합니다.
+                정기적으로 테스트하여 멘탈 건강을 체크해보세요.
+              </p>
+            </div>
+
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600">
               테스트 시작하기
             </Button>

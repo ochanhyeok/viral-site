@@ -171,6 +171,22 @@ export function SpendingQuiz() {
               </div>
             )}
 
+            {/* 테스트 안내 정보성 텍스트 */}
+            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 text-left mb-6 shadow-sm border border-gray-100">
+              <h3 className="font-bold text-gray-800 mb-2">테스트 안내</h3>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 총 12개의 질문이 있습니다</li>
+                <li>• 소요 시간: 약 2-3분</li>
+                <li>• 솔직하게 답변해주세요</li>
+              </ul>
+              <p className="text-sm text-gray-600 mt-3">
+                이 테스트는 일상적인 소비 상황에서의 선택을 분석하여 당신만의 소비 성향을 파악합니다.
+                쇼핑, 외식, 취미 활동 등 다양한 상황에서의 의사결정 패턴을 통해 플렉스형,
+                가치소비형, 계획형 등 6가지 소비 유형 중 어디에 해당하는지 알아보세요.
+                결과는 같은 나이대와의 비교 통계도 함께 제공됩니다.
+              </p>
+            </div>
+
             <Button onClick={handleStart} size="lg" className="w-full max-w-xs">
               테스트 시작하기
             </Button>

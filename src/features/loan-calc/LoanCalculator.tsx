@@ -169,6 +169,25 @@ export default function LoanCalculator() {
           </p>
         </div>
 
+        {/* 정보 섹션 */}
+        <div className="bg-rose-50 rounded-2xl p-5 border border-rose-100">
+          <h2 className="font-bold text-rose-900 mb-3 flex items-center gap-2">
+            <span>💡</span> 대출 상환 방식 안내
+          </h2>
+          <div className="text-rose-800 text-sm space-y-2">
+            <p>
+              대출 상환 방식에 따라 총 이자 부담이 크게 달라집니다. 원리금균등상환은 매월 동일한 금액을 납부하여
+              자금 계획이 쉽고, 원금균등상환은 초기 부담은 크지만 총 이자가 가장 적습니다.
+              만기일시상환은 매월 이자만 납부하여 월 부담은 적지만 총 이자가 가장 많습니다.
+            </p>
+            <p>
+              2026년 기준 주택담보대출(주담대) 금리는 연 4~6%대, 신용대출은 연 5~15%대로 신용등급과
+              대출 조건에 따라 달라집니다. 중도상환수수료(보통 1~1.5%)가 있을 수 있으니 조기 상환 계획이
+              있다면 확인이 필요합니다. DSR(총부채원리금상환비율) 규제로 소득 대비 상환 가능 금액이 제한될 수 있습니다.
+            </p>
+          </div>
+        </div>
+
         {/* 입력 폼 */}
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 space-y-5">
           {/* 대출 금액 */}

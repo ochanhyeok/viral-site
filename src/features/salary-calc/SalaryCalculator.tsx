@@ -121,6 +121,24 @@ export function SalaryCalculator() {
           <p className="text-gray-500 text-sm">2026년 최신 세율 적용</p>
         </div>
 
+        {/* 정보 섹션 */}
+        <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+          <h2 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+            <span>💡</span> 2026년 연봉 계산 시 알아두세요
+          </h2>
+          <div className="text-blue-800 text-sm space-y-2">
+            <p>
+              본 계산기는 2026년 최신 4대보험 요율을 적용합니다. 국민연금 4.5% (상한 590만원),
+              건강보험 3.545%, 장기요양보험 12.95% (건강보험료의), 고용보험 0.9%가 적용됩니다.
+              소득세는 간이세액표 기준으로 계산되며, 부양가족 수에 따라 달라집니다.
+            </p>
+            <p>
+              비과세 항목에는 식대(월 20만원 한도), 자가운전보조금(월 20만원), 출산/보육수당(월 20만원) 등이
+              포함될 수 있습니다. 실제 실수령액은 회사의 복리후생 정책에 따라 차이가 있을 수 있으니 참고용으로 활용해주세요.
+            </p>
+          </div>
+        </div>
+
         {/* 입력 폼 */}
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="space-y-5">

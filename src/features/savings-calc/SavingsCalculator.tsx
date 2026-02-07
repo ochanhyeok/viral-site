@@ -134,6 +134,25 @@ export default function SavingsCalculator() {
           </p>
         </div>
 
+        {/* 정보 섹션 */}
+        <div className="bg-teal-50 rounded-2xl p-5 border border-teal-100">
+          <h2 className="font-bold text-teal-900 mb-3 flex items-center gap-2">
+            <span>💡</span> 예적금 이자 계산 시 알아두세요
+          </h2>
+          <div className="text-teal-800 text-sm space-y-2">
+            <p>
+              2026년 기준 이자소득세는 15.4% (소득세 14% + 지방소득세 1.4%)가 적용됩니다.
+              연간 금융소득(이자+배당)이 2,000만원을 초과하면 종합소득세 신고 대상이 되어 최대 45%까지
+              세율이 적용될 수 있으니 주의가 필요합니다.
+            </p>
+            <p>
+              단리는 원금에만 이자가 붙고, 복리는 이자에도 이자가 붙어 장기 저축 시 유리합니다.
+              정기적금은 매월 납입하는 방식으로 목돈 마련에 적합하고, 정기예금은 목돈을 예치하여
+              더 높은 금리를 받을 수 있습니다. 비과세 저축(청년희망적금, ISA 등)을 활용하면 세금 없이 이자를 받을 수 있습니다.
+            </p>
+          </div>
+        </div>
+
         {/* 계산기 타입 선택 */}
         <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
           <div className="grid grid-cols-2 gap-2">
